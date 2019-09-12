@@ -278,7 +278,7 @@ namespace Scroll.Battle
         {
             player.MoveUpdate(deltaTime);
             enemies.ForEach(e => e.MoveUpdate(deltaTime));
-            arts.ForEach(a => a.)
+            //arts.ForEach(a => a.)
         }
 
         /// <summary>
