@@ -105,9 +105,6 @@ namespace Scroll.Battle
             //effectSystems = new List<EffectSystem.VirtualEffectSystem>();
             arts = new List<Arts.Fire>();
             fields = new List<Field.Field>();
-            fields.Add(new Field.Field(this, renderer, Field.Field.SetType.FLOAR));
-            fields.Add(new Field.Field(this, renderer, Field.Field.SetType.RIGHT));
-            fields.Add(new Field.Field(this, renderer, Field.Field.SetType.LEFT));
             fields.Add(new Field.Field(this, renderer, Field.Field.SetType.BACK));
             fields.Add(new Field.Field(this, renderer, Field.Field.SetType.FRONT));
             blocks = new List<Field.Block>();

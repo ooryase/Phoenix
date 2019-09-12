@@ -23,8 +23,6 @@ namespace Scroll.Battle.Field
             WORLD,
             FRONT,
             BACK,
-            LEFT,
-            RIGHT,
         }
 
         private SetType setType;
@@ -36,7 +34,7 @@ namespace Scroll.Battle.Field
             position = Vector3.Zero;
 
             if (setType == SetType.BACK)
-                scale = 24f;
+                scale = 12f;
 
             SetBaseVertices();
             SetTextureCoordinate();
@@ -99,7 +97,7 @@ namespace Scroll.Battle.Field
 
         protected override void Awake()
         {
-            scale = 16f;
+            scale = 6f;
         }
 
         protected override void SetBaseVertices()
@@ -116,12 +114,6 @@ namespace Scroll.Battle.Field
                     break;
                 case SetType.BACK:
                     SetBack();
-                    break;
-                case SetType.LEFT:
-                    SetLeft();
-                    break;
-                case SetType.RIGHT:
-                    SetRight();
                     break;
             }
 
@@ -142,10 +134,10 @@ namespace Scroll.Battle.Field
         {
             baseVertexPosition = new[]
             {
-                new Vector3(0.5f,0.5f, -0.25f) * scale,
-                new Vector3(-0.5f,-0.1f, -0.25f) * scale,
-                new Vector3(-0.5f, 0.5f, -0.25f) * scale,
-                new Vector3(0.5f, -0.1f, -0.25f) * scale
+                new Vector3(1.5f,1.5f, 0f) * scale,
+                new Vector3(0f,-0.1f, 0f) * scale,
+                new Vector3(0f, 1.5f, 0f) * scale,
+                new Vector3(1.5f, -0.1f, 0f) * scale
             };
         }
 
@@ -153,33 +145,10 @@ namespace Scroll.Battle.Field
         {
             baseVertexPosition = new[]
             {
-                new Vector3(0.5f,0.5f, -0.35f) * scale,
-                new Vector3(-0.5f,-0.2f, -0.35f) * scale,
-                new Vector3(-0.5f, 0.5f, -0.35f) * scale,
-                new Vector3(0.5f, -0.2f, -0.35f) * scale
-            };
-
-        }
-
-        private void SetLeft()
-        {
-            baseVertexPosition = new[]
-            {
-                new Vector3(0,0.5f, -0.5f) * scale,
-                new Vector3(0f,0f, 0.5f) * scale,
-                new Vector3(0f, 0.5f, 0.5f) * scale,
-                new Vector3(0f, 0f, -0.5f) * scale
-            };
-        }
-
-        private void SetRight()
-        {
-            baseVertexPosition = new[]
-            {
-                new Vector3(3.125f,0f, 0.5f) * scale,
-                new Vector3(3.125f,0.5f, -0.5f) * scale,
-                new Vector3(3.125f, 0.5f, 0.5f) * scale,
-                new Vector3(3.125f, 0f, -0.5f) * scale
+                new Vector3(1.5f,0.8f, -0.15f) * scale,
+                new Vector3(-0.1f,-0.1f, -0.15f) * scale,
+                new Vector3(-0.1f, 0.8f, -0.15f) * scale,
+                new Vector3(1.5f, -0.1f, -0.15f) * scale
             };
 
         }
@@ -192,14 +161,14 @@ namespace Scroll.Battle.Field
             {
                 case SetType.FLOAR: i = 1f; break;
                 case SetType.WORLD: i = 0;  break;
-                case SetType.FRONT: i = 2f; break;
-                case SetType.BACK:  i = 3f; break;
+                case SetType.FRONT: i = 0f; break;
+                case SetType.BACK:  i = 1f; break;
                 default:            i = 1;  break;
             }
-            vertices[0].TextureCoordinate.Y = 0.25f * (i);
-            vertices[1].TextureCoordinate.Y = 0.25f * (i + 1f);
-            vertices[2].TextureCoordinate.Y = 0.25f * (i);
-            vertices[3].TextureCoordinate.Y = 0.25f * (i + 1f);
+            vertices[0].TextureCoordinate.Y = 0.5f * (i);
+            vertices[1].TextureCoordinate.Y = 0.5f * (i + 1f);
+            vertices[2].TextureCoordinate.Y = 0.5f * (i);
+            vertices[3].TextureCoordinate.Y = 0.5f * (i + 1f);
         }
 
 
@@ -222,16 +191,8 @@ namespace Scroll.Battle.Field
 
         public override void DrawUpdate()
         {
-            //VerticesSet();
-            for(int i = 0;i < vertices.Count();i++)
-            {
-                if(setType != SetType.LEFT && setType != SetType.RIGHT)
-                    vertices[i].Position.X = baseVertexPosition[i].X + parent.CameraLookPos.X;
-            }
+            VerticesSet(Billboard.NONE);
 
-
-            if (setType != SetType.LEFT && setType != SetType.RIGHT)
-                effect.Parameters["Value"].SetValue(parent.CameraLookPos.X / scale * 0.8f);
             effect.Parameters["View"].SetValue(parent.View);
         }
 
