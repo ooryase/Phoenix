@@ -18,7 +18,7 @@ namespace Scroll.Battle.Player
         /// <summary>
         /// ホーミング弾とかで使ってた
         /// </summary>
-        protected Vector2 targetPos;
+        //protected Vector2 targetPos;
 
         public enum State
         {
@@ -45,21 +45,21 @@ namespace Scroll.Battle.Player
 
         protected override void Awake()
         {
-            scale = 0.25f;
+            scale = 1f; //画像描画のサイズ
         }
         protected override void NameSet()
         {
             effectName = "Player";
-            textureName = "Player";
+            textureName = "husityo";
         }
 
-        public Player(Battle battle ,Renderer renderer) : base(battle,renderer)
+        public Player(Battle battle, Renderer renderer) : base(battle, renderer)
         {
             position = Vector3.UnitX;
             StateSet(State.NORMAL);
             move = false;
 
-            physics = new MovePhysics(0.0085f,true, 0.0025f, 0.92f);
+            physics = new MovePhysics(0.0085f, null, null);
             maxSpeed = new Vector3(0.45f, 0.7f, 0);
 
             invincible = false;
@@ -142,7 +142,7 @@ namespace Scroll.Battle.Player
         public override void MoveUpdate(int deltaTime)
         {
 
-            physics.velocity.X *= physics.myu;
+            physics.Inertia(deltaTime);
 
             MoveInputUpdate(deltaTime);
 
@@ -166,19 +166,27 @@ namespace Scroll.Battle.Player
             {
                 RightMove(physics.speed * deltaTime);
             }
-            if (InputContllorer.IsPress(Keys.Up) && physics.isGraund)
-                UpMove(physics.speed * deltaTime * 10f);
-
-
-            //if (InputContllorer.IsPress(Keys.Down))
-            //    DownMove(speed * deltaTime);
+            if (InputContllorer.IsPress(Keys.Up))
+            {
+                UpMove(physics.speed * deltaTime);
+            }
+            if (InputContllorer.IsPress(Keys.Down))
+            {
+                DownMove(physics.speed * deltaTime);
+            }
 
             var l = InputContllorer.StickLeftX();
             if (move = l != 0f)
                 SideMove(l * physics.speed * deltaTime);
-            if (physics.isGraund && InputContllorer.IsPush(Buttons.A))
-                UpMove(physics.speed * deltaTime * 10f);
+
+            var a = InputContllorer.StickLeftY();
+            if (move = a != 0f)
+                UpDownMove(a * physics.speed * deltaTime);
+
+                if (physics.isGraund && InputContllorer.IsPush(Buttons.A))
+                    UpMove(physics.speed * deltaTime * 10f);
         }
+
 
         private void RightMove(float l)
         {
@@ -216,6 +224,14 @@ namespace Scroll.Battle.Player
             Direct = (l > 0f) ? Direction.RIGHT : Direction.LEFT;
 
         }
+
+        private void UpDownMove(float l)
+        {
+            move = true;
+            physics.velocity.Y += l;
+            physics.velocity.Y = (physics.velocity.Y < -maxSpeed.Y) ? -maxSpeed.Y : physics.velocity.Y;
+            physics.velocity.Y = (physics.velocity.Y > maxSpeed.Y) ? maxSpeed.Y : physics.velocity.Y;
+        }
         /// <summary>
         /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///                                     バトルクラスから呼ばれるよ！（呼ばれるとしたら3番目）
@@ -224,7 +240,7 @@ namespace Scroll.Battle.Player
         /// <param name="virtualObject"></param>
         public override void OnCollisionEnter(VirtualObject virtualObject)
         {
-            if(virtualObject.Tag == TagName.FIELD)
+            if (virtualObject.Tag == TagName.FIELD)
             {
                 if (virtualObject.Position.Y > 0)
                     physics.isGraund = true;
@@ -271,7 +287,7 @@ namespace Scroll.Battle.Player
                     TextureCoordinateSet(time / 200 % 4, 0f);
                 }
             }
-            else if(state == State.ATTACK)
+            else if (state == State.ATTACK)
             {
                 var i = (time >= 280) ? 3 : time / 70;
 
@@ -288,17 +304,17 @@ namespace Scroll.Battle.Player
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        private void TextureCoordinateSet(float x,float y)
+        private void TextureCoordinateSet(float x, float y) //アニメーション関係
         {
-            vertices[0].TextureCoordinate.X = 0.25f * (x + (float)Direct);
-            vertices[1].TextureCoordinate.X = 0.25f * (x + 1f - (float)Direct);
-            vertices[2].TextureCoordinate.X = 0.25f * (x + 1f - (float)Direct);
-            vertices[3].TextureCoordinate.X = 0.25f * (x + (float)Direct);
+            vertices[0].TextureCoordinate.X = 1f * (x + (float)Direct);
+            vertices[1].TextureCoordinate.X = 1f * (x + 1f - (float)Direct);
+            vertices[2].TextureCoordinate.X = 1f * (x + 1f - (float)Direct);
+            vertices[3].TextureCoordinate.X = 1f * (x + (float)Direct);
 
-            vertices[0].TextureCoordinate.Y = 0.25f * (y);
-            vertices[1].TextureCoordinate.Y = 0.25f * (y + 1f);
-            vertices[2].TextureCoordinate.Y = 0.25f * (y);
-            vertices[3].TextureCoordinate.Y = 0.25f * (y + 1f);
+            vertices[0].TextureCoordinate.Y = 1f * (y);
+            vertices[1].TextureCoordinate.Y = 1f * (y + 1f);
+            vertices[2].TextureCoordinate.Y = 1f * (y);
+            vertices[3].TextureCoordinate.Y = 1f * (y + 1f);
         }
 
         public override void Draw(Output.Renderer renderer)

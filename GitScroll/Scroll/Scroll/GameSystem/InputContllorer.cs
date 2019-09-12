@@ -137,6 +137,5 @@ namespace Scroll.GameSystem
         {
             return currentGamePadState.ThumbSticks.Right.Y;
         }
-
     }
 }

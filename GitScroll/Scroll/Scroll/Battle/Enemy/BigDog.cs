@@ -16,18 +16,18 @@ namespace Scroll.Battle.Enemy
 
         protected override void Awake()
         {
-            scale = 0.7f;
+            scale = 1f;
         }
 
         protected override void NameSet()
         {
             effectName = "NoobEnemy";
-            textureName = "Dog";
+            textureName = "inu";
         }
         public BigDog(Battle battle, Renderer renderer, Vector3 startPos) : base(battle, renderer)
         {
             position = startPos;
-            physics = new MovePhysics(0.25f, true, 0.0025f, 0.92f);
+            physics = new MovePhysics(0.25f, 0.0025f, 0.92f);
             hp = 30f;
 
             shake = Vector3.Zero;
@@ -108,10 +108,10 @@ namespace Scroll.Battle.Enemy
 
         public override void DrawUpdate()
         {
-            vertices[0].TextureCoordinate.X = 0.25f * (time / 200 % 4 + (float)Direct);
-            vertices[1].TextureCoordinate.X = 0.25f * (time / 200 % 4 + 1f - (float)Direct);
-            vertices[2].TextureCoordinate.X = 0.25f * (time / 200 % 4 + 1f - (float)Direct);
-            vertices[3].TextureCoordinate.X = 0.25f * (time / 200 % 4 + (float)Direct);
+            vertices[0].TextureCoordinate.X = 1f * (time / 200 % 4 + (float)Direct);
+            vertices[1].TextureCoordinate.X = 1f * (time / 200 % 4 + 1f - (float)Direct);
+            vertices[2].TextureCoordinate.X = 1f * (time / 200 % 4 + 1f - (float)Direct);
+            vertices[3].TextureCoordinate.X = 1f * (time / 200 % 4 + (float)Direct);
 
             VerticesSet(Billboard.PITCH_ONLY);
 
