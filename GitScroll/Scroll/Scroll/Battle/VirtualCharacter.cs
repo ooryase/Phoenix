@@ -13,19 +13,12 @@ namespace Scroll.Battle
     internal abstract class VirtualCharacter : VirtualObject
     {
         protected float hp;
-        protected float speed;
-        protected float gSpeed;
-
-        protected bool gravity;
         protected bool dead;
-        protected bool isGraund;
 
-        protected Vector3 velocity;
+        protected MovePhysics physics;
 
         public VirtualCharacter(Battle battle, Renderer renderer) : base(battle, renderer)
         {
-            gravity = true;
-            velocity = Vector3.Zero;
         }
 
         public abstract void MoveUpdate(int deltaTime);
@@ -33,26 +26,26 @@ namespace Scroll.Battle
         
         public abstract GameSystem.RectangleF GetCollisionRectangle();
 
-        protected void GravityUpdate(int deltaTime)
-        {
-            if (!gravity || isGraund)
-                return;
 
-            velocity.Y -= gSpeed * deltaTime;
-
-        }
-
+        /// <summary>
+        /// 使わないから気にしないで
+        /// </summary>
+        /// <param name="arts"></param>
         protected  void OnArtsCollisionEnter(Arts.Fire arts)
         {
             hp -= arts.Damage;
         }
 
+        /// <summary>
+        /// フィールドの範囲外に出た場合内側に戻す
+        /// 今回は呼ばない気がする
+        /// </summary>
         protected void FieldMove()
         {
 
             var rf = GetCollisionRectangle();
 
-            if (isGraund = rf.Bottom < BattleWindow.Down)
+            if (physics.isGraund = rf.Bottom < BattleWindow.Down)
             {
                 position.Y += BattleWindow.Down - rf.Bottom;
             }

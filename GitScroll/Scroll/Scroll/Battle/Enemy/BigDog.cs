@@ -27,8 +27,7 @@ namespace Scroll.Battle.Enemy
         public BigDog(Battle battle, Renderer renderer, Vector3 startPos) : base(battle, renderer)
         {
             position = startPos;
-            speed = 0.25f;
-            gSpeed = 0.0025f;
+            physics = new MovePhysics(0.25f, true, 0.0025f, 0.92f);
             hp = 30f;
 
             shake = Vector3.Zero;
@@ -74,11 +73,11 @@ namespace Scroll.Battle.Enemy
 
         public override void MoveUpdate(int deltaTime)
         {
-            velocity *= 0.92f;
+            physics.velocity *= physics.myu;
 
-            GravityUpdate(deltaTime);
+            physics.Gravity(deltaTime);
 
-            position += velocity * speed * deltaTime;
+            position += physics.velocity * physics.speed * deltaTime;
 
             FieldMove();
         }
@@ -91,8 +90,8 @@ namespace Scroll.Battle.Enemy
 
             hp -= 5f;
 
-            velocity = (position - virtualObject.Position) / 12f;
-            velocity.Y += 0.2f;
+            physics.velocity = (position - virtualObject.Position) / 12f;
+            physics.velocity.Y += 0.2f;
 
             if (hp < 0f)
             {

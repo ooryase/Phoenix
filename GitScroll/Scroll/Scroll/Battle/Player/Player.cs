@@ -15,6 +15,9 @@ namespace Scroll.Battle.Player
     class Player : VirtualCharacter
     {
         private Vector3 maxSpeed;
+        /// <summary>
+        /// ホーミング弾とかで使ってた
+        /// </summary>
         protected Vector2 targetPos;
 
         public enum State
@@ -23,9 +26,19 @@ namespace Scroll.Battle.Player
             ATTACK = 700,
         }
         protected State state;
+        /// <summary>
+        /// 現在移動しているかどうか
+        /// 移動アニメーションに切り替える際参照する
+        /// </summary>
         private bool move;
 
+        /// <summary>
+        /// 無敵
+        /// </summary>
         protected bool invincible;
+        /// <summary>
+        /// 無敵残り時間
+        /// </summary>
         protected int invincibleTime;
 
 
@@ -45,8 +58,8 @@ namespace Scroll.Battle.Player
             position = Vector3.UnitX;
             StateSet(State.NORMAL);
             move = false;
-            speed = 0.0085f;
-            gSpeed = 0.0025f;
+
+            physics = new MovePhysics(0.0085f,true, 0.0025f, 0.92f);
             maxSpeed = new Vector3(0.45f, 0.7f, 0);
 
             invincible = false;
@@ -54,31 +67,18 @@ namespace Scroll.Battle.Player
 
         }
 
-
-
+        /// <summary>
+        /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///                                     バトルクラスから呼ばれるよ！（1番目）
+        /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// </summary>
+        /// <param name="deltaTime"></param>
         public override void StartUpdate(int deltaTime)
         {
             TimeUpdate(deltaTime);
             StateUpdate(deltaTime);
 
         }
-
-        public override void OnCollisionEnter(VirtualObject virtualObject)
-        {
-            if(virtualObject.Tag == TagName.FIELD)
-            {
-                if (virtualObject.Position.Y > 0)
-                    isGraund = true;
-
-                position += virtualObject.Position;
-            }
-        }
-
-        public override void EndUpdate()
-        {
-
-        }
-
         protected void TimeUpdate(int deltaTime)
         {
             time += deltaTime;
@@ -96,12 +96,12 @@ namespace Scroll.Battle.Player
                 case State.ATTACK:
                     AttackStateUpdate(deltaTime);
                     break;
-            }                 
+            }
         }
 
         protected void InvincibleUpdate(int deltaTime)
         {
-            if(invincible)
+            if (invincible)
             {
                 invincibleTime -= deltaTime;
                 if (invincibleTime < 0)
@@ -120,10 +120,10 @@ namespace Scroll.Battle.Player
             if (parent.BattleState != Battle.State.NORMAL)
                 return;
 
-            if(InputContllorer.IsPush(Keys.Z))
+            if (InputContllorer.IsPush(Keys.Z))
             {
                 StateSet(State.ATTACK);
-                parent.PlayerArts(position,Direct);
+                parent.PlayerArts(position, Direct);
             }
 
         }
@@ -133,20 +133,24 @@ namespace Scroll.Battle.Player
             if (time > (int)State.ATTACK)
                 StateSet(State.NORMAL);
         }
-
+        /// <summary>
+        /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///                                     バトルクラスから呼ばれるよ！（2番目）
+        /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// </summary>
+        /// <param name="deltaTime"></param>
         public override void MoveUpdate(int deltaTime)
         {
 
-            velocity.X *= 0.92f;
+            physics.velocity.X *= physics.myu;
 
             MoveInputUpdate(deltaTime);
 
-            GravityUpdate(deltaTime);
+            physics.Gravity(deltaTime);
 
-            position += velocity * speed * deltaTime;
+            position += physics.velocity * physics.speed * deltaTime;
             FieldMove();
         }
-
         private void MoveInputUpdate(int deltaTime)
         {
             if (parent.BattleState != Battle.State.NORMAL)
@@ -156,64 +160,93 @@ namespace Scroll.Battle.Player
             }
             if (InputContllorer.IsPress(Keys.Left))
             {
-                LeftMove(speed * deltaTime);
+                LeftMove(physics.speed * deltaTime);
             }
             if (InputContllorer.IsPress(Keys.Right))
             {
-                RightMove(speed * deltaTime);
+                RightMove(physics.speed * deltaTime);
             }
-            if (InputContllorer.IsPress(Keys.Up) && isGraund)
-                UpMove(speed * deltaTime * 10f);
-            
+            if (InputContllorer.IsPress(Keys.Up) && physics.isGraund)
+                UpMove(physics.speed * deltaTime * 10f);
+
 
             //if (InputContllorer.IsPress(Keys.Down))
             //    DownMove(speed * deltaTime);
 
             var l = InputContllorer.StickLeftX();
             if (move = l != 0f)
-                SideMove(l * speed * deltaTime);
-            if (isGraund && InputContllorer.IsPush(Buttons.A))
-                UpMove(speed * deltaTime * 10f);
+                SideMove(l * physics.speed * deltaTime);
+            if (physics.isGraund && InputContllorer.IsPush(Buttons.A))
+                UpMove(physics.speed * deltaTime * 10f);
         }
 
         private void RightMove(float l)
         {
             move = true;
-            velocity.X += l;
-            velocity.X = (velocity.X > maxSpeed.X) ? maxSpeed.X : velocity.X;
+            physics.velocity.X += l;
+            physics.velocity.X = (physics.velocity.X > maxSpeed.X) ? maxSpeed.X : physics.velocity.X;
             Direct = Direction.RIGHT;
         }
         private void LeftMove(float l)
         {
             move = true;
-            velocity.X -= l;
-            velocity.X = (velocity.X < -maxSpeed.X) ? -maxSpeed.X : velocity.X;
+            physics.velocity.X -= l;
+            physics.velocity.X = (physics.velocity.X < -maxSpeed.X) ? -maxSpeed.X : physics.velocity.X;
             Direct = Direction.LEFT;
         }
         private void UpMove(float l)
         {
             move = true;
-            velocity.Y = l;
-            velocity.Y = (velocity.Y > maxSpeed.Y) ? maxSpeed.Y : velocity.Y;
+            physics.velocity.Y = l;
+            physics.velocity.Y = (physics.velocity.Y > maxSpeed.Y) ? maxSpeed.Y : physics.velocity.Y;
         }
         private void DownMove(float l)
         {
             move = true;
-            velocity.Y -= l;
-            velocity.Y = (velocity.Y < -maxSpeed.Y) ? -maxSpeed.Y : velocity.Y;
+            physics.velocity.Y -= l;
+            physics.velocity.Y = (physics.velocity.Y < -maxSpeed.Y) ? -maxSpeed.Y : physics.velocity.Y;
         }
 
         private void SideMove(float l)
         {
             move = true;
-            velocity.X += l;
-            velocity.X = (velocity.X < -maxSpeed.X) ? -maxSpeed.X : velocity.X;
-            velocity.X = (velocity.X > maxSpeed.X) ? maxSpeed.X : velocity.X;
+            physics.velocity.X += l;
+            physics.velocity.X = (physics.velocity.X < -maxSpeed.X) ? -maxSpeed.X : physics.velocity.X;
+            physics.velocity.X = (physics.velocity.X > maxSpeed.X) ? maxSpeed.X : physics.velocity.X;
             Direct = (l > 0f) ? Direction.RIGHT : Direction.LEFT;
 
         }
+        /// <summary>
+        /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///                                     バトルクラスから呼ばれるよ！（呼ばれるとしたら3番目）
+        /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// </summary>
+        /// <param name="virtualObject"></param>
+        public override void OnCollisionEnter(VirtualObject virtualObject)
+        {
+            if(virtualObject.Tag == TagName.FIELD)
+            {
+                if (virtualObject.Position.Y > 0)
+                    physics.isGraund = true;
 
+                position += virtualObject.Position;
+            }
+        }
+        /// <summary>
+        /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///                                     バトルクラスから呼ばれるよ！（4番目）
+        /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// </summary>
+        /// <param name="virtualObject"></param>
+        public override void EndUpdate()
+        {
 
+        }
+
+        /// <summary>
+        /// Stateの切り替えと同時にtimeを0にする
+        /// </summary>
+        /// <param name="s"></param>
         protected void StateSet(State s)
         {
             state = s;
@@ -236,7 +269,6 @@ namespace Scroll.Battle.Player
                 else
                 {
                     TextureCoordinateSet(time / 200 % 4, 0f);
-
                 }
             }
             else if(state == State.ATTACK)
@@ -246,13 +278,16 @@ namespace Scroll.Battle.Player
                 TextureCoordinateSet(i, 2f);
             }
 
-
             VerticesSet(Billboard.PITCH_ONLY);
-
             effect.Parameters["View"].SetValue(parent.View);
-
         }
 
+        /// <summary>
+        /// テクスチャコーディネイトの設定
+        /// 連結画像によるアニメーション処理を行う
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         private void TextureCoordinateSet(float x,float y)
         {
             vertices[0].TextureCoordinate.X = 0.25f * (x + (float)Direct);
@@ -280,46 +315,19 @@ namespace Scroll.Battle.Player
 
         }
 
+        /// <summary>
+        /// ステータスパラメータの表示
+        /// </summary>
+        /// <param name="renderer"></param>
         public void DrawParam(Output.Renderer renderer)
         {
-            //var drawP = BattleMain.BattleWindow.DrawParam;
-            //var dPRight = new Vector2(drawP.X + 100f, drawP.Y);
-            //renderer.DrawFont("k8x12L", "SCORE",drawP);
-            //renderer.DrawFont("k8x12L", score.ToString(),  dPRight);
-
-            //drawP.Y += 50f;
-            //dPRight.Y += 50f;
-
-            //var r = new Rectangle(96, 64, 32, 32);
-
-            //renderer.DrawFont("k8x12L", "LIFE", drawP);
-            //for (int i = 0; i < life; i++)
-            //{
-            //    renderer.DrawTexture("32tex", new Vector2(dPRight.X + i * 36f, dPRight.Y), r, Color.White);
-            //}
-
-            //drawP.Y += 50f;
-            //dPRight.Y += 50f;
-
-            //r.X -= 32;
-
-            //renderer.DrawFont("k8x12L", "MAGIC", drawP);
-            //for (int i = 0 ;i < bomb;i++)
-            //{
-            //    renderer.DrawTexture("32tex",  new Vector2(dPRight.X + i * 36f ,dPRight.Y), r, Color.White);
-            //}
-
-            //drawP.Y += 50f;
-            //dPRight.Y += 50f;
-
-            //renderer.DrawFont("k8x12L", "POWER", drawP);
-            //renderer.DrawFont("k8x12L", power.ToString(), dPRight);
-
-            //if(state == State.PICHUN)
-            //    renderer.DrawTexture("HitRed", new Vector2(BattleMain.BattleWindow.Left,BattleMain.BattleWindow.Up));
 
         }
 
+        /// <summary>
+        /// 四角の当たり判定を返す
+        /// </summary>
+        /// <returns></returns>
         public override RectangleF GetCollisionRectangle()
         {
             RectangleF rf = new RectangleF(

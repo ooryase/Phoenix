@@ -11,6 +11,9 @@ using Scroll.Output;
 
 namespace Scroll.Battle
 {
+    /// <summary>
+    /// バトルシーンで扱うオブジェクトは必ず継承すること
+    /// </summary>
     abstract class VirtualObject
     {
         protected Vector3 position;
@@ -24,7 +27,13 @@ namespace Scroll.Battle
 
 
         protected Effect effect;
-        protected VertexPositionTexture[] vertices;
+        /// <summary>
+        /// 最終的に描画される頂点座標
+        /// </summary>
+        protected VertexPositionTexture[] vertices; 
+        /// <summary>
+        /// 回転処理を行う前の頂点座標
+        /// </summary>
         protected Vector3[] baseVertexPosition;
         protected int[] indices;
 
@@ -32,6 +41,9 @@ namespace Scroll.Battle
         protected String effectName;
         protected String textureName;
 
+        /// <summary>
+        /// deleteがtrueのオブジェクトはEndUpdateで消去される
+        /// </summary>
         protected bool delete;
 
         protected int time;
@@ -75,9 +87,14 @@ namespace Scroll.Battle
             indices = CreateIndices();
         }
 
+        /// <summary>
+        /// 継承先のコンストラクタよりも先に呼ばれる
+        /// </summary>
         protected abstract void Awake();
 
-
+        /// <summary>
+        /// ここでeffectNameとtextureNameの初期化を行うこと
+        /// </summary>
         protected abstract void NameSet();
 
         protected Effect CreateEffect(Matrix projection, Matrix view, Renderer renderer)
@@ -134,6 +151,11 @@ namespace Scroll.Battle
         public abstract void EndUpdate();
 
         public abstract void DrawUpdate();
+        /// <summary>
+        /// カメラ角度に応じて頂点座標を回転する
+        /// billboardの値がNONEの場合は回転しない
+        /// </summary>
+        /// <param name="billboard"></param>
         protected void VerticesSet(Billboard billboard)
         {
             for (int i = 0; i < vertices.Count(); i++)
