@@ -35,6 +35,7 @@ namespace Scroll.Battle
         /// </summary>
         protected bool inertia;
 
+
         /// <summary>
         /// 重力、摩擦が有効の場合は効果量を
         /// 無効の場合はnullを引数にする
@@ -43,11 +44,11 @@ namespace Scroll.Battle
         /// <param name="isGraund"></param>
         /// <param name="gravity"></param>
         /// <param name="inertia"></param>
-        public MovePhysics(float speed, bool isGraund, float? gravity, float? inertia)
+        public MovePhysics(float speed,float? gravity, float? inertia)
         {
             velocity = Vector3.Zero;
             this.speed = speed;
-            this.isGraund = isGraund;
+            isGraund = false;
             if (this.gravity = gravity != null)
                 gAcceleration = (float)gravity;
             if (this.inertia = inertia!= null)
@@ -61,6 +62,14 @@ namespace Scroll.Battle
                 return;
 
             velocity.Y -= gAcceleration * deltaTime;
+        }
+
+        public void Inertia(int deltaTime)
+        {
+            if (!inertia)
+                velocity = Vector3.Zero;
+
+            velocity *= myu * deltaTime; 
         }
 
     }

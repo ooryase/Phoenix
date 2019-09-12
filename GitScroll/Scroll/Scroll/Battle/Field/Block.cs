@@ -12,14 +12,27 @@ namespace Scroll.Battle.Field
 {
     class Block : VirtualObject
     {
-        public Block(Battle battle, Renderer renderer,Vector3 position) : base(battle, renderer)
+        public enum BlockName
+        {
+            LEFT_UP,
+            UP,
+            RIGHT_UP,
+
+            LEFT = 4,
+            CENTER,
+            RIGHT,
+
+            BOTTOM_LEFT = 8,
+            BOTTOM,
+            BOTTOM_RIGHT,
+        }
+        private BlockName blockName;
+        public Block(Battle battle, Renderer renderer,Vector3 position, BlockName blockName) : base(battle, renderer)
         {
             this.position = position;
+            this.blockName = blockName;
+            Coordinate();
         }
-
-
-
-
         protected override void Awake()
         {
             scale = 0.25f;
@@ -27,62 +40,69 @@ namespace Scroll.Battle.Field
 
         protected override void NameSet()
         {
-            textureName = "Block";
+            textureName = "dummyrock";
             effectName = "Block";
         }
-
-        protected override void SetBaseVertices()
+        private void Coordinate()
         {
-            baseVertexPosition = new[]
+            switch (blockName)
             {
-                new Vector3(1f,1f, 1f) * scale,
-                new Vector3(-1f,-1f, 1f) * scale,
-                new Vector3(-1f, 1f, 1f) * scale,
-                new Vector3(1f, -1f, 1f) * scale,
-
-                new Vector3(-1f,-1f, -1f) * scale,
-                new Vector3(1f,1f, -1f) * scale,
-                new Vector3(-1f, 1f, -1f) * scale,
-                new Vector3(1f, -1f, -1f) * scale
-            };
-        }
-
-
-        protected override VertexPositionTexture[] CreateVertices()
-        {
-            var vertices = new[]
-            {
-                new VertexPositionTexture(baseVertexPosition[0], new Vector2(1, 0)),
-                new VertexPositionTexture(baseVertexPosition[1], new Vector2(0, 1)),
-                new VertexPositionTexture(baseVertexPosition[2], new Vector2(0, 0)),
-                new VertexPositionTexture(baseVertexPosition[3], new Vector2(1, 1)),
-
-                new VertexPositionTexture(baseVertexPosition[4], new Vector2(1, 0)),
-                new VertexPositionTexture(baseVertexPosition[5], new Vector2(0, 1)),
-                new VertexPositionTexture(baseVertexPosition[6], new Vector2(0, 0)),
-                new VertexPositionTexture(baseVertexPosition[7], new Vector2(1, 1)),
-            };
-            return vertices;
-        }
-
-        protected override int[] CreateIndices()
-        {
-            var indices = new[]
-            {
-                0,1,2,
-                0,3,1,
-                0,5,3,
-                3,5,7,
-                2,4,6,
-                2,1,4,
-                1,3,7,
-                1,7,4,
-                0,2,6,
-                0,6,5
-
-            };
-
-            return indices;
+                case BlockName.LEFT_UP:
+                    vertices[0].TextureCoordinate = new Vector2(0.25f, 0);
+                    vertices[1].TextureCoordinate = new Vector2(0, 0.25f);
+                    vertices[2].TextureCoordinate = new Vector2(0, 0);
+                    vertices[3].TextureCoordinate = new Vector2(0.25f, 0.25f);
+                    break;
+                case BlockName.UP:
+                    vertices[0].TextureCoordinate = new Vector2(0.5f, 0);
+                    vertices[1].TextureCoordinate = new Vector2(0.25f, 0.25f);
+                    vertices[2].TextureCoordinate = new Vector2(0.25f, 0);
+                    vertices[3].TextureCoordinate = new Vector2(0.5f, 0.25f);
+                    break;
+                case BlockName.RIGHT_UP:
+                    vertices[0].TextureCoordinate = new Vector2(0.75f, 0);
+                    vertices[1].TextureCoordinate = new Vector2(0.5f, 0.25f);
+                    vertices[2].TextureCoordinate = new Vector2(0.5f, 0);
+                    vertices[3].TextureCoordinate = new Vector2(0.75f, 0.25f);
+                    break;
+                case BlockName.LEFT:
+                    vertices[0].TextureCoordinate = new Vector2(0.25f, 0.25f);
+                    vertices[1].TextureCoordinate = new Vector2(0, 0.5f);
+                    vertices[2].TextureCoordinate = new Vector2(0, 0.25f);
+                    vertices[3].TextureCoordinate = new Vector2(0.25f, 0.5f);
+                    break;
+                case BlockName.CENTER:
+                    vertices[0].TextureCoordinate = new Vector2(0.5f, 0.25f);
+                    vertices[1].TextureCoordinate = new Vector2(0.25f, 0.5f);
+                    vertices[2].TextureCoordinate = new Vector2(0.25f, 0.25f);
+                    vertices[3].TextureCoordinate = new Vector2(0.5f, 0.5f);
+                    break;
+                case BlockName.RIGHT:
+                    vertices[0].TextureCoordinate = new Vector2(0.75f, 0.25f);
+                    vertices[1].TextureCoordinate = new Vector2(0.5f, 0.5f);
+                    vertices[2].TextureCoordinate = new Vector2(0.5f, 0.25f);
+                    vertices[3].TextureCoordinate = new Vector2(0.75f, 0.5f);
+                    break;
+                case BlockName.BOTTOM_LEFT:
+                    vertices[0].TextureCoordinate = new Vector2(0.25f, 0.5f);
+                    vertices[1].TextureCoordinate = new Vector2(0, 0.75f);
+                    vertices[2].TextureCoordinate = new Vector2(0, 0.5f);
+                    vertices[3].TextureCoordinate = new Vector2(0.25f, 0.75f);
+                    break;
+                case BlockName.BOTTOM:
+                    vertices[0].TextureCoordinate = new Vector2(0.5f, 0.5f);
+                    vertices[1].TextureCoordinate = new Vector2(0.25f, 0.75f);
+                    vertices[2].TextureCoordinate = new Vector2(0.25f, 0.5f);
+                    vertices[3].TextureCoordinate = new Vector2(0.5f, 0.75f);
+                    break;
+                case BlockName.BOTTOM_RIGHT:
+                    vertices[0].TextureCoordinate = new Vector2(0.75f, 0.5f);
+                    vertices[1].TextureCoordinate = new Vector2(0.5f, 0.75f);
+                    vertices[2].TextureCoordinate = new Vector2(0.5f, 0.5f);
+                    vertices[3].TextureCoordinate = new Vector2(0.75f, 0.75f);
+                    break;
+            }
+            
         }
         public override void StartUpdate(int deltaTime)
         {
@@ -91,6 +111,75 @@ namespace Scroll.Battle.Field
         public override void EndUpdate()
         {
             throw new NotImplementedException();
+        }
+        public override void OnCollisionEnter(VirtualObject virtualObject)
+        {
+            switch (blockName)
+            {
+                case BlockName.LEFT_UP:
+                    LEFT_UPCollision(virtualObject);
+                    break;
+                case BlockName.UP:
+                    UPCollision(virtualObject);
+                    break;
+                case BlockName.RIGHT_UP:
+                    RIGHT_UPCollision(virtualObject);
+                    break;
+                case BlockName.LEFT:
+                    LEFTCollision(virtualObject);
+                    break;
+                case BlockName.CENTER:
+                    CENTERCollision(virtualObject);
+                    break;
+                case BlockName.RIGHT:
+                    RIGHTCollision(virtualObject);
+                    break;
+                case BlockName.BOTTOM_LEFT:
+                    BOTTOM_LEFTCollision(virtualObject);
+                    break;
+                case BlockName.BOTTOM:
+                    BOTTOMCollision(virtualObject);
+                    break;
+                case BlockName.BOTTOM_RIGHT:
+                    BOTTOM_LEFTCollision(virtualObject);
+                    break;
+            }
+        }
+        private void LEFT_UPCollision(VirtualObject virtualObject)
+        {
+
+        }
+        private void UPCollision(VirtualObject virtualObject)
+        {
+
+        }
+        private void RIGHT_UPCollision(VirtualObject virtualObject)
+        {
+
+        }
+        private void LEFTCollision(VirtualObject virtualObject)
+        {
+
+        }
+        private void CENTERCollision(VirtualObject virtualObject)
+        {
+
+        }
+        private void RIGHTCollision(VirtualObject virtualObject)
+        {
+
+        }
+        private void BOTTOM_LEFTCollision(VirtualObject virtualObject)
+        {
+
+        }
+        private void BOTTOMCollision(VirtualObject virtualObject)
+        {
+
+        }
+        private void BOTTOM_RIGHTCollision(VirtualObject virtualObject)
+        {
+
         }
         public override void DrawUpdate()
         {
@@ -126,9 +215,6 @@ namespace Scroll.Battle.Field
 
         }
 
-        public override void OnCollisionEnter(VirtualObject virtualObject)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }
