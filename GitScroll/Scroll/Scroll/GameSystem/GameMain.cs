@@ -60,8 +60,8 @@ namespace Scroll.GameSystem
 
 
             renderer.LoadContent("Back", "Textures/");
-            renderer.LoadContent("Player","Textures/");
-            renderer.LoadContent("Dog", "Textures/");
+            renderer.LoadContent("husityo","Textures/");
+            renderer.LoadContent("inu", "Textures/");
             renderer.LoadContent("f", "Textures/");
             renderer.LoadContent("Block", "Textures/");
 
