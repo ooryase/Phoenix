@@ -28,7 +28,7 @@ namespace Scroll.GameSystem
             //@"Content/" +
  //           try
  //           {
-                using (var sr = new System.IO.StreamReader(@"Content" + path + filename))
+                using (var sr = new System.IO.StreamReader("Content" + path + filename))
                 {
                     while (!sr.EndOfStream)
                     {
