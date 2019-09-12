@@ -143,14 +143,15 @@ namespace Scroll.Battle
             blockSize = 0.5f;
 
             CSVReader csvReader = new CSVReader();
-            blocksData = csvReader.GetIntMatrix("Map2.csv");
+            blocksData = csvReader.GetIntMatrix("dummymap..csv");
 
             for(int y = 0;y < blocksData.GetLength(0);y++)
             {
                 for (int x = 0; x < blocksData.GetLength(1); x++)
                 {
-                    if(blocksData[y,x] == 1)
-                        blocks.Add(new Field.Block(this,renderer,new Vector3(x * blockSize + blockSize /2f,y * blockSize + blockSize / 2f,0)));
+                    if(blocksData[y,x] != -1)
+                        blocks.Add(new Field.Block(this,renderer,new Vector3(x * blockSize + blockSize /2f,y * blockSize + blockSize / 2f,0)
+                            , (Field.Block.BlockName)blocksData[y,x]));
                 }
 
             }

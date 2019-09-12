@@ -78,7 +78,7 @@ namespace Scroll.Battle
             delete = false;
 
             Awake();
-
+            //ここから下が描画設定
             NameSet();
             SetBaseVertices();
 
