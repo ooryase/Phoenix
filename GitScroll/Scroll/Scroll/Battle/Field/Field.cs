@@ -34,7 +34,7 @@ namespace Scroll.Battle.Field
             position = Vector3.Zero;
 
             if (setType == SetType.BACK)
-                Scale = 12f;
+                scale = 12f;
 
             SetBaseVertices();
             SetTextureCoordinate();
@@ -97,8 +97,9 @@ namespace Scroll.Battle.Field
 
         protected override void Awake()
         {
-            Scale = 6f;
+            scale = 6f;
         }
+
 
         protected override void SetBaseVertices()
         {
@@ -123,10 +124,15 @@ namespace Scroll.Battle.Field
         {
             baseVertexPosition = new[]
             {
-                new Vector3(0.5f,0, -0.25f) * Scale,
-                new Vector3(-0.5f, 0,0.25f) * Scale,
-                new Vector3(-0.5f, 0, -0.25f) * Scale,
-                new Vector3(0.5f, 0, 0.25f) * Scale
+                new Vector3(0.5f,0, -0.25f) * scale,
+                new Vector3(-0.5f, 0,0.25f) * scale,
+                new Vector3(-0.5f, 0, -0.25f) * scale,
+                new Vector3(0.5f, 0, 0.25f) * scale,
+
+                new Vector3(0.5f,0, -0.25f) * scale,
+                new Vector3(-0.5f, 0,0.25f) * scale,
+                new Vector3(-0.5f, 0, -0.25f) * scale,
+                new Vector3(0.5f, 0, 0.25f) * scale
             };
         }
 
@@ -134,10 +140,15 @@ namespace Scroll.Battle.Field
         {
             baseVertexPosition = new[]
             {
-                new Vector3(1.5f,1.5f, 0f) * Scale,
-                new Vector3(0f,-0.1f, 0f) * Scale,
-                new Vector3(0f, 1.5f, 0f) * Scale,
-                new Vector3(1.5f, -0.1f, 0f) * Scale
+                new Vector3(1.5f,1.5f, 0f) * scale,
+                new Vector3(0f,-0.1f, 0f) * scale,
+                new Vector3(0f, 1.5f, 0f) * scale,
+                new Vector3(1.5f, -0.1f, 0f) * scale,
+
+                new Vector3(3.0f,1.5f, 0f) * scale,
+                new Vector3(1.5f,-0.1f, 0f) * scale,
+                new Vector3(1.5f, 1.5f, 0f) * scale,
+                new Vector3(3.0f, -0.1f, 0f) * scale
             };
         }
 
@@ -145,13 +156,20 @@ namespace Scroll.Battle.Field
         {
             baseVertexPosition = new[]
             {
-                new Vector3(1.5f,0.8f, -0.15f) * Scale,
-                new Vector3(-0.1f,-0.1f, -0.15f) * Scale,
-                new Vector3(-0.1f, 0.8f, -0.15f) * Scale,
-                new Vector3(1.5f, -0.1f, -0.15f) * Scale
+                new Vector3(1.5f,0.8f, -0.15f) * scale,
+                new Vector3(0f,-0.1f, -0.15f) * scale,
+                new Vector3(0f, 0.8f, -0.15f) * scale,
+                new Vector3(1.5f, -0.1f, -0.15f) * scale,
+
+                new Vector3(3.0f,0.8f, -0.15f) * scale,
+                new Vector3(1.5f,-0.1f, -0.15f) * scale,
+                new Vector3(1.5f, 0.8f, -0.15f) * scale,
+                new Vector3(3.0f, -0.1f, -0.15f) * scale
+
             };
 
         }
+
 
         private void SetTextureCoordinate()
         {
@@ -169,7 +187,45 @@ namespace Scroll.Battle.Field
             vertices[1].TextureCoordinate.Y = 0.5f * (i + 1f);
             vertices[2].TextureCoordinate.Y = 0.5f * (i);
             vertices[3].TextureCoordinate.Y = 0.5f * (i + 1f);
+
+            vertices[4].TextureCoordinate.Y = 0.5f * (i);
+            vertices[5].TextureCoordinate.Y = 0.5f * (i + 1f);
+            vertices[6].TextureCoordinate.Y = 0.5f * (i);
+            vertices[7].TextureCoordinate.Y = 0.5f * (i + 1f);
         }
+
+        protected override VertexPositionTexture[] CreateVertices()
+        {
+            var vertices = new[]
+            {
+                new VertexPositionTexture(baseVertexPosition[0], new Vector2(1, 0)),
+                new VertexPositionTexture(baseVertexPosition[1], new Vector2(0, 1)),
+                new VertexPositionTexture(baseVertexPosition[2], new Vector2(0, 0)),
+                new VertexPositionTexture(baseVertexPosition[3], new Vector2(1, 1)),
+
+                new VertexPositionTexture(baseVertexPosition[4], new Vector2(1, 0)),
+                new VertexPositionTexture(baseVertexPosition[5], new Vector2(0, 1)),
+                new VertexPositionTexture(baseVertexPosition[6], new Vector2(0, 0)),
+                new VertexPositionTexture(baseVertexPosition[7], new Vector2(1, 1)),
+
+            };
+            return vertices;
+        }
+
+        protected override int[] CreateIndices()
+        {
+            var indices = new[]
+            {
+                0,1,2,
+                0,3,1,
+
+                4,5,6,
+                4,7,5,
+            };
+
+            return indices;
+        }
+
 
 
         protected override void NameSet()

@@ -248,6 +248,11 @@ namespace Scroll.Battle.Player
                 position += virtualObject.Position;
             }
         }
+
+        public void OnCollisionBlock(Vector3 vector3)
+        {
+            position += vector3;
+        }
         /// <summary>
         /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///                                     バトルクラスから呼ばれるよ！（4番目）
