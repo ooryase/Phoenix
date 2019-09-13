@@ -299,11 +299,11 @@ namespace Scroll.Battle
 
             foreach (var b in blocks)
             {
-                var c = Field.BlockCollision.CheckCollision(b, player);
-                if (c == null)
+                var c = blockCollision.CheckCollision(b, player);
+                if (c == Vector3.Zero) 
                     continue;
                 else
-                    player.OnCollisionBlock((Vector3)(c));
+                    player.OnCollisionBlock(c);
             }
         }
 

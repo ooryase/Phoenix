@@ -38,7 +38,7 @@ namespace Scroll.Battle
 
         /// <summary>
         /// 重力、摩擦が有効の場合は効果量を
-        /// 無効の場合はnullを引数にする
+        /// 無効の場合はVector3.Zeroを引数にする
         /// </summary>
         /// <param name="speed"></param>
         /// <param name="isGraund"></param>
