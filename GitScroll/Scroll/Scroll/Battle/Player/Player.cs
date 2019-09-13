@@ -45,7 +45,7 @@ namespace Scroll.Battle.Player
 
         protected override void Awake()
         {
-            scale = 1f; //画像描画のサイズ
+            Scale = 1f; //画像描画のサイズ
         }
         protected override void NameSet()
         {
@@ -352,10 +352,10 @@ namespace Scroll.Battle.Player
         public override RectangleF GetCollisionRectangle()
         {
             RectangleF rf = new RectangleF(
-                position.X - 0.8f * scale,
-                position.Y + 0.6f * scale,
-                1.6f * scale,
-                1.6f * scale
+                position.X - 0.8f * Scale,
+                position.Y + 0.6f * Scale,
+                1.6f * Scale,
+                1.6f * Scale
                 );
 
             return rf;

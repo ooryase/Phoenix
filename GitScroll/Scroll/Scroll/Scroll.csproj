@@ -48,6 +48,7 @@
     <Compile Include="Battle\BattleWindow.cs" />
     <Compile Include="Battle\Enemy\BigDog.cs" />
     <Compile Include="Battle\Field\Block.cs" />
+    <Compile Include="Battle\Field\BlockCollision.cs" />
     <Compile Include="Battle\MovePhysics.cs" />
     <Compile Include="Battle\VirtualCharacter.cs" />
     <Compile Include="Battle\Enemy\Dog.cs" />

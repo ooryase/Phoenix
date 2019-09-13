@@ -70,6 +70,7 @@ namespace Scroll.Battle
         public bool Delete { get => delete; protected set => delete = value; }
         public TagName Tag { get => tag; set => tag = value; }
         public Direction Direct { get => direct; protected set => direct = value; }
+        public float Scale { get => scale;protected set => scale = value; }
 
         public VirtualObject(Battle battle, Renderer renderer)
         {
@@ -112,10 +113,10 @@ namespace Scroll.Battle
         {
             baseVertexPosition = new[]
             {
-                new Vector3(1f,1f, 0) * scale,
-                new Vector3(-1f,-1f, 0) * scale,
-                new Vector3(-1f, 1f, 0) * scale,
-                new Vector3(1f, -1f, 0) * scale
+                new Vector3(1f,1f, 0) * Scale,
+                new Vector3(-1f,-1f, 0) * Scale,
+                new Vector3(-1f, 1f, 0) * Scale,
+                new Vector3(1f, -1f, 0) * Scale
             };
         }
 
