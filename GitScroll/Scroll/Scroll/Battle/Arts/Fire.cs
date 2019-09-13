@@ -52,7 +52,7 @@ namespace Scroll.Battle.Arts
         }
         protected override void Awake()
         {
-            scale = 0.3f;
+            Scale = 0.3f;
         }
 
         protected override void NameSet()

@@ -16,7 +16,7 @@ namespace Scroll.Battle.Enemy
 
         protected override void Awake()
         {
-            scale = 1f;
+            Scale = 1f;
         }
 
         protected override void NameSet()
@@ -144,10 +144,10 @@ namespace Scroll.Battle.Enemy
         public override RectangleF GetCollisionRectangle()
         {
             RectangleF rf = new RectangleF(
-                position.X - 0.8f * scale,
-                position.Y + 0.8f * scale,
-                1.6f * scale,
-                1.8f * scale
+                position.X - 0.8f * Scale,
+                position.Y + 0.8f * Scale,
+                1.6f * Scale,
+                1.8f * Scale
                 );
 
             return rf;

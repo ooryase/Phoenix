@@ -34,7 +34,7 @@ namespace Scroll.Battle.Field
             position = Vector3.Zero;
 
             if (setType == SetType.BACK)
-                scale = 12f;
+                Scale = 12f;
 
             SetBaseVertices();
             SetTextureCoordinate();
@@ -97,7 +97,7 @@ namespace Scroll.Battle.Field
 
         protected override void Awake()
         {
-            scale = 6f;
+            Scale = 6f;
         }
 
         protected override void SetBaseVertices()
@@ -123,10 +123,10 @@ namespace Scroll.Battle.Field
         {
             baseVertexPosition = new[]
             {
-                new Vector3(0.5f,0, -0.25f) * scale,
-                new Vector3(-0.5f, 0,0.25f) * scale,
-                new Vector3(-0.5f, 0, -0.25f) * scale,
-                new Vector3(0.5f, 0, 0.25f) * scale
+                new Vector3(0.5f,0, -0.25f) * Scale,
+                new Vector3(-0.5f, 0,0.25f) * Scale,
+                new Vector3(-0.5f, 0, -0.25f) * Scale,
+                new Vector3(0.5f, 0, 0.25f) * Scale
             };
         }
 
@@ -134,10 +134,10 @@ namespace Scroll.Battle.Field
         {
             baseVertexPosition = new[]
             {
-                new Vector3(1.5f,1.5f, 0f) * scale,
-                new Vector3(0f,-0.1f, 0f) * scale,
-                new Vector3(0f, 1.5f, 0f) * scale,
-                new Vector3(1.5f, -0.1f, 0f) * scale
+                new Vector3(1.5f,1.5f, 0f) * Scale,
+                new Vector3(0f,-0.1f, 0f) * Scale,
+                new Vector3(0f, 1.5f, 0f) * Scale,
+                new Vector3(1.5f, -0.1f, 0f) * Scale
             };
         }
 
@@ -145,10 +145,10 @@ namespace Scroll.Battle.Field
         {
             baseVertexPosition = new[]
             {
-                new Vector3(1.5f,0.8f, -0.15f) * scale,
-                new Vector3(-0.1f,-0.1f, -0.15f) * scale,
-                new Vector3(-0.1f, 0.8f, -0.15f) * scale,
-                new Vector3(1.5f, -0.1f, -0.15f) * scale
+                new Vector3(1.5f,0.8f, -0.15f) * Scale,
+                new Vector3(-0.1f,-0.1f, -0.15f) * Scale,
+                new Vector3(-0.1f, 0.8f, -0.15f) * Scale,
+                new Vector3(1.5f, -0.1f, -0.15f) * Scale
             };
 
         }

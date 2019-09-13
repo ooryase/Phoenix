@@ -27,15 +27,18 @@ namespace Scroll.Battle.Field
             BOTTOM_RIGHT,
         }
         private BlockName blockName;
+
+        public BlockName BName { get => blockName;private set => blockName = value; }
+
         public Block(Battle battle, Renderer renderer,Vector3 position, BlockName blockName) : base(battle, renderer)
         {
             this.position = position;
-            this.blockName = blockName;
+            this.BName = blockName;
             Coordinate();
         }
         protected override void Awake()
         {
-            scale = 0.25f;
+            Scale = 0.25f;
         }
 
         protected override void NameSet()
@@ -45,7 +48,7 @@ namespace Scroll.Battle.Field
         }
         private void Coordinate()
         {
-            switch (blockName)
+            switch (BName)
             {
                 case BlockName.LEFT_UP:
                     vertices[0].TextureCoordinate = new Vector2(0.25f, 0);
@@ -114,7 +117,7 @@ namespace Scroll.Battle.Field
         }
         public override void OnCollisionEnter(VirtualObject virtualObject)
         {
-            switch (blockName)
+            switch (BName)
             {
                 case BlockName.LEFT_UP:
                     LEFT_UPCollision(virtualObject);
@@ -205,10 +208,10 @@ namespace Scroll.Battle.Field
         public RectangleF GetCollisionRectangle()
         {
             RectangleF rf = new RectangleF(
-            position.X - 1f * scale,
-            position.Y + 1f * scale,
-            2f * scale,
-            2f * scale
+            position.X - 1f * Scale,
+            position.Y + 1f * Scale,
+            2f * Scale,
+            2f * Scale
             );
 
             return rf;
