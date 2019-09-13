@@ -26,6 +26,8 @@ namespace Scroll.Battle
         private List<Field.Block> blocks;
         private float blockSize;
 
+        private Field.BlockCollision blockCollision;
+
         private Matrix projection;
 
         private Vector3 cameraPos;
@@ -152,6 +154,8 @@ namespace Scroll.Battle
                 }
 
             }
+
+            blockCollision = new Field.BlockCollision();
         }
 
         /// <summary>
@@ -284,6 +288,7 @@ namespace Scroll.Battle
         /// </summary>
         private void CollisionUpdate()
         {
+
             foreach(var e in enemies)
             {
                 if(player.GetCollisionRectangle().Collision(e.GetCollisionRectangle()))
@@ -292,103 +297,16 @@ namespace Scroll.Battle
                 }
             }
 
-            //BlockCollision(player);
-            //enemies.ForEach(e => BlockCollision(e));
+            foreach (var b in blocks)
+            {
+                var c = Field.BlockCollision.CheckCollision(b, player);
+                if (c == null)
+                    continue;
+                else
+                    player.OnCollisionBlock((Vector3)(c));
+            }
         }
 
-        /// <summary>
-        /// 消去予定　現状バグてるよ
-        /// </summary>
-        /// <param name="vc"></param>
-        /*private void BlockCollision(VirtualCharacter vc)
-        {
-            RectangleF prf = vc.GetCollisionRectangle();
-
-            int left = (int)(prf.Left / blockSize);
-            int right = (int)(prf.Right / blockSize);
-            int top = (int)(prf.Top / blockSize);
-            int bottom = (int)(prf.Bottom / blockSize);
-
-            var leftTop = blocksData[top,left];
-            var leftBottom = blocksData[bottom,left];
-            var rightTop = blocksData[top,right];
-            var rightBottom = blocksData[ bottom, right];
-
-            //parent.Window.Title = "(l,r)" + left + "," + right + "   (t,b)" + top + "," + bottom + " :::: lt lb rt rb" + leftTop + leftBottom + rightTop + rightBottom;
-
-
-            float l = blockSize - prf.Left % blockSize;
-            float r = prf.Right % blockSize;
-            float t = prf.Top % blockSize;
-            float b = blockSize - prf.Bottom % blockSize;
-
-            if(leftTop > 0)
-            {
-                if(rightTop > 0)
-                {
-                    if(leftBottom > 0)
-                        vc.OnCollisionEnter(new Vector3(l, -t, 0), VirtualObject.TagName.FIELD);
-                    else if(rightBottom > 0)
-                        vc.OnCollisionEnter(new Vector3(-r, -t, 0), VirtualObject.TagName.FIELD);
-                    else
-                        vc.OnCollisionEnter(new Vector3(0, -t, 0), VirtualObject.TagName.FIELD);
-                }
-                else
-                {
-                    if (leftBottom > 0)
-                    {
-                        if (rightBottom > 0)
-                            vc.OnCollisionEnter(new Vector3(l, b, 0), VirtualObject.TagName.FIELD);
-                        else
-                            vc.OnCollisionEnter(new Vector3(l, 0, 0), VirtualObject.TagName.FIELD);
-                    }
-                    else if(l > t)
-                        vc.OnCollisionEnter(new Vector3(0, -t, 0), VirtualObject.TagName.FIELD);
-                    else
-                        vc.OnCollisionEnter(new Vector3(l, 0, 0), VirtualObject.TagName.FIELD);
-
-                }
-            }
-            else
-            {
-                if(rightTop > 0)
-                {
-                    if(rightBottom > 0)
-                    {
-                        if(leftBottom > 0)
-                            vc.OnCollisionEnter(new Vector3(-r, b, 0), VirtualObject.TagName.FIELD);
-                        else
-                            vc.OnCollisionEnter(new Vector3(-r, 0, 0), VirtualObject.TagName.FIELD);
-                    }
-                    else if(r > t)
-                        vc.OnCollisionEnter(new Vector3(0, -t, 0), VirtualObject.TagName.FIELD);
-                    else
-                        vc.OnCollisionEnter(new Vector3(-r, 0, 0), VirtualObject.TagName.FIELD);
-
-                }
-                else
-                {
-                    if (leftBottom > 0)
-                    {
-                        if (rightBottom > 0)
-                            vc.OnCollisionEnter(new Vector3(0, b, 0), VirtualObject.TagName.FIELD);
-                        else if(l > b)
-                            vc.OnCollisionEnter(new Vector3(0, b, 0), VirtualObject.TagName.FIELD);
-                        else
-                            vc.OnCollisionEnter(new Vector3(l, 0, 0), VirtualObject.TagName.FIELD);
-
-                    }
-                    else if(rightBottom > 0)
-                    {
-                        if(r > b)
-                            vc.OnCollisionEnter(new Vector3(0, b, 0), VirtualObject.TagName.FIELD);
-                        else
-                            vc.OnCollisionEnter(new Vector3(-r, 0, 0), VirtualObject.TagName.FIELD);
-                    }
-                }
-            }
-
-        }*/
 
         /// <summary>
         /// Objectの消去
