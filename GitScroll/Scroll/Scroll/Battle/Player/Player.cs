@@ -24,7 +24,7 @@ namespace Scroll.Battle.Player
         {
             NORMAL, 
             RESPAWNN = 1200, //復活後バーンってなる状態
-            DASH,
+            DASH= 1050,
             ATTACK = 1100,
             DEAD = 1000
         }
@@ -44,7 +44,10 @@ namespace Scroll.Battle.Player
         /// </summary>
         protected int invincibleTime;
 
-
+        /// <summary>
+        /// ダッシュの方向取得変数
+        /// </summary>
+        private Vector3 dashDirection;
 
         protected override void Awake()
         {
@@ -58,7 +61,7 @@ namespace Scroll.Battle.Player
 
         public Player(Battle battle, Renderer renderer) : base(battle, renderer)
         {
-            hp = 100f;
+            hp = 1000f; //HP兼攻撃ゲージ
             position = Vector3.UnitX;
             StateSet(State.NORMAL);
             move = false;
@@ -89,13 +92,17 @@ namespace Scroll.Battle.Player
 
         protected void StateUpdate(int deltaTime)
         {
-            hp--;
+            Console.WriteLine(position);
+           // hp--;
             InvincibleUpdate(deltaTime);
 
             switch (state)
             {
                 case State.NORMAL:
                     NormalStateUpdate(deltaTime);
+                    break;
+                case State.DASH:
+                    DashUpdate(deltaTime);
                     break;
                 case State.ATTACK:
                     AttackStateUpdate(deltaTime);
@@ -136,6 +143,14 @@ namespace Scroll.Battle.Player
                 parent.PlayerArts(position, Direct);
             }
 
+            var d = new Vector3(InputContllorer.StickLeftX(), InputContllorer.StickLeftY(), 0f);
+            if (InputContllorer.IsPush(Keys.A) && d != Vector3.Zero)
+            {
+                StateSet(State.DASH);
+                dashDirection = d;
+                dashDirection.Normalize();
+            }
+
             if (hp <= 0)
             {
                 StateSet(State.DEAD);
@@ -146,7 +161,16 @@ namespace Scroll.Battle.Player
         {
             if (time > (int)State.ATTACK)
                 StateSet(State.NORMAL);
+            if (time > (int)State.ATTACK)
+                StateSet(State.DEAD);
+            hp -= 10;
         }
+
+        //private void AttackDeadUpdate(int deltaTime)
+        //{
+        //    if (time > (int)State.ATTACK)
+        //        StateSet(State.DEAD); //NORMALに遷移せずそのままDEADに遷移する用
+        //}
 
         private void DeadUpdate(int deltaTime)
         {
@@ -156,9 +180,20 @@ namespace Scroll.Battle.Player
 
         private void RespawnUpdate(int deltaTime)
         {
-            hp = 100;
+            hp = 1000;
             if (time > (int)State.RESPAWNN)
                 StateSet(State.NORMAL);
+        }
+
+        private void DashUpdate(int deltaTime)
+        {
+            if (time > (int)State.DASH)
+            {
+                if (hp <= 0)
+                    StateSet(State.DEAD);
+                else
+                StateSet(State.NORMAL);
+            }
         }
 
         /// <summary>
@@ -169,10 +204,11 @@ namespace Scroll.Battle.Player
         /// <param name="deltaTime"></param>
         public override void MoveUpdate(int deltaTime)
         {
-
             physics.Inertia(deltaTime);
 
             MoveInputUpdate(deltaTime);
+           
+            MoveDashUpdate();
 
             physics.Gravity(deltaTime);
 
@@ -203,6 +239,7 @@ namespace Scroll.Battle.Player
                 DownMove(physics.speed * deltaTime);
             }
 
+
             var l = InputContllorer.StickLeftX();
             if (move = l != 0f)
                 SideMove(l * physics.speed * deltaTime);
@@ -215,6 +252,12 @@ namespace Scroll.Battle.Player
                     UpMove(physics.speed * deltaTime * 10f);
         }
 
+        private void MoveDashUpdate()
+        {
+            if (State.DASH != state)
+                return;
+            physics.velocity = dashDirection;
+        }
 
         private void RightMove(float l)
         {
@@ -260,6 +303,7 @@ namespace Scroll.Battle.Player
             physics.velocity.Y = (physics.velocity.Y < -maxSpeed.Y) ? -maxSpeed.Y : physics.velocity.Y;
             physics.velocity.Y = (physics.velocity.Y > maxSpeed.Y) ? maxSpeed.Y : physics.velocity.Y;
         }
+
         /// <summary>
         /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///                                     バトルクラスから呼ばれるよ！（呼ばれるとしたら3番目）
@@ -324,6 +368,11 @@ namespace Scroll.Battle.Player
             else if (state == State.DEAD)
             {
                 TextureCoordinateSet(1f, 0f);
+            }
+
+            else if(state == State.ATTACK)
+            {
+                TextureCoordinateSet(3f, 0f);
             }
 
             VerticesSet(Billboard.PITCH_ONLY);
