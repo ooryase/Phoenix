@@ -247,6 +247,22 @@ namespace Scroll.Battle.Field
 
         public override void DrawUpdate()
         {
+            baseVertexPosition[0].X = 1.5f + 3.0f * (parent.CameraPos.X % 3.0f);
+            baseVertexPosition[1].X = 0.0f + 3.0f * (parent.CameraPos.X % 3.0f);
+            baseVertexPosition[2].X = 0.0f + 3.0f * (parent.CameraPos.X % 3.0f);
+            baseVertexPosition[3].X = 1.5f + 3.0f * (parent.CameraPos.X % 3.0f);
+
+//            new Vector3(1.5f, 1.5f, 0f) * scale,
+//                new Vector3(0f, -0.1f, 0f) * scale,
+//                new Vector3(0f, 1.5f, 0f) * scale,
+//                new Vector3(1.5f, -0.1f, 0f) * scale,
+//
+//                new Vector3(3.0f, 1.5f, 0f) * scale,
+//                new Vector3(1.5f, -0.1f, 0f) * scale,
+//                new Vector3(1.5f, 1.5f, 0f) * scale,
+//                new Vector3(3.0f, -0.1f, 0f) * scale
+//
+
             VerticesSet(Billboard.NONE);
 
             effect.Parameters["View"].SetValue(parent.View);
