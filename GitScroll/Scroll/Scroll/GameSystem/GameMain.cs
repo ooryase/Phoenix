@@ -60,7 +60,7 @@ namespace Scroll.GameSystem
 
 
             renderer.LoadContent("Back", "Textures/");
-            renderer.LoadContent("husityo","Textures/");
+            renderer.LoadContent("fenikkusu", "Textures/");
             renderer.LoadContent("inu", "Textures/");
             renderer.LoadContent("f", "Textures/");
             renderer.LoadContent("Block", "Textures/");

@@ -22,8 +22,11 @@ namespace Scroll.Battle.Player
 
         public enum State
         {
-            NORMAL,
-            ATTACK = 700,
+            NORMAL, 
+            RESPAWNN = 1200, //復活後バーンってなる状態
+            DASH,
+            ATTACK = 1100,
+            DEAD = 1000
         }
         protected State state;
         /// <summary>
@@ -50,11 +53,12 @@ namespace Scroll.Battle.Player
         protected override void NameSet()
         {
             effectName = "Player";
-            textureName = "husityo";
+            textureName = "fenikkusu";
         }
 
         public Player(Battle battle, Renderer renderer) : base(battle, renderer)
         {
+            hp = 100f;
             position = Vector3.UnitX;
             StateSet(State.NORMAL);
             move = false;
@@ -64,7 +68,6 @@ namespace Scroll.Battle.Player
 
             invincible = false;
             invincibleTime = 0;
-
         }
 
         /// <summary>
@@ -86,6 +89,7 @@ namespace Scroll.Battle.Player
 
         protected void StateUpdate(int deltaTime)
         {
+            hp--;
             InvincibleUpdate(deltaTime);
 
             switch (state)
@@ -95,6 +99,12 @@ namespace Scroll.Battle.Player
                     break;
                 case State.ATTACK:
                     AttackStateUpdate(deltaTime);
+                    break;
+                case State.DEAD:
+                    DeadUpdate(deltaTime);
+                    break;
+                case State.RESPAWNN:
+                    RespawnUpdate(deltaTime);
                     break;
             }
         }
@@ -126,6 +136,10 @@ namespace Scroll.Battle.Player
                 parent.PlayerArts(position, Direct);
             }
 
+            if (hp <= 0)
+            {
+                StateSet(State.DEAD);
+            }
         }
 
         private void AttackStateUpdate(int deltaTime)
@@ -133,6 +147,20 @@ namespace Scroll.Battle.Player
             if (time > (int)State.ATTACK)
                 StateSet(State.NORMAL);
         }
+
+        private void DeadUpdate(int deltaTime)
+        {
+            if (time > (int)State.DEAD)
+                StateSet(State.RESPAWNN);
+        }
+
+        private void RespawnUpdate(int deltaTime)
+        {
+            hp = 100;
+            if (time > (int)State.RESPAWNN)
+                StateSet(State.NORMAL);
+        }
+
         /// <summary>
         /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///                                     バトルクラスから呼ばれるよ！（2番目）
@@ -155,7 +183,7 @@ namespace Scroll.Battle.Player
         {
             if (parent.BattleState != Battle.State.NORMAL)
             {
-                move = false;
+               // move = false;
                 return;
             }
             if (InputContllorer.IsPress(Keys.Left))
@@ -273,25 +301,29 @@ namespace Scroll.Battle.Player
         {
             if (state == State.NORMAL)
             {
-                if (move)
-                {
-                    //1,2,2,3,4,4の順
-                    var i = time / 70 % 6;
-                    i -= (time % 420 >= 140) ? 1 : 0;
-                    i -= (time % 420 >= 350) ? 1 : 0;
+                //if (move)
+                //{
+                //    //1,2,2,3,4,4の順
+                //    var i = time / 70 % 6;
+                //    i -= (time % 420 >= 140) ? 1 : 0;
+                //    i -= (time % 420 >= 350) ? 1 : 0;
 
-                    TextureCoordinateSet(i, 1f);
-                }
-                else
+                //    TextureCoordinateSet(i, 1f);
+                //}
+                //else
                 {
-                    TextureCoordinateSet(time / 200 % 4, 0f);
+                    TextureCoordinateSet(0f, 0f);
                 }
             }
-            else if (state == State.ATTACK)
-            {
-                var i = (time >= 280) ? 3 : time / 70;
 
-                TextureCoordinateSet(i, 2f);
+            else if (state == State.RESPAWNN)
+            {
+                TextureCoordinateSet(2f, 0f); //time割る数の増加で細かく
+            }
+
+            else if (state == State.DEAD)
+            {
+                TextureCoordinateSet(1f, 0f);
             }
 
             VerticesSet(Billboard.PITCH_ONLY);
@@ -306,10 +338,10 @@ namespace Scroll.Battle.Player
         /// <param name="y"></param>
         private void TextureCoordinateSet(float x, float y) //アニメーション関係
         {
-            vertices[0].TextureCoordinate.X = 1f * (x + (float)Direct);
-            vertices[1].TextureCoordinate.X = 1f * (x + 1f - (float)Direct);
-            vertices[2].TextureCoordinate.X = 1f * (x + 1f - (float)Direct);
-            vertices[3].TextureCoordinate.X = 1f * (x + (float)Direct);
+            vertices[0].TextureCoordinate.X = 0.25f * (x + (float)Direct);
+            vertices[1].TextureCoordinate.X = 0.25f * (x + 1f - (float)Direct);
+            vertices[2].TextureCoordinate.X = 0.25f * (x + 1f - (float)Direct);
+            vertices[3].TextureCoordinate.X = 0.25f * (x + (float)Direct);
 
             vertices[0].TextureCoordinate.Y = 1f * (y);
             vertices[1].TextureCoordinate.Y = 1f * (y + 1f);
