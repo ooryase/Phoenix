@@ -143,8 +143,8 @@ namespace Scroll.Battle.Player
                 parent.PlayerArts(position, Direct);
             }
 
-            var d = new Vector3(InputContllorer.StickLeftX(), InputContllorer.StickLeftY(), 0f);
-            if (InputContllorer.IsPush(Keys.A) && d != Vector3.Zero)
+            var d = new Vector3(InputContllorer.StickLeftX()+100, InputContllorer.StickLeftY()+100, 0f);
+            if (InputContllorer.IsPush(Buttons.A) && d != Vector3.Zero)
             {
                 StateSet(State.DASH);
                 dashDirection = d;
