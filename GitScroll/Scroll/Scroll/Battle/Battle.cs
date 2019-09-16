@@ -33,6 +33,11 @@ namespace Scroll.Battle
         private Vector3 cameraPos;
         private Vector3 cameraLookPos;
         private float cameraLength;
+        private float cameraDistinationLength;
+        private float cameraLastLength;
+        private int cameraMoveTime;
+        private int cameraMoveCont;
+        private float cameraLengthDefault;
 
         private Vector3 yawPitchRoll;
 
@@ -66,7 +71,6 @@ namespace Scroll.Battle
         public Matrix View { get => view; set => view = value; }
         public Vector3 CameraPos { get => cameraPos; private set => cameraPos = value; }
         public Vector3 CameraLookPos { get => cameraLookPos; private set => cameraLookPos = value; }
-        public float CameraLength { get => cameraLength; private set => cameraLength = value; }
         internal State BattleState { get => state; set => state = value; }
 
         public Battle(GameMain gameMain,Renderer renderer)
@@ -83,11 +87,12 @@ namespace Scroll.Battle
 
             state = State.NORMAL;
 
-            CameraLength = 5f;
+            cameraLengthDefault = 5f;
+            cameraLength = cameraLengthDefault;
             Projection = CreateProjection();
             CameraLookPos = new Vector3(0,0.8f,0);
-            CameraPos = CameraLookPos + Vector3.UnitZ * CameraLength;
-            View = CreateView();
+            CameraPos = CameraLookPos + Vector3.UnitZ * cameraLength;
+            View = CreateCameraView();
 
             player = new Player.Player(this,renderer);
             enemies = new List<VirtualCharacter>();
@@ -126,11 +131,11 @@ namespace Scroll.Battle
             return projection;
         }
 
-        private Matrix CreateView()
+        private Matrix CreateCameraView()
         {
             var view = Matrix.CreateLookAt
                 (
-                CameraLookPos + YawPitchRoll(Vector3.UnitZ) * CameraLength,
+                CameraLookPos + YawPitchRoll(Vector3.UnitZ) * cameraLength,
                 CameraLookPos,
                 Vector3.UnitY
                 );
@@ -344,12 +349,34 @@ namespace Scroll.Battle
         /// </summary>
         private void CameraUpdate()
         {
-            //CameraPos = CameraLookPos + YawPitchRoll(Vector3.UnitZ) * CameraLength;
+            CameraLengthMove();
 
             cameraLookPos = player.Position;
             cameraLookPos.Y += 0.8f;
 
-            View = CreateView();
+            View = CreateCameraView();
+        }
+
+        private void CameraLengthMove()
+        {
+            if (cameraMoveTime == 0)
+                return;
+
+            cameraMoveCont += deltaTime;
+
+            var r = cameraMoveCont / (float)cameraMoveTime;
+            cameraLength = cameraDistinationLength * r + cameraLastLength * (1f - r);
+
+            if (cameraMoveCont >= cameraMoveTime)
+                cameraMoveTime = 0;
+        }
+
+        public void CameraLengthSet(float ratio ,int time)
+        {
+            cameraLastLength = cameraLength;
+            cameraDistinationLength = cameraLengthDefault * ratio;
+            cameraMoveTime = time;
+            cameraMoveCont = 0;
         }
 
         /// <summary>

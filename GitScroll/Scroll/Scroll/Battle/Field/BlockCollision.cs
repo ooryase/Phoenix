@@ -46,43 +46,31 @@ namespace Scroll.Battle.Field
         }
         private Vector3 LEFT_UPCollision(Block block, VirtualObject virtualObject)
         {
-            if(block.Position.X + 1 * block.Scale < virtualObject.Position.X)
-            {
+            if(block.Position.X + 1 * block.Scale < virtualObject.Position.X ||
+               block.Position.Y - 1 * block.Scale > virtualObject.Position.Y)
                 return Vector3.Zero;
-            }
-            if(block.Position.Y - 1 * block.Scale > virtualObject.Position.Y)
-            {
-                return Vector3.Zero;
-            }
 
             var b = new Vector3(block.Position.X + 1 * block.Scale, block.Position.Y - 1 * block.Scale, 0);
             var d = Vector3.DistanceSquared(virtualObject.Position, b);
-            var r = Math.Pow(virtualObject.Scale + block.Scale * 2f, 2f);
+            var r = (float)Math.Pow(virtualObject.Scale + block.Scale * 2f, 2f);
             if (d > r)
-            {
                 return Vector3.Zero;
-            }
-            return Vector3.Normalize(virtualObject.Position - b) * (float)Math.Sqrt(r - d);
+
+            return Vector3.Normalize(virtualObject.Position - b) * (r - d);
         }
         private Vector3 UPCollision(Block block, VirtualObject virtualObject)
         {
             if (block.Position.X - 1 * block.Scale > virtualObject.Position.X ||
-                block.Position.X + 1 * block.Scale < virtualObject.Position.X)
-            {
+                block.Position.X + 1 * block.Scale < virtualObject.Position.X ||
+
+                block.Position.Y - 1 * block.Scale > virtualObject.Position.Y ||
+                block.Position.Y + 1 * block.Scale < virtualObject.Position.Y - virtualObject.Scale)
                  return Vector3.Zero;
-            }
-            if(block.Position.Y - 1 * block.Scale > virtualObject.Position.Y)
-            {
-                 return Vector3.Zero;
-            }
-            if(block.Position.Y + 1 * block.Scale < virtualObject.Position.Y - virtualObject.Scale)
-            {
-                return Vector3.Zero;
-            }
+
             var l = new Vector3(0, block.Position.Y + 1 * block.Scale - (virtualObject.Position.Y - virtualObject.Scale), 0);
             return l;
-
         }
+
         private Vector3 RIGHT_UPCollision(Block block, VirtualObject virtualObject)//まだテスト中
         {
             if (block.Position.X - 1 * block.Scale > virtualObject.Position.X)
