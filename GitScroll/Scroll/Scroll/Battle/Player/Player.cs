@@ -45,7 +45,7 @@ namespace Scroll.Battle.Player
 
         protected override void Awake()
         {
-            Scale = 1f; //画像描画のサイズ
+            Scale = 0.5f; //画像描画のサイズ
         }
         protected override void NameSet()
         {
