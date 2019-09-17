@@ -147,15 +147,22 @@ namespace Scroll.Battle
             blockSize = 0.5f;
 
             CSVReader csvReader = new CSVReader();
-            blocksData = csvReader.GetIntMatrix("hittest..csv");
+            blocksData = csvReader.GetIntMatrix("alpha3.csv");
 
             for(int y = 0;y < blocksData.GetLength(0);y++)
             {
                 for (int x = 0; x < blocksData.GetLength(1); x++)
                 {
-                    if(blocksData[y,x] != -1)
+                    if (blocksData[y, x] == -1)
+                        continue;
+                    if(blocksData[y,x] >= 0 &&
+                       blocksData[y,x] <= 11)
                         blocks.Add(new Field.Block(this,renderer,new Vector3(x * blockSize + blockSize /2f,y * blockSize + blockSize / 2f,0)
                             , (Field.Block.BlockName)blocksData[y,x]));
+                    if (blocksData[y, x] >= 12 &&
+                       blocksData[y, x] <= 15)
+                        enemies.Add(new Enemy.Wata(this, renderer, new Vector3(x * blockSize +blockSize / 2f, y * blockSize + blockSize / 2f, 0)
+                            , (Enemy.VirtualEnemy.EnemyName)blocksData[y, x]));
                 }
 
             }

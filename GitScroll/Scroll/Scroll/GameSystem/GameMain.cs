@@ -61,10 +61,13 @@ namespace Scroll.GameSystem
 
             renderer.LoadContent("Back", "Textures/");
             renderer.LoadContent("fenikkusu", "Textures/");
+            renderer.LoadContent("wata", "Textures/");
             renderer.LoadContent("inu", "Textures/");
+            renderer.LoadContent("doragon", "Textures/");
             renderer.LoadContent("f", "Textures/");
             renderer.LoadContent("Block", "Textures/");
             renderer.LoadContent("dummyrock", "Textures/");
+            renderer.LoadContent("Maptip", "Textures/");
 
             renderer.LoadFontContent("k8x12L");
             renderer.LoadFontContent("k8x12LL","Fonts/");
