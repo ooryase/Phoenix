@@ -22,9 +22,9 @@ namespace Scroll.Battle.Player
 
         public enum State
         {
-            NORMAL, 
+            NORMAL,
             RESPAWNN = 1200, //復活後バーンってなる状態
-            DASH= 1050,
+            DASH = 1050,
             ATTACK = 1100,
             DEAD = 1000
         }
@@ -48,6 +48,9 @@ namespace Scroll.Battle.Player
         /// ダッシュの方向取得変数
         /// </summary>
         private Vector3 dashDirection;
+        private Vector3 attackMove;
+
+        float gage;
 
         protected override void Awake()
         {
@@ -66,11 +69,12 @@ namespace Scroll.Battle.Player
             StateSet(State.NORMAL);
             move = false;
 
-            physics = new MovePhysics(0.0085f, null, null);
+            physics = new MovePhysics(0.015f, null, null);
             maxSpeed = new Vector3(0.45f, 0.7f, 0);
 
             invincible = false;
             invincibleTime = 0;
+            gage = 1000;
         }
 
         /// <summary>
@@ -92,8 +96,6 @@ namespace Scroll.Battle.Player
 
         protected void StateUpdate(int deltaTime)
         {
-            Console.WriteLine(position);
-           // hp--;
             InvincibleUpdate(deltaTime);
 
             switch (state)
@@ -137,14 +139,19 @@ namespace Scroll.Battle.Player
             if (parent.BattleState != Battle.State.NORMAL)
                 return;
 
-            if (InputContllorer.IsPush(Keys.Z))
+            var a = new Vector3(InputContllorer.StickLeftX(), InputContllorer.StickLeftY(), 0f);
+            if (InputContllorer.IsPush(Buttons.A) && a!= Vector3.Zero)
             {
                 StateSet(State.ATTACK);
                 parent.PlayerArts(position, Direct);
+                attackMove = a;
+                attackMove.Normalize();
+
             }
 
             var d = new Vector3(InputContllorer.StickLeftX(), InputContllorer.StickLeftY(), 0f);
-            if (InputContllorer.IsPush(Buttons.A) && d != Vector3.Zero)
+
+            if (InputContllorer.IsPush(Buttons.B) && d != Vector3.Zero)
             {
                 StateSet(State.DASH);
                 dashDirection = d;
@@ -164,6 +171,7 @@ namespace Scroll.Battle.Player
             if (time > (int)State.ATTACK)
                 StateSet(State.DEAD);
             hp -= 10;
+            gage -= 10;
         }
 
         //private void AttackDeadUpdate(int deltaTime)
@@ -175,7 +183,7 @@ namespace Scroll.Battle.Player
         private void DeadUpdate(int deltaTime)
         {
             if (time > (int)State.DEAD)
-                StateSet(State.RESPAWNN);
+            StateSet(State.RESPAWNN);
         }
 
         private void RespawnUpdate(int deltaTime)
@@ -191,8 +199,9 @@ namespace Scroll.Battle.Player
             {
                 if (hp <= 0)
                     StateSet(State.DEAD);
+
                 else
-                StateSet(State.NORMAL);
+                    StateSet(State.NORMAL);
             }
         }
 
@@ -207,10 +216,16 @@ namespace Scroll.Battle.Player
             physics.Inertia(deltaTime);
 
             MoveInputUpdate(deltaTime);
-           
+
             MoveDashUpdate();
 
-            physics.Gravity(deltaTime);
+            AttackUpdate();
+
+            DeadUpdate();
+
+            RespawnUpdate();
+
+            // physics.Gravity(deltaTime);
 
             position += physics.velocity * physics.speed * deltaTime;
             FieldMove();
@@ -219,7 +234,7 @@ namespace Scroll.Battle.Player
         {
             if (parent.BattleState != Battle.State.NORMAL)
             {
-               // move = false;
+                // move = false;
                 return;
             }
             if (InputContllorer.IsPress(Keys.Left))
@@ -239,7 +254,6 @@ namespace Scroll.Battle.Player
                 DownMove(physics.speed * deltaTime);
             }
 
-
             var l = InputContllorer.StickLeftX();
             if (move = l != 0f)
                 SideMove(l * physics.speed * deltaTime);
@@ -248,8 +262,8 @@ namespace Scroll.Battle.Player
             if (move = a != 0f)
                 UpDownMove(a * physics.speed * deltaTime);
 
-                if (physics.isGraund && InputContllorer.IsPush(Buttons.A))
-                    UpMove(physics.speed * deltaTime * 10f);
+            //if (physics.isGraund && InputContllorer.IsPush(Buttons.A))
+            //    UpMove(physics.speed * deltaTime * 10f);
         }
 
         private void MoveDashUpdate()
@@ -257,6 +271,29 @@ namespace Scroll.Battle.Player
             if (State.DASH != state)
                 return;
             physics.velocity = dashDirection;
+        }
+
+        private void AttackUpdate()
+        {
+            if (State.ATTACK != state)
+                return;
+            physics.velocity = attackMove;
+        }
+
+        private void DeadUpdate()
+        {
+            if (State.DEAD != state)
+                return;
+            var x = new Vector3(0f, -0.5f, 0f);
+            physics.velocity = x;
+        }
+
+        private void RespawnUpdate()
+        {
+            if (State.RESPAWNN != state)
+                return;
+            var r = new Vector3(0f, 0.5f, 0);
+            physics.velocity = r;
         }
 
         private void RightMove(float l)
@@ -370,7 +407,7 @@ namespace Scroll.Battle.Player
                 TextureCoordinateSet(1f, 0f);
             }
 
-            else if(state == State.ATTACK)
+            else if (state == State.ATTACK)
             {
                 TextureCoordinateSet(3f, 0f);
             }
