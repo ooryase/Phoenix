@@ -23,10 +23,11 @@ namespace Scroll.Battle.Player
         public enum State
         {
             NORMAL,
-            RESPAWNN = 1200, //復活後バーンってなる状態
-            DASH = 1050,
-            ATTACK = 1100,
-            DEAD = 1000
+            RESPAWNN = 700, //復活後バーンってなる状態
+            DASH = 200,
+            ATTACK = 300,
+            DEAD = 1000,
+            FALL
         }
         protected State state;
         /// <summary>
@@ -50,7 +51,9 @@ namespace Scroll.Battle.Player
         private Vector3 dashDirection;
         private Vector3 attackMove;
 
-        float gage;
+        private float haiGage = 0; //灰のゲージ
+
+
 
         protected override void Awake()
         {
@@ -74,7 +77,7 @@ namespace Scroll.Battle.Player
 
             invincible = false;
             invincibleTime = 0;
-            gage = 1000;
+
         }
 
         /// <summary>
@@ -97,7 +100,7 @@ namespace Scroll.Battle.Player
         protected void StateUpdate(int deltaTime)
         {
             InvincibleUpdate(deltaTime);
-
+            hp -= 2;
             switch (state)
             {
                 case State.NORMAL:
@@ -108,6 +111,9 @@ namespace Scroll.Battle.Player
                     break;
                 case State.ATTACK:
                     AttackStateUpdate(deltaTime);
+                    break;
+                case State.FALL:
+                    FallUpdate(deltaTime);
                     break;
                 case State.DEAD:
                     DeadUpdate(deltaTime);
@@ -140,9 +146,10 @@ namespace Scroll.Battle.Player
                 return;
 
             var a = new Vector3(InputContllorer.StickLeftX(), InputContllorer.StickLeftY(), 0f);
-            if (InputContllorer.IsPush(Buttons.A) && a!= Vector3.Zero)
+            if (InputContllorer.IsPush(Buttons.A) && a != Vector3.Zero)
             {
                 StateSet(State.ATTACK);
+                parent.CameraLengthSet(1.5f, 700); //引数はどれくらい引くかと何秒かけて引くか
                 parent.PlayerArts(position, Direct);
                 attackMove = a;
                 attackMove.Normalize();
@@ -153,6 +160,7 @@ namespace Scroll.Battle.Player
 
             if (InputContllorer.IsPush(Buttons.B) && d != Vector3.Zero)
             {
+                parent.CameraLengthSet(1.5f, 700);
                 StateSet(State.DASH);
                 dashDirection = d;
                 dashDirection.Normalize();
@@ -160,37 +168,21 @@ namespace Scroll.Battle.Player
 
             if (hp <= 0)
             {
-                StateSet(State.DEAD);
+                StateSet(State.FALL);
             }
         }
 
         private void AttackStateUpdate(int deltaTime)
         {
             if (time > (int)State.ATTACK)
+            {
+                parent.CameraLengthSet(1f, 500); //引数はどれくらい引くかと何秒かけて引くか
                 StateSet(State.NORMAL);
+            }
             if (time > (int)State.ATTACK)
-                StateSet(State.DEAD);
-            hp -= 10;
-            gage -= 10;
-        }
+                StateSet(State.FALL);
 
-        //private void AttackDeadUpdate(int deltaTime)
-        //{
-        //    if (time > (int)State.ATTACK)
-        //        StateSet(State.DEAD); //NORMALに遷移せずそのままDEADに遷移する用
-        //}
-
-        private void DeadUpdate(int deltaTime)
-        {
-            if (time > (int)State.DEAD)
-            StateSet(State.RESPAWNN);
-        }
-
-        private void RespawnUpdate(int deltaTime)
-        {
-            hp = 1000;
-            if (time > (int)State.RESPAWNN)
-                StateSet(State.NORMAL);
+            hp -= 5;
         }
 
         private void DashUpdate(int deltaTime)
@@ -198,10 +190,40 @@ namespace Scroll.Battle.Player
             if (time > (int)State.DASH)
             {
                 if (hp <= 0)
-                    StateSet(State.DEAD);
-
+                    StateSet(State.FALL);
                 else
+                {
+                    parent.CameraLengthSet(1f, 500);
                     StateSet(State.NORMAL);
+                }
+            }
+        }
+
+        private void FallUpdate(int deltaTime)
+        {
+            if (physics.isGraund == true)
+            {
+                parent.CameraLengthSet(0.6f, 960);
+                StateSet(State.DEAD);
+            }
+        }
+
+        private void DeadUpdate(int deltaTime)
+        {
+            if (time > (int)State.DEAD)
+            {
+                parent.CameraLengthSet(5f, 650);
+                StateSet(State.RESPAWNN);
+            }
+        }
+
+        private void RespawnUpdate(int deltaTime)
+        {
+            hp = 1000;
+            if (time > (int)State.RESPAWNN)
+            {
+                parent.CameraLengthSet(1f, 800);
+                StateSet(State.NORMAL);
             }
         }
 
@@ -220,6 +242,9 @@ namespace Scroll.Battle.Player
             MoveDashUpdate();
 
             AttackUpdate();
+
+
+            FallUpdate();
 
             DeadUpdate();
 
@@ -280,20 +305,28 @@ namespace Scroll.Battle.Player
             physics.velocity = attackMove;
         }
 
+        private void FallUpdate()
+        {
+            if (State.FALL != state)
+                return;
+
+            physics.velocity = new Vector3(0f, -0.53f, 0f);
+        }
+
         private void DeadUpdate()
         {
             if (State.DEAD != state)
                 return;
-            var x = new Vector3(0f, -0.5f, 0f);
-            physics.velocity = x;
+
+            physics.velocity = new Vector3(0f, 0f, 0f);
         }
 
         private void RespawnUpdate()
         {
             if (State.RESPAWNN != state)
                 return;
-            var r = new Vector3(0f, 0.5f, 0);
-            physics.velocity = r;
+
+            physics.velocity = new Vector3(0f, 0.665f, 0);
         }
 
         private void RightMove(float l)
@@ -363,8 +396,9 @@ namespace Scroll.Battle.Player
             }
         }
 
-        public void OnCollisionBlock(Vector3 vector3)
+        public void OnCollisionBlock(Vector3 vector3, bool isGround)
         {
+            physics.isGraund = isGround;
             position += vector3;
         }
         /// <summary>
@@ -465,7 +499,7 @@ namespace Scroll.Battle.Player
         /// <param name="renderer"></param>
         public void DrawParam(Output.Renderer renderer)
         {
-
+            renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, (int)hp, 50), 1.0f);
         }
 
         /// <summary>

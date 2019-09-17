@@ -8,6 +8,7 @@ using Scroll.GameSystem;
 using Scroll.Output;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Scroll.Battle.Field;
 
 
 namespace Scroll.Battle
@@ -32,7 +33,6 @@ namespace Scroll.Battle
 
         private Matrix projection;
 
-        //private Vector3 cameraPos;
         private Vector3 cameraLookPos;
         private float cameraLength;
         private float cameraDistinationLength;
@@ -71,7 +71,6 @@ namespace Scroll.Battle
 
         public Matrix Projection { get => projection; set => projection = value; }
         public Matrix View { get => view; set => view = value; }
-        //public Vector3 CameraPos { get => cameraPos; private set => cameraPos = value; }
         public Vector3 CameraLookPos { get => cameraLookPos; private set => cameraLookPos = value; }
         internal State BattleState { get => state; set => state = value; }
 
@@ -92,8 +91,7 @@ namespace Scroll.Battle
             cameraLengthDefault = 5f;
             cameraLength = cameraLengthDefault;
             Projection = CreateProjection();
-            CameraLookPos = new Vector3(0,0.8f,0);
-            //CameraPos = CameraLookPos + Vector3.UnitZ * cameraLength;
+            CameraLookPos = Vector3.Zero;
             View = CreateCameraView();
 
             player = new Player.Player(this,renderer);
@@ -313,7 +311,10 @@ namespace Scroll.Battle
                 if (c == Vector3.Zero) 
                     continue;
                 else
-                    player.OnCollisionBlock(c);
+                    player.OnCollisionBlock(c,
+                        b.BName == Block.BlockName.RIGHT_UP||
+                        b.BName == Block.BlockName.LEFT_UP||
+                        b.BName == Block.BlockName.UP);
             }
         }
 
@@ -361,7 +362,6 @@ namespace Scroll.Battle
             CameraLengthMove();
 
             cameraLookPos = player.Position;
-            cameraLookPos.Y += 0.8f;
 
             View = CreateCameraView();
         }
@@ -374,7 +374,7 @@ namespace Scroll.Battle
             cameraMoveCont += deltaTime;
 
             var r = cameraMoveCont / (float)cameraMoveTime;
-            cameraLength = cameraDistinationLength * r + cameraLastLength * (1f - r);
+            cameraLength = cameraDistinationLength * r * r + cameraLastLength * (1f - r * r);
 
             if (cameraMoveCont >= cameraMoveTime)
                 cameraMoveTime = 0;
@@ -496,6 +496,7 @@ namespace Scroll.Battle
                     o.Draw(renderer);
                 }
             }
+            player.DrawParam(renderer);
         }
 
 

@@ -142,6 +142,7 @@ namespace Scroll.Output
             //spriteBatch.Draw(texture, position, Color.White);
 
         }
+
         public void DrawTexture(Vector2 pos, Rectangle scalePos, float alpha)
         {
             spriteBatch.Draw(texture,pos, scalePos, Color.White * alpha);
