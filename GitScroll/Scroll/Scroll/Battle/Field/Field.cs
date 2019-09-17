@@ -97,7 +97,7 @@ namespace Scroll.Battle.Field
 
         protected override void Awake()
         {
-            scale = 6f;
+            scale = 8f;
         }
 
 
@@ -247,21 +247,27 @@ namespace Scroll.Battle.Field
 
         public override void DrawUpdate()
         {
-            baseVertexPosition[0].X = 1.5f + 3.0f * (parent.CameraPos.X % 3.0f);
-            baseVertexPosition[1].X = 0.0f + 3.0f * (parent.CameraPos.X % 3.0f);
-            baseVertexPosition[2].X = 0.0f + 3.0f * (parent.CameraPos.X % 3.0f);
-            baseVertexPosition[3].X = 1.5f + 3.0f * (parent.CameraPos.X % 3.0f);
+            System.Console.WriteLine(parent.CameraLookPos.X);
 
-//            new Vector3(1.5f, 1.5f, 0f) * scale,
-//                new Vector3(0f, -0.1f, 0f) * scale,
-//                new Vector3(0f, 1.5f, 0f) * scale,
-//                new Vector3(1.5f, -0.1f, 0f) * scale,
-//
-//                new Vector3(3.0f, 1.5f, 0f) * scale,
-//                new Vector3(1.5f, -0.1f, 0f) * scale,
-//                new Vector3(1.5f, 1.5f, 0f) * scale,
-//                new Vector3(3.0f, -0.1f, 0f) * scale
-//
+            baseVertexPosition[0].X = (1.5f + 3.0f * (int)((parent.CameraLookPos.X + 0.75f * scale) / (3 * scale))) * scale;
+            baseVertexPosition[1].X = (0.0f + 3.0f * (int)((parent.CameraLookPos.X + 0.75f * scale) / (3 * scale))) * scale;
+            baseVertexPosition[2].X = (0.0f + 3.0f * (int)((parent.CameraLookPos.X + 0.75f * scale) / (3 * scale))) * scale;
+            baseVertexPosition[3].X = (1.5f + 3.0f * (int)((parent.CameraLookPos.X + 0.75f * scale) / (3 * scale))) * scale;
+
+            baseVertexPosition[4].X = (3.0f + 3.0f * (int)((parent.CameraLookPos.X - 0.75f * scale) / (3 * scale))) * scale;
+            baseVertexPosition[5].X = (1.5f + 3.0f * (int)((parent.CameraLookPos.X - 0.75f * scale) / (3 * scale))) * scale;
+            baseVertexPosition[6].X = (1.5f + 3.0f * (int)((parent.CameraLookPos.X - 0.75f * scale) / (3 * scale))) * scale;
+            baseVertexPosition[7].X = (3.0f + 3.0f * (int)((parent.CameraLookPos.X - 0.75f * scale) / (3 * scale))) * scale;
+            //            new Vector3(1.5f, 1.5f, 0f) * scale,
+            //                new Vector3(0f, -0.1f, 0f) * scale,
+            //                new Vector3(0f, 1.5f, 0f) * scale,
+            //                new Vector3(1.5f, -0.1f, 0f) * scale,
+            //
+            //                new Vector3(3.0f, 1.5f, 0f) * scale,
+            //                new Vector3(1.5f, -0.1f, 0f) * scale,
+            //                new Vector3(1.5f, 1.5f, 0f) * scale,
+            //                new Vector3(3.0f, -0.1f, 0f) * scale
+            //
 
             VerticesSet(Billboard.NONE);
 

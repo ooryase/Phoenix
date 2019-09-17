@@ -356,6 +356,11 @@ namespace Scroll.Battle.Player
 
                 position += virtualObject.Position;
             }
+
+            if(virtualObject.Tag == TagName.CLEAR_BLOCK)
+            {
+                parent.GameClear();
+            }
         }
 
         public void OnCollisionBlock(Vector3 vector3)

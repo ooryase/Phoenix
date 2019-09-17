@@ -76,7 +76,7 @@ namespace Scroll.Title
         {
             // renderer.DrawTexture("title", new Vector2(500, 200));
 
-            renderer.DrawFont("k8x12LL", "DEKAI INU WO TAOSE", new Vector2(300, 300),Color.Blue);
+            renderer.DrawFont("k8x12LL", "YAKITORI TABETAI", new Vector2(300, 300),Color.Blue);
             
 
             for (int i = 0; i < selectLists.Count; i++)

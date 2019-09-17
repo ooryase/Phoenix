@@ -28,9 +28,11 @@ namespace Scroll.Battle
 
         private Field.BlockCollision blockCollision;
 
+        private List<VirtualObject> objects;
+
         private Matrix projection;
 
-        private Vector3 cameraPos;
+        //private Vector3 cameraPos;
         private Vector3 cameraLookPos;
         private float cameraLength;
         private float cameraDistinationLength;
@@ -69,7 +71,7 @@ namespace Scroll.Battle
 
         public Matrix Projection { get => projection; set => projection = value; }
         public Matrix View { get => view; set => view = value; }
-        public Vector3 CameraPos { get => cameraPos; private set => cameraPos = value; }
+        //public Vector3 CameraPos { get => cameraPos; private set => cameraPos = value; }
         public Vector3 CameraLookPos { get => cameraLookPos; private set => cameraLookPos = value; }
         internal State BattleState { get => state; set => state = value; }
 
@@ -91,7 +93,7 @@ namespace Scroll.Battle
             cameraLength = cameraLengthDefault;
             Projection = CreateProjection();
             CameraLookPos = new Vector3(0,0.8f,0);
-            CameraPos = CameraLookPos + Vector3.UnitZ * cameraLength;
+            //CameraPos = CameraLookPos + Vector3.UnitZ * cameraLength;
             View = CreateCameraView();
 
             player = new Player.Player(this,renderer);
@@ -115,6 +117,7 @@ namespace Scroll.Battle
             fields.Add(new Field.Field(this, renderer, Field.Field.SetType.BACK));
             fields.Add(new Field.Field(this, renderer, Field.Field.SetType.FRONT));
             blocks = new List<Field.Block>();
+            objects = new List<VirtualObject>();
             MapSet();
         }
 
@@ -147,7 +150,7 @@ namespace Scroll.Battle
             blockSize = 0.5f;
 
             CSVReader csvReader = new CSVReader();
-            blocksData = csvReader.GetIntMatrix("alpha2.csv");
+            blocksData = csvReader.GetIntMatrix("hittest..csv");
 
             for(int y = 0;y < blocksData.GetLength(0);y++)
             {
@@ -197,6 +200,8 @@ namespace Scroll.Battle
             enemies.ForEach(e => e.StartUpdate(deltaTime));
             arts.ForEach(a => a.StartUpdate(deltaTime));
             //effectSystems.ForEach(es => es.startUpdate(deltaTime));
+
+            objects.ForEach(o => o.StartUpdate(deltaTime));
 
             InputYawPitchRoll();
 
@@ -325,6 +330,8 @@ namespace Scroll.Battle
             //effectSystems.ForEach(es => es.EndUpdate());
             //effectSystems.RemoveAll(es => es.IsClose());
             arts.RemoveAll(a => a.Delete);
+
+            objects.RemoveAll(a => a.Delete);
         }
 
 
@@ -341,6 +348,8 @@ namespace Scroll.Battle
             enemies.ForEach(e => e.DrawUpdate());
             arts.ForEach(a => a.DrawUpdate());
             blocks.ForEach(b => b.DrawUpdate());
+
+            objects.ForEach(o => o.DrawUpdate());
 
         }
 

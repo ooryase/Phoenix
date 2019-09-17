@@ -62,6 +62,7 @@ namespace Scroll.Battle
             ENEMY,          //エネミー
             ITEM,           //回収型アイテム
             OBJECT,         //干渉できるフィールドオブジェクト
+            CLEAR_BLOCK,    //クリアのブロック
             FIELD           //足場及び景観
         }
         protected TagName tag;
