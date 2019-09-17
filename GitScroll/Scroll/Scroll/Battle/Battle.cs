@@ -108,7 +108,7 @@ namespace Scroll.Battle
             enemies.Add(new Enemy.Dog(this, renderer, new Vector3(17.7f, 8f, 0)));
             enemies.Add(new Enemy.Dog(this, renderer, new Vector3(20.7f, 8f, 0)));
             enemies.Add(new Enemy.Dog(this, renderer, new Vector3(21.7f, 8f, 0)));
-            enemies.Add(new Enemy.BigDog(this, renderer, new Vector3(35f, 0f, 0)));
+            //enemies.Add(new Enemy.BigDog(this, renderer, new Vector3(35f, 0f, 0)));
             //effectSystems = new List<EffectSystem.VirtualEffectSystem>();
             arts = new List<Arts.Fire>();
             fields = new List<Field.Field>();

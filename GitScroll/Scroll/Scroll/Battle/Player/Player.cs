@@ -23,7 +23,10 @@ namespace Scroll.Battle.Player
         public enum State
         {
             NORMAL,
-            ATTACK = 700,
+            RESPAWNN = 1200, //復活後バーンってなる状態
+            DASH = 1050,
+            ATTACK = 1100,
+            DEAD = 1000
         }
         protected State state;
         /// <summary>
@@ -41,7 +44,13 @@ namespace Scroll.Battle.Player
         /// </summary>
         protected int invincibleTime;
 
+        /// <summary>
+        /// ダッシュの方向取得変数
+        /// </summary>
+        private Vector3 dashDirection;
+        private Vector3 attackMove;
 
+        float gage;
 
         protected override void Awake()
         {
@@ -50,21 +59,22 @@ namespace Scroll.Battle.Player
         protected override void NameSet()
         {
             effectName = "Player";
-            textureName = "husityo";
+            textureName = "fenikkusu";
         }
 
         public Player(Battle battle, Renderer renderer) : base(battle, renderer)
         {
+            hp = 1000f; //HP兼攻撃ゲージ
             position = Vector3.UnitX;
             StateSet(State.NORMAL);
             move = false;
 
-            physics = new MovePhysics(0.0085f, null, null);
+            physics = new MovePhysics(0.015f, null, null);
             maxSpeed = new Vector3(0.45f, 0.7f, 0);
 
             invincible = false;
             invincibleTime = 0;
-
+            gage = 1000;
         }
 
         /// <summary>
@@ -93,8 +103,17 @@ namespace Scroll.Battle.Player
                 case State.NORMAL:
                     NormalStateUpdate(deltaTime);
                     break;
+                case State.DASH:
+                    DashUpdate(deltaTime);
+                    break;
                 case State.ATTACK:
                     AttackStateUpdate(deltaTime);
+                    break;
+                case State.DEAD:
+                    DeadUpdate(deltaTime);
+                    break;
+                case State.RESPAWNN:
+                    RespawnUpdate(deltaTime);
                     break;
             }
         }
@@ -120,19 +139,72 @@ namespace Scroll.Battle.Player
             if (parent.BattleState != Battle.State.NORMAL)
                 return;
 
-            if (InputContllorer.IsPush(Keys.Z))
+            var a = new Vector3(InputContllorer.StickLeftX(), InputContllorer.StickLeftY(), 0f);
+            if (InputContllorer.IsPush(Buttons.A) && a!= Vector3.Zero)
             {
                 StateSet(State.ATTACK);
                 parent.PlayerArts(position, Direct);
+                attackMove = a;
+                attackMove.Normalize();
+
             }
 
+            var d = new Vector3(InputContllorer.StickLeftX(), InputContllorer.StickLeftY(), 0f);
+
+            if (InputContllorer.IsPush(Buttons.B) && d != Vector3.Zero)
+            {
+                StateSet(State.DASH);
+                dashDirection = d;
+                dashDirection.Normalize();
+            }
+
+            if (hp <= 0)
+            {
+                StateSet(State.DEAD);
+            }
         }
 
         private void AttackStateUpdate(int deltaTime)
         {
             if (time > (int)State.ATTACK)
                 StateSet(State.NORMAL);
+            if (time > (int)State.ATTACK)
+                StateSet(State.DEAD);
+            hp -= 10;
+            gage -= 10;
         }
+
+        //private void AttackDeadUpdate(int deltaTime)
+        //{
+        //    if (time > (int)State.ATTACK)
+        //        StateSet(State.DEAD); //NORMALに遷移せずそのままDEADに遷移する用
+        //}
+
+        private void DeadUpdate(int deltaTime)
+        {
+            if (time > (int)State.DEAD)
+            StateSet(State.RESPAWNN);
+        }
+
+        private void RespawnUpdate(int deltaTime)
+        {
+            hp = 1000;
+            if (time > (int)State.RESPAWNN)
+                StateSet(State.NORMAL);
+        }
+
+        private void DashUpdate(int deltaTime)
+        {
+            if (time > (int)State.DASH)
+            {
+                if (hp <= 0)
+                    StateSet(State.DEAD);
+
+                else
+                    StateSet(State.NORMAL);
+            }
+        }
+
         /// <summary>
         /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///                                     バトルクラスから呼ばれるよ！（2番目）
@@ -141,12 +213,19 @@ namespace Scroll.Battle.Player
         /// <param name="deltaTime"></param>
         public override void MoveUpdate(int deltaTime)
         {
-
             physics.Inertia(deltaTime);
 
             MoveInputUpdate(deltaTime);
 
-            physics.Gravity(deltaTime);
+            MoveDashUpdate();
+
+            AttackUpdate();
+
+            DeadUpdate();
+
+            RespawnUpdate();
+
+            // physics.Gravity(deltaTime);
 
             position += physics.velocity * physics.speed * deltaTime;
             FieldMove();
@@ -155,7 +234,7 @@ namespace Scroll.Battle.Player
         {
             if (parent.BattleState != Battle.State.NORMAL)
             {
-                move = false;
+                // move = false;
                 return;
             }
             if (InputContllorer.IsPress(Keys.Left))
@@ -183,10 +262,39 @@ namespace Scroll.Battle.Player
             if (move = a != 0f)
                 UpDownMove(a * physics.speed * deltaTime);
 
-                if (physics.isGraund && InputContllorer.IsPush(Buttons.A))
-                    UpMove(physics.speed * deltaTime * 10f);
+            //if (physics.isGraund && InputContllorer.IsPush(Buttons.A))
+            //    UpMove(physics.speed * deltaTime * 10f);
         }
 
+        private void MoveDashUpdate()
+        {
+            if (State.DASH != state)
+                return;
+            physics.velocity = dashDirection;
+        }
+
+        private void AttackUpdate()
+        {
+            if (State.ATTACK != state)
+                return;
+            physics.velocity = attackMove;
+        }
+
+        private void DeadUpdate()
+        {
+            if (State.DEAD != state)
+                return;
+            var x = new Vector3(0f, -0.5f, 0f);
+            physics.velocity = x;
+        }
+
+        private void RespawnUpdate()
+        {
+            if (State.RESPAWNN != state)
+                return;
+            var r = new Vector3(0f, 0.5f, 0);
+            physics.velocity = r;
+        }
 
         private void RightMove(float l)
         {
@@ -232,6 +340,7 @@ namespace Scroll.Battle.Player
             physics.velocity.Y = (physics.velocity.Y < -maxSpeed.Y) ? -maxSpeed.Y : physics.velocity.Y;
             physics.velocity.Y = (physics.velocity.Y > maxSpeed.Y) ? maxSpeed.Y : physics.velocity.Y;
         }
+
         /// <summary>
         /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///                                     バトルクラスから呼ばれるよ！（呼ばれるとしたら3番目）
@@ -278,25 +387,34 @@ namespace Scroll.Battle.Player
         {
             if (state == State.NORMAL)
             {
-                if (move)
-                {
-                    //1,2,2,3,4,4の順
-                    var i = time / 70 % 6;
-                    i -= (time % 420 >= 140) ? 1 : 0;
-                    i -= (time % 420 >= 350) ? 1 : 0;
+                //if (move)
+                //{
+                //    //1,2,2,3,4,4の順
+                //    var i = time / 70 % 6;
+                //    i -= (time % 420 >= 140) ? 1 : 0;
+                //    i -= (time % 420 >= 350) ? 1 : 0;
 
-                    TextureCoordinateSet(i, 1f);
-                }
-                else
+                //    TextureCoordinateSet(i, 1f);
+                //}
+                //else
                 {
-                    TextureCoordinateSet(time / 200 % 4, 0f);
+                    TextureCoordinateSet(0f, 0f);
                 }
             }
+
+            else if (state == State.RESPAWNN)
+            {
+                TextureCoordinateSet(2f, 0f); //time割る数の増加で細かく
+            }
+
+            else if (state == State.DEAD)
+            {
+                TextureCoordinateSet(1f, 0f);
+            }
+
             else if (state == State.ATTACK)
             {
-                var i = (time >= 280) ? 3 : time / 70;
-
-                TextureCoordinateSet(i, 2f);
+                TextureCoordinateSet(3f, 0f);
             }
 
             VerticesSet(Billboard.PITCH_ONLY);
@@ -311,10 +429,10 @@ namespace Scroll.Battle.Player
         /// <param name="y"></param>
         private void TextureCoordinateSet(float x, float y) //アニメーション関係
         {
-            vertices[0].TextureCoordinate.X = 1f * (x + (float)Direct);
-            vertices[1].TextureCoordinate.X = 1f * (x + 1f - (float)Direct);
-            vertices[2].TextureCoordinate.X = 1f * (x + 1f - (float)Direct);
-            vertices[3].TextureCoordinate.X = 1f * (x + (float)Direct);
+            vertices[0].TextureCoordinate.X = 0.25f * (x + (float)Direct);
+            vertices[1].TextureCoordinate.X = 0.25f * (x + 1f - (float)Direct);
+            vertices[2].TextureCoordinate.X = 0.25f * (x + 1f - (float)Direct);
+            vertices[3].TextureCoordinate.X = 0.25f * (x + (float)Direct);
 
             vertices[0].TextureCoordinate.Y = 1f * (y);
             vertices[1].TextureCoordinate.Y = 1f * (y + 1f);

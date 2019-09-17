@@ -21,7 +21,7 @@ namespace Scroll.Battle
         public enum Direction
         {
             RIGHT,
-            LEFT,
+            LEFT
         }
         protected Direction direct;
 
