@@ -8,7 +8,6 @@ using Scroll.GameSystem;
 using Scroll.Output;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Scroll.Battle.Field;
 
 
 namespace Scroll.Battle
@@ -29,10 +28,9 @@ namespace Scroll.Battle
 
         private Field.BlockCollision blockCollision;
 
-        private List<VirtualObject> objects;
-
         private Matrix projection;
 
+        private Vector3 cameraPos;
         private Vector3 cameraLookPos;
         private float cameraLength;
         private float cameraDistinationLength;
@@ -71,6 +69,7 @@ namespace Scroll.Battle
 
         public Matrix Projection { get => projection; set => projection = value; }
         public Matrix View { get => view; set => view = value; }
+        public Vector3 CameraPos { get => cameraPos; private set => cameraPos = value; }
         public Vector3 CameraLookPos { get => cameraLookPos; private set => cameraLookPos = value; }
         internal State BattleState { get => state; set => state = value; }
 
@@ -91,7 +90,8 @@ namespace Scroll.Battle
             cameraLengthDefault = 5f;
             cameraLength = cameraLengthDefault;
             Projection = CreateProjection();
-            CameraLookPos = Vector3.Zero;
+            CameraLookPos = new Vector3(0,0.8f,0);
+            CameraPos = CameraLookPos + Vector3.UnitZ * cameraLength;
             View = CreateCameraView();
 
             player = new Player.Player(this,renderer);
@@ -115,7 +115,6 @@ namespace Scroll.Battle
             fields.Add(new Field.Field(this, renderer, Field.Field.SetType.BACK));
             fields.Add(new Field.Field(this, renderer, Field.Field.SetType.FRONT));
             blocks = new List<Field.Block>();
-            objects = new List<VirtualObject>();
             MapSet();
         }
 
@@ -205,8 +204,6 @@ namespace Scroll.Battle
             enemies.ForEach(e => e.StartUpdate(deltaTime));
             arts.ForEach(a => a.StartUpdate(deltaTime));
             //effectSystems.ForEach(es => es.startUpdate(deltaTime));
-
-            objects.ForEach(o => o.StartUpdate(deltaTime));
 
             InputYawPitchRoll();
 
@@ -318,10 +315,7 @@ namespace Scroll.Battle
                 if (c == Vector3.Zero) 
                     continue;
                 else
-                    player.OnCollisionBlock(c,
-                        b.BName == Block.BlockName.RIGHT_UP||
-                        b.BName == Block.BlockName.LEFT_UP||
-                        b.BName == Block.BlockName.UP);
+                    player.OnCollisionBlock(c);
             }
         }
 
@@ -338,8 +332,6 @@ namespace Scroll.Battle
             //effectSystems.ForEach(es => es.EndUpdate());
             //effectSystems.RemoveAll(es => es.IsClose());
             arts.RemoveAll(a => a.Delete);
-
-            objects.RemoveAll(a => a.Delete);
         }
 
 
@@ -357,8 +349,6 @@ namespace Scroll.Battle
             arts.ForEach(a => a.DrawUpdate());
             blocks.ForEach(b => b.DrawUpdate());
 
-            objects.ForEach(o => o.DrawUpdate());
-
         }
 
         /// <summary>
@@ -369,6 +359,7 @@ namespace Scroll.Battle
             CameraLengthMove();
 
             cameraLookPos = player.Position;
+            cameraLookPos.Y += 0.8f;
 
             View = CreateCameraView();
         }
@@ -381,7 +372,7 @@ namespace Scroll.Battle
             cameraMoveCont += deltaTime;
 
             var r = cameraMoveCont / (float)cameraMoveTime;
-            cameraLength = cameraDistinationLength * r * r + cameraLastLength * (1f - r * r);
+            cameraLength = cameraDistinationLength * r + cameraLastLength * (1f - r);
 
             if (cameraMoveCont >= cameraMoveTime)
                 cameraMoveTime = 0;
@@ -503,7 +494,6 @@ namespace Scroll.Battle
                     o.Draw(renderer);
                 }
             }
-            player.DrawParam(renderer);
         }
 
 
