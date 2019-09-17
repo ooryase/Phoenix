@@ -1,0 +1,10 @@
+diff a/GitScroll/Scroll/Scroll/Battle/Field/BlockCollision.cs b/GitScroll/Scroll/Scroll/Battle/Field/BlockCollision.cs	(rejected hunks)
+@@ -20,7 +20,7 @@
+                     return UPCollision(block, virtualObject);
+                 case BlockName.RIGHT_UP:
+                     RIGHT_UPCollision(block, virtualObject);
+-                    return RIGHTCollision(block, virtualObject);
++                    return RIGHT_UPCollision(block, virtualObject);
+                 case BlockName.LEFT:
+                     LEFTCollision(block, virtualObject);
+                     return LEFTCollision(block, virtualObject);

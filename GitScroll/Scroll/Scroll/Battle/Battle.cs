@@ -147,7 +147,7 @@ namespace Scroll.Battle
             blockSize = 0.5f;
 
             CSVReader csvReader = new CSVReader();
-            blocksData = csvReader.GetIntMatrix("alpha2.csv");
+            blocksData = csvReader.GetIntMatrix("hittest..csv");
 
             for(int y = 0;y < blocksData.GetLength(0);y++)
             {
