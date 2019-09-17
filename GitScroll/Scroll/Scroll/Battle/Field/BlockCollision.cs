@@ -20,7 +20,7 @@ namespace Scroll.Battle.Field
                     return UPCollision(block, virtualObject);
                 case BlockName.RIGHT_UP:
                     RIGHT_UPCollision(block, virtualObject);
-                    return RIGHTCollision(block, virtualObject);
+                    return RIGHT_UPCollision(block, virtualObject);
                 case BlockName.LEFT:
                     LEFTCollision(block, virtualObject);
                     return LEFTCollision(block, virtualObject);
@@ -38,6 +38,7 @@ namespace Scroll.Battle.Field
                     return BOTTOMCollision(block, virtualObject);
                 case BlockName.BOTTOM_RIGHT:
                     BOTTOM_RIGHTCollision(block, virtualObject);
+                    return BOTTOM_RIGHTCollision(block, virtualObject);
                     break;
                 default:
                     return Vector3.Zero;
@@ -133,7 +134,23 @@ namespace Scroll.Battle.Field
         }
         private Vector3 BOTTOM_LEFTCollision(Block block, VirtualObject virtualObject)
         {
-            return Vector3.Zero;
+            if (block.Position.X + 1 * block.Scale < virtualObject.Position.X)
+            {
+                return Vector3.Zero;
+            }
+            if (block.Position.Y + 1 * block.Scale < virtualObject.Position.Y)
+            {
+                return Vector3.Zero;
+            }
+
+            var b = new Vector3(block.Position.X + 1 * block.Scale, block.Position.Y + 1 * block.Scale, 0);
+            var d = Vector3.DistanceSquared(virtualObject.Position, b);
+            var r = Math.Pow(virtualObject.Scale + block.Scale * 2f, 2f);
+            if (d > r)
+            {
+                return Vector3.Zero;
+            }
+            return Vector3.Normalize(virtualObject.Position - b) * (float)Math.Sqrt(r - d);
         }
         private Vector3 BOTTOMCollision(Block block, VirtualObject virtualObject)
         {
@@ -155,7 +172,23 @@ namespace Scroll.Battle.Field
         }
         private Vector3 BOTTOM_RIGHTCollision(Block block, VirtualObject virtualObject)
         {
-            return Vector3.Zero;
+            if (block.Position.X - 1 * block.Scale > virtualObject.Position.X)
+            {
+                return Vector3.Zero;
+            }
+            if (block.Position.Y + 1 * block.Scale < virtualObject.Position.Y)
+            {
+                return Vector3.Zero;
+            }
+
+            var b = new Vector3(block.Position.X - 1 * block.Scale, block.Position.Y + 1 * block.Scale, 0);
+            var d = Vector3.DistanceSquared(virtualObject.Position, b);
+            var r = Math.Pow(virtualObject.Scale + block.Scale * 2f, 2f);
+            if (d > r)
+            {
+                return Vector3.Zero;
+            }
+            return Vector3.Normalize(virtualObject.Position - b) * (float)Math.Sqrt(r - d);
         }
     }
 }
