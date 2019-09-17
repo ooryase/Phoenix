@@ -258,16 +258,6 @@ namespace Scroll.Battle.Field
             baseVertexPosition[5].X = (1.5f + 3.0f * (int)((parent.CameraLookPos.X - 0.75f * scale) / (3 * scale))) * scale;
             baseVertexPosition[6].X = (1.5f + 3.0f * (int)((parent.CameraLookPos.X - 0.75f * scale) / (3 * scale))) * scale;
             baseVertexPosition[7].X = (3.0f + 3.0f * (int)((parent.CameraLookPos.X - 0.75f * scale) / (3 * scale))) * scale;
-            //            new Vector3(1.5f, 1.5f, 0f) * scale,
-            //                new Vector3(0f, -0.1f, 0f) * scale,
-            //                new Vector3(0f, 1.5f, 0f) * scale,
-            //                new Vector3(1.5f, -0.1f, 0f) * scale,
-            //
-            //                new Vector3(3.0f, 1.5f, 0f) * scale,
-            //                new Vector3(1.5f, -0.1f, 0f) * scale,
-            //                new Vector3(1.5f, 1.5f, 0f) * scale,
-            //                new Vector3(3.0f, -0.1f, 0f) * scale
-            //
 
             VerticesSet(Billboard.NONE);
 

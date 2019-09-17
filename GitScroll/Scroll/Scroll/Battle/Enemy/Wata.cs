@@ -43,5 +43,14 @@ namespace Scroll.Battle.Enemy
         {
 
         }
+
+        public override void DrawUpdate()
+        {
+            VerticesSet(Billboard.PITCH_ONLY);
+
+            effect.Parameters["View"].SetValue(parent.View);
+
+        }
+
     }
 }

@@ -67,6 +67,7 @@ namespace Scroll.Battle.Player
 
         public Player(Battle battle, Renderer renderer) : base(battle, renderer)
         {
+            tag = TagName.PLAYER;
             hp = 1000f; //HP兼攻撃ゲージ
             position = Vector3.UnitX;
             StateSet(State.NORMAL);

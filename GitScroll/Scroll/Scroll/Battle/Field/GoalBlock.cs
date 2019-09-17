@@ -29,7 +29,6 @@ namespace Scroll.Battle.Field
         }
         public override void StartUpdate(int deltaTime)
         {
-            throw new NotImplementedException();
         }
         public override void EndUpdate()
         {

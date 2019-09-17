@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Scroll.GameSystem;
 using Scroll.Output;
+using Scroll.Battle.Field;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -28,9 +29,10 @@ namespace Scroll.Battle
 
         private Field.BlockCollision blockCollision;
 
+        private List<VirtualObject> objects;
+
         private Matrix projection;
 
-        private Vector3 cameraPos;
         private Vector3 cameraLookPos;
         private float cameraLength;
         private float cameraDistinationLength;
@@ -69,7 +71,6 @@ namespace Scroll.Battle
 
         public Matrix Projection { get => projection; set => projection = value; }
         public Matrix View { get => view; set => view = value; }
-        public Vector3 CameraPos { get => cameraPos; private set => cameraPos = value; }
         public Vector3 CameraLookPos { get => cameraLookPos; private set => cameraLookPos = value; }
         internal State BattleState { get => state; set => state = value; }
 
@@ -90,8 +91,7 @@ namespace Scroll.Battle
             cameraLengthDefault = 5f;
             cameraLength = cameraLengthDefault;
             Projection = CreateProjection();
-            CameraLookPos = new Vector3(0,0.8f,0);
-            CameraPos = CameraLookPos + Vector3.UnitZ * cameraLength;
+            CameraLookPos = Vector3.Zero;
             View = CreateCameraView();
 
             player = new Player.Player(this,renderer);
@@ -115,6 +115,7 @@ namespace Scroll.Battle
             fields.Add(new Field.Field(this, renderer, Field.Field.SetType.BACK));
             fields.Add(new Field.Field(this, renderer, Field.Field.SetType.FRONT));
             blocks = new List<Field.Block>();
+            objects = new List<VirtualObject>();
             MapSet();
         }
 
@@ -159,10 +160,12 @@ namespace Scroll.Battle
                        blocksData[y,x] <= 11)
                         blocks.Add(new Field.Block(this,renderer,new Vector3(x * blockSize + blockSize /2f,y * blockSize + blockSize / 2f,0)
                             , (Field.Block.BlockName)blocksData[y,x]));
-                    if (blocksData[y, x] >= 12 &&
-                       blocksData[y, x] <= 15)
+                    else if (blocksData[y, x] >= 12 &&
+                       blocksData[y, x] <= 14)
                         enemies.Add(new Enemy.Wata(this, renderer, new Vector3(x * blockSize +blockSize / 2f, y * blockSize + blockSize / 2f, 0)
                             , (Enemy.VirtualEnemy.EnemyName)blocksData[y, x]));
+                    else if(blocksData[y, x] == 15)
+                        objects.Add(new GoalBlock(this, renderer, new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0)));
                 }
 
             }
@@ -204,6 +207,7 @@ namespace Scroll.Battle
             enemies.ForEach(e => e.StartUpdate(deltaTime));
             arts.ForEach(a => a.StartUpdate(deltaTime));
             //effectSystems.ForEach(es => es.startUpdate(deltaTime));
+            objects.ForEach(o => o.StartUpdate(deltaTime));
 
             InputYawPitchRoll();
 
@@ -303,10 +307,14 @@ namespace Scroll.Battle
 
             foreach(var e in enemies)
             {
-                if(player.GetCollisionRectangle().Collision(e.GetCollisionRectangle()))
-                {
+                if(Vector3.DistanceSquared(player.Position,e.Position) < (float)Math.Pow( player.Scale + e.Scale,2.0))
                     e.OnCollisionEnter(player);
-                }
+            }
+
+            foreach (var o in objects)
+            {
+                if (Vector3.DistanceSquared(player.Position, o.Position) < (float)Math.Pow(player.Scale + o.Scale, 2.0))
+                    player.OnCollisionEnter(o);
             }
 
             foreach (var b in blocks)
@@ -315,7 +323,10 @@ namespace Scroll.Battle
                 if (c == Vector3.Zero) 
                     continue;
                 else
-                    player.OnCollisionBlock(c);
+                    player.OnCollisionBlock(c,
+                        b.BName == Block.BlockName.RIGHT_UP ||
+                        b.BName == Block.BlockName.LEFT_UP ||
+                        b.BName == Block.BlockName.UP);
             }
         }
 
@@ -332,6 +343,8 @@ namespace Scroll.Battle
             //effectSystems.ForEach(es => es.EndUpdate());
             //effectSystems.RemoveAll(es => es.IsClose());
             arts.RemoveAll(a => a.Delete);
+
+            objects.RemoveAll(o => o.Delete);
         }
 
 
@@ -348,7 +361,7 @@ namespace Scroll.Battle
             enemies.ForEach(e => e.DrawUpdate());
             arts.ForEach(a => a.DrawUpdate());
             blocks.ForEach(b => b.DrawUpdate());
-
+            objects.ForEach(o => o.DrawUpdate());
         }
 
         /// <summary>
@@ -359,7 +372,6 @@ namespace Scroll.Battle
             CameraLengthMove();
 
             cameraLookPos = player.Position;
-            cameraLookPos.Y += 0.8f;
 
             View = CreateCameraView();
         }
@@ -371,8 +383,8 @@ namespace Scroll.Battle
 
             cameraMoveCont += deltaTime;
 
-            var r = cameraMoveCont / (float)cameraMoveTime;
-            cameraLength = cameraDistinationLength * r + cameraLastLength * (1f - r);
+            var rr = 1f - cameraMoveCont / (float)cameraMoveTime;
+            cameraLength = cameraDistinationLength * (1f - rr * rr) + cameraLastLength * rr * rr;
 
             if (cameraMoveCont >= cameraMoveTime)
                 cameraMoveTime = 0;
@@ -477,6 +489,7 @@ namespace Scroll.Battle
             drawObjects.Add(player);
             drawObjects.AddRange(enemies);
             drawObjects.AddRange(arts);
+            drawObjects.AddRange(objects);
 
             if (yawPitchRoll.Y > 0)
             {
@@ -494,6 +507,8 @@ namespace Scroll.Battle
                     o.Draw(renderer);
                 }
             }
+
+            player.DrawParam(renderer);
         }
 
 

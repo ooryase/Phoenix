@@ -75,9 +75,6 @@ namespace Scroll.Battle.Enemy
             if (time > 960)
                 delete = true;
         }
-        public override void DrawUpdate()
-        {
-        }
         public override void Draw(Renderer renderer)
         {
             foreach (var pass in effect.CurrentTechnique.Passes)
