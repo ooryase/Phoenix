@@ -51,10 +51,13 @@
     <Compile Include="Battle\Enemy\Wata.cs" />
     <Compile Include="Battle\Field\Block.cs" />
     <Compile Include="Battle\Field\BlockCollision.cs" />
+    <Compile Include="Battle\Enemy\Dragon.cs" />
+    <Compile Include="Battle\Field\GoalBlock.cs" />
+    <Compile Include="Battle\Enemy\Wolf.cs" />
     <Compile Include="Battle\MovePhysics.cs" />
     <Compile Include="Battle\VirtualCharacter.cs" />
     <Compile Include="Battle\Enemy\Dog.cs" />
-    <Compile Include="Battle\Field\Field.cs" />
+    <Compile Include="Battle\Enemy\Field.cs" />
     <Compile Include="Battle\Player\Player.cs" />
     <Compile Include="Battle\VirtualObject.cs" />
     <Compile Include="GameSystem\CSVReader.cs" />

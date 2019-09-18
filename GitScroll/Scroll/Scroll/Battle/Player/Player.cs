@@ -96,6 +96,8 @@ namespace Scroll.Battle.Player
         protected void TimeUpdate(int deltaTime)
         {
             time += deltaTime;
+
+            Console.WriteLine(haiGage);
         }
 
         protected void StateUpdate(int deltaTime)
@@ -540,7 +542,10 @@ namespace Scroll.Battle.Player
         //            break;
         //    }
         //}
-
+        public void AddAsh(float ash)
+        {
+            haiGage += ash;
+        }
 
 
 
