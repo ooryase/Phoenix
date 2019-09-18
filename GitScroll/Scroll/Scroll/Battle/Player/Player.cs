@@ -24,7 +24,7 @@ namespace Scroll.Battle.Player
         {
             NORMAL,
             RESPAWNN = 650, //復活後バーンってなる状態
-            DASH = 200,
+            DASH = 100,
             ATTACK = 300,
             DEAD = 1000,
             FALL
@@ -51,9 +51,11 @@ namespace Scroll.Battle.Player
         private Vector3 dashDirection;
         private Vector3 attackMove;
 
-        private float haiGage = 1000; //灰のゲージ
+        private float haiGage = 0; //灰のゲージ
+        private float maxHaigage = 1000;
 
         float Value;
+        float maxValue;
 
 
 
@@ -81,6 +83,10 @@ namespace Scroll.Battle.Player
             invincible = false;
             invincibleTime = 0;
             Value = 1f;
+            haiGage = 0;
+            maxHaigage = 1000;
+            Value = 0.1f;
+            maxValue = 1f;
         }
 
         /// <summary>
@@ -110,7 +116,6 @@ namespace Scroll.Battle.Player
             {
                 case State.NORMAL:
                     NormalStateUpdate(deltaTime);
-                    Value = 0.1f;
                     break;
                 case State.DASH:
                     DashUpdate(deltaTime);
@@ -218,8 +223,12 @@ namespace Scroll.Battle.Player
         {
             if (time > (int)State.DEAD)
             {
-                parent.CameraLengthSet(5f, 650);
-                StateSet(State.RESPAWNN);
+                if (haiGage > 500)
+                {
+                    haiGage = 0;
+                    parent.CameraLengthSet(5f, 650);
+                    StateSet(State.RESPAWNN);
+                }
             }
         }
 
@@ -396,7 +405,7 @@ namespace Scroll.Battle.Player
                 position += virtualObject.Position;
             }
 
-            if(virtualObject.Tag == TagName.CLEAR_BLOCK)
+            if (virtualObject.Tag == TagName.CLEAR_BLOCK)
             {
                 parent.GameClear();
             }
@@ -507,7 +516,7 @@ namespace Scroll.Battle.Player
         public void DrawParam(Output.Renderer renderer)
         {
             renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, (int)hp, 50), 1.0f);
-            renderer.DrawTexture(new Vector2(0,50), new Rectangle(0, 0, (int)haiGage,50),1.0f);
+            renderer.DrawTexture(new Vector2(0, 50), new Rectangle(0, 0, (int)haiGage, 50), 1.0f);
         }
 
         /// <summary>
@@ -550,6 +559,11 @@ namespace Scroll.Battle.Player
         public void AddAsh(float ash)
         {
             haiGage += ash;
+            Value += 0.1f;
+            if (haiGage >= maxHaigage)
+            {
+                haiGage = 1000;
+            }
         }
 
 
