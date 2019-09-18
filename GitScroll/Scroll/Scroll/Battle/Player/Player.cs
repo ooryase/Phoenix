@@ -23,7 +23,7 @@ namespace Scroll.Battle.Player
         public enum State
         {
             NORMAL,
-            RESPAWNN = 700, //復活後バーンってなる状態
+            RESPAWNN = 650, //復活後バーンってなる状態
             DASH = 200,
             ATTACK = 300,
             DEAD = 1000,
@@ -51,7 +51,9 @@ namespace Scroll.Battle.Player
         private Vector3 dashDirection;
         private Vector3 attackMove;
 
-        private float haiGage = 0; //灰のゲージ
+        private float haiGage = 1000; //灰のゲージ
+
+        float Value;
 
 
 
@@ -78,7 +80,7 @@ namespace Scroll.Battle.Player
 
             invincible = false;
             invincibleTime = 0;
-
+            Value = 1f;
         }
 
         /// <summary>
@@ -101,11 +103,12 @@ namespace Scroll.Battle.Player
         protected void StateUpdate(int deltaTime)
         {
             InvincibleUpdate(deltaTime);
-            hp -= 2;
+            hp -= 1.5f;
             switch (state)
             {
                 case State.NORMAL:
                     NormalStateUpdate(deltaTime);
+                    Value = 0.1f;
                     break;
                 case State.DASH:
                     DashUpdate(deltaTime);
@@ -183,7 +186,7 @@ namespace Scroll.Battle.Player
             if (time > (int)State.ATTACK)
                 StateSet(State.FALL);
 
-            hp -= 5;
+            hp -= 3.5f;
         }
 
         private void DashUpdate(int deltaTime)
@@ -194,7 +197,7 @@ namespace Scroll.Battle.Player
                     StateSet(State.FALL);
                 else
                 {
-                    parent.CameraLengthSet(1f, 500);
+                    parent.CameraLengthSet(1f, 650);
                     StateSet(State.NORMAL);
                 }
             }
@@ -223,7 +226,7 @@ namespace Scroll.Battle.Player
             hp = 1000;
             if (time > (int)State.RESPAWNN)
             {
-                parent.CameraLengthSet(1f, 800);
+                parent.CameraLengthSet(1f, 500);
                 StateSet(State.NORMAL);
             }
         }
@@ -459,6 +462,7 @@ namespace Scroll.Battle.Player
 
             VerticesSet(Billboard.PITCH_ONLY);
             effect.Parameters["View"].SetValue(parent.View);
+            effect.Parameters["Value"].SetValue(Value);
         }
 
         /// <summary>
@@ -501,6 +505,7 @@ namespace Scroll.Battle.Player
         public void DrawParam(Output.Renderer renderer)
         {
             renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, (int)hp, 50), 1.0f);
+            renderer.DrawTexture(new Vector2(0,50), new Rectangle(0, 0, (int)haiGage,50),1.0f);
         }
 
         /// <summary>
