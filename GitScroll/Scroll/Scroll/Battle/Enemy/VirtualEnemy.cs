@@ -48,11 +48,14 @@ namespace Scroll.Battle.Enemy
    
         public override void OnCollisionEnter(VirtualObject virtualObject)
         {
-            if(virtualObject.Tag == TagName.PLAYER)
+            if(virtualObject.Tag == TagName.PLAYER &&
+                state != State.DEAD)
             {
                 dead = true;
                 StateSet(State.DEAD);
-                //灰を渡す関数はここ
+
+                Player.Player p = (Player.Player)virtualObject;
+                p.AddAsh(10f);
             }
 
 

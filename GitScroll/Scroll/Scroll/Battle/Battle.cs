@@ -160,9 +160,14 @@ namespace Scroll.Battle
                        blocksData[y,x] <= 11)
                         blocks.Add(new Field.Block(this,renderer,new Vector3(x * blockSize + blockSize /2f,y * blockSize + blockSize / 2f,0)
                             , (Field.Block.BlockName)blocksData[y,x]));
-                    else if (blocksData[y, x] >= 12 &&
-                       blocksData[y, x] <= 14)
+                    else if (blocksData[y, x] == 12)
                         enemies.Add(new Enemy.Wata(this, renderer, new Vector3(x * blockSize +blockSize / 2f, y * blockSize + blockSize / 2f, 0)
+                            , (Enemy.VirtualEnemy.EnemyName)blocksData[y, x]));
+                    else if (blocksData[y, x] == 13)
+                        enemies.Add(new Enemy.Wolf(this, renderer, new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0)
+                            , (Enemy.VirtualEnemy.EnemyName)blocksData[y, x]));
+                    else if (blocksData[y, x] == 14)
+                        enemies.Add(new Enemy.Dragon(this, renderer, new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0)
                             , (Enemy.VirtualEnemy.EnemyName)blocksData[y, x]));
                     else if(blocksData[y, x] == 15)
                         objects.Add(new GoalBlock(this, renderer, new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0)));
