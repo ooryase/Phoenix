@@ -82,9 +82,8 @@ namespace Scroll.Battle.Player
 
             invincible = false;
             invincibleTime = 0;
-            Value = 1f;
-            haiGage = 0;
-            maxHaigage = 1000;
+            haiGage = 0f;
+            maxHaigage = 1000f;
             Value = 0.1f;
             maxValue = 1f;
         }
@@ -237,6 +236,7 @@ namespace Scroll.Battle.Player
             hp = 1000;
             if (time > (int)State.RESPAWNN)
             {
+                Value = 0.1f;
                 parent.CameraLengthSet(1f, 500);
                 StateSet(State.NORMAL);
             }
@@ -341,7 +341,7 @@ namespace Scroll.Battle.Player
             if (State.RESPAWNN != state)
                 return;
 
-            physics.velocity = new Vector3(0f, 0.665f, 0);
+            physics.velocity = new Vector3(0f, 0.55f, 0);
         }
 
         private void RightMove(float l)
