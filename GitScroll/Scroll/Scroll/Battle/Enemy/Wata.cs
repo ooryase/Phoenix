@@ -10,6 +10,8 @@ namespace Scroll.Battle.Enemy
 {
     class Wata : VirtualEnemy
     {
+        public float MinScale = 1.75f;
+        public float MaxScale = 0.25f;
         public Vector3 basePosition;
         public Wata(Battle battle, Renderer renderer, Vector3 position, EnemyName enemyName) : base(battle, renderer, position, enemyName)
         {
@@ -22,13 +24,8 @@ namespace Scroll.Battle.Enemy
             physics = new MovePhysics(0.015f, null, null);
             effect.Parameters["Value"].SetValue(1f);
             effect.Parameters["Red"].SetValue(1f);
-
-
         }
-        protected override void Awake()
-        {
-            scale = 0.25f;
-        }
+        //元々ここにAwake()
         protected override void NameSet()
         {
             textureName = "wata";
@@ -36,15 +33,32 @@ namespace Scroll.Battle.Enemy
         }
         public override void MoveUpdate(int deltaTime)
         {
-            if(state == State.NORMAL)
+            if (state == State.NORMAL)
             position.Y = basePosition.Y + (float)Math.Sin(time / 1000.0);
+            
         }
-
         protected override void NormalStateUpdate(int deltaTime)
         {
+            //スケールを変えてアニメーションさせたい。これはまだ出来てない状態。
+            if (Scale > MaxScale)
+                ScaleDown(deltaTime);
+            if (Scale < MinScale)
+                ScaleUp(deltaTime);
 
+            Console.WriteLine(Scale);
         }
-
+        public void ScaleUp(int deltaTime)
+        {
+            Scale += 0.03f;
+        }
+        public void ScaleDown(int deltaTime)
+        {
+            Scale -= 0.03f;
+        }
+        protected override void Awake()
+        {
+            Scale = 0.25f;
+        }
         public override void DrawUpdate()
         {
             VerticesSet(Billboard.PITCH_ONLY);

@@ -64,6 +64,7 @@ namespace Scroll.GameSystem
             renderer.LoadContent("wata", "Textures/");
             renderer.LoadContent("inu", "Textures/");
             renderer.LoadContent("doragon", "Textures/");
+
             renderer.LoadContent("f", "Textures/");
             renderer.LoadContent("Block", "Textures/");
             renderer.LoadContent("dummyrock", "Textures/");
