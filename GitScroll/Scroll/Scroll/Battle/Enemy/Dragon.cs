@@ -37,10 +37,15 @@ namespace Scroll.Battle.Enemy
         {
             if(state == State.NORMAL)
             position.Y = basePosition.Y + (float)Math.Sin(time / 1000.0);
+
+
         }
         protected override void NormalStateUpdate(int deltaTime)
         {
-
+        }
+        protected override void AttackStateUpdate(int deltaTime)
+        {
+            
         }
 
         public override void DrawUpdate()

@@ -11,6 +11,7 @@ namespace Scroll.Battle.Enemy
     class Wolf : VirtualEnemy
     {
         public Vector3 basePosition;
+        public bool jump;
         public Wolf(Battle battle, Renderer renderer, Vector3 position, EnemyName enemyName) : base(battle, renderer, position, enemyName)
         {
             hp = 1f; //HP兼攻撃ゲージ
@@ -19,7 +20,7 @@ namespace Scroll.Battle.Enemy
             this.enemyName = enemyName;
             StateSet(State.NORMAL);
 
-            physics = new MovePhysics(0.015f, null, null);
+            physics = new MovePhysics(0.015f, 0.2f, null);
             effect.Parameters["Value"].SetValue(1f);
             effect.Parameters["Red"].SetValue(1f);
         }
@@ -35,8 +36,10 @@ namespace Scroll.Battle.Enemy
         }
         public override void MoveUpdate(int deltaTime)
         {
-            if(state == State.NORMAL)
-            position.Y = basePosition.Y + (float)Math.Sin(time / 1000.0);
+            physics.Inertia(deltaTime);
+            physics.Gravity(deltaTime);
+            position += physics.velocity * physics.speed * deltaTime;
+            FieldMove();
         }
         protected override void NormalStateUpdate(int deltaTime)
         {

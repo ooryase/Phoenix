@@ -23,6 +23,7 @@ namespace Scroll.Battle.Enemy
         {
             NORMAL,
             DEAD,
+            ATTACK,
         }
         protected State state;
         public VirtualEnemy(Battle battle, Renderer renderer, Vector3 position, EnemyName enemyName) : base(battle, renderer)
@@ -70,6 +71,9 @@ namespace Scroll.Battle.Enemy
                 case State.DEAD:
                     DeadStateUpdate(deltaTime);
                     break;
+                case State.ATTACK:
+                    AttackStateUpdate(deltaTime);
+                    break;
             }
         }
         protected abstract void NormalStateUpdate(int deltaTime);
@@ -78,6 +82,7 @@ namespace Scroll.Battle.Enemy
             if (time > 960)
                 delete = true;
         }
+        protected virtual void AttackStateUpdate(int deltaTime) { }
         public override void Draw(Renderer renderer)
         {
             foreach (var pass in effect.CurrentTechnique.Passes)
