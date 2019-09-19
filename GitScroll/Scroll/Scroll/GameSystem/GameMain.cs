@@ -60,18 +60,14 @@ namespace Scroll.GameSystem
 
 
             renderer.LoadContent("Back", "Textures/");
-            renderer.LoadContent("fenikkusu", "Textures/");
             renderer.LoadContent("phoenix", "Textures/");
             renderer.LoadContent("wata", "Textures/");
             renderer.LoadContent("inu", "Textures/");
-            renderer.LoadContent("doragon", "Textures/");
             renderer.LoadContent("Wyvern", "Textures/");
-
             renderer.LoadContent("f", "Textures/");
             renderer.LoadContent("Block", "Textures/");
             renderer.LoadContent("dummyrock", "Textures/");
             renderer.LoadContent("Maptip", "Textures/");
-            renderer.LoadContent("imitate traibal3", "Textures/");
 
             renderer.LoadFontContent("k8x12L");
             renderer.LoadFontContent("k8x12LL","Fonts/");
@@ -133,8 +129,7 @@ namespace Scroll.GameSystem
 
         internal void AddSceneReservation(Scene scene)
         {
-            if(addScenes.Count == 0)
-                addScenes.Add(scene);
+            addScenes.Add(scene);
         }
 
         private void AddScene()

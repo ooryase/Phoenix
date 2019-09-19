@@ -13,6 +13,8 @@ namespace Scroll.Battle.Enemy
      internal abstract class VirtualEnemy : VirtualCharacter
     {
         public int scaleTime;
+        float haigage;
+
         public enum EnemyName
         {
             wata = 12,
@@ -38,6 +40,7 @@ namespace Scroll.Battle.Enemy
             //Coordinate();
 
             state = State.NORMAL;
+            haigage = 100f;
         }
         
         public override void StartUpdate(int deltaTime)
@@ -62,7 +65,7 @@ namespace Scroll.Battle.Enemy
                 StateSet(State.DEAD);
 
                 Player.Player p = (Player.Player)virtualObject;
-                p.AddAsh(10f);
+                p.AddAsh(haigage); 
             }
         }
 

@@ -25,7 +25,7 @@ namespace Scroll.Battle.Enemy
         }
         protected override void Awake()
         {
-            scale = 0.25f;
+            scale = 0.6f;
         }
 
         protected override void NameSet()

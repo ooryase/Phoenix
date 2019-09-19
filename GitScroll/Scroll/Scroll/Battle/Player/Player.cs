@@ -24,7 +24,7 @@ namespace Scroll.Battle.Player
         {
             NORMAL,
             RESPAWNN = 650, //復活後バーンってなる状態
-            DASH = 200,
+
             ATTACK = 300,
             DEAD = 1000,
             FALL,
@@ -49,13 +49,13 @@ namespace Scroll.Battle.Player
         /// <summary>
         /// ダッシュの方向取得変数
         /// </summary>
-        private Vector3 dashDirection;
-        private Vector3 attackMove;
+        private Vector3 attackMove; //攻撃の方向取得
 
-        private float haiGage = 1000; //灰のゲージ
+        private float haiGage = 0; //灰のゲージ
+        private float maxHaigage = 1000; //灰の最大量
 
-        float Value;
-
+        float Value; //色々色々色々色々色々色々色々
+        float maxValue; //著作権侵害(Valueの最大値)
 
 
         protected override void Awake()
@@ -81,7 +81,10 @@ namespace Scroll.Battle.Player
 
             invincible = false;
             invincibleTime = 0;
-            Value = 1f;
+            haiGage = 0f;
+            maxHaigage = 1000f;
+            Value = 0.1f;
+            maxValue = 1f;
         }
 
         /// <summary>
@@ -109,10 +112,6 @@ namespace Scroll.Battle.Player
             {
                 case State.NORMAL:
                     NormalStateUpdate(deltaTime);
-                    Value = 0.1f;
-                    break;
-                case State.DASH:
-                    DashUpdate(deltaTime);
                     break;
                 case State.ATTACK:
                     AttackStateUpdate(deltaTime);
@@ -164,15 +163,7 @@ namespace Scroll.Battle.Player
 
             }
 
-            var d = new Vector3(InputContllorer.StickLeftX(), InputContllorer.StickLeftY(), 0f);
-
-            if (InputContllorer.IsPush(Buttons.B) && d != Vector3.Zero)
-            {
-                parent.CameraLengthSet(1.5f, 700);
-                StateSet(State.DASH);
-                dashDirection = d;
-                dashDirection.Normalize();
-            }
+            //var d = new Vector3(InputContllorer.StickLeftX(), InputContllorer.StickLeftY(), 0f); ダッシュ用
 
             if (hp <= 0)
             {
@@ -193,20 +184,6 @@ namespace Scroll.Battle.Player
             hp -= 3.5f;
         }
 
-        private void DashUpdate(int deltaTime)
-        {
-            if (time > (int)State.DASH)
-            {
-                if (hp <= 0)
-                    StateSet(State.FALL);
-                else
-                {
-                    parent.CameraLengthSet(1f, 650);
-                    StateSet(State.NORMAL);
-                }
-            }
-        }
-
         private void FallUpdate(int deltaTime)
         {
             if (physics.isGraund == true)
@@ -220,8 +197,12 @@ namespace Scroll.Battle.Player
         {
             if (time > (int)State.DEAD)
             {
-                parent.CameraLengthSet(5f, 650);
-                StateSet(State.RESPAWNN);
+                if (haiGage > 500)
+                {
+                    haiGage = 0;
+                    parent.CameraLengthSet(5f, 650);
+                    StateSet(State.RESPAWNN);
+                }
             }
         }
 
@@ -230,6 +211,7 @@ namespace Scroll.Battle.Player
             hp = 1000;
             if (time > (int)State.RESPAWNN)
             {
+                Value = 0.1f;
                 parent.CameraLengthSet(1f, 500);
                 StateSet(State.NORMAL);
             }
@@ -252,8 +234,6 @@ namespace Scroll.Battle.Player
             physics.Inertia(deltaTime);
 
             MoveInputUpdate(deltaTime);
-
-            MoveDashUpdate();
 
             AttackUpdate();
 
@@ -307,12 +287,6 @@ namespace Scroll.Battle.Player
             //    UpMove(physics.speed * deltaTime * 10f);
         }
 
-        private void MoveDashUpdate()
-        {
-            if (State.DASH != state)
-                return;
-            physics.velocity = dashDirection;
-        }
 
         private void AttackUpdate()
         {
@@ -342,7 +316,7 @@ namespace Scroll.Battle.Player
             if (State.RESPAWNN != state)
                 return;
 
-            physics.velocity = new Vector3(0f, 0.665f, 0);
+            physics.velocity = new Vector3(0f, 0.55f, 0);
         }
 
         private void ClearMoveUpdate(int deltaTime)
@@ -414,7 +388,7 @@ namespace Scroll.Battle.Player
                 position += virtualObject.Position;
             }
 
-            if(virtualObject.Tag == TagName.CLEAR_BLOCK)
+            if (virtualObject.Tag == TagName.CLEAR_BLOCK)
             {
                 StateSet(State.CLEAR);
                 parent.GameClearSet();
@@ -468,17 +442,17 @@ namespace Scroll.Battle.Player
 
             else if (state == State.RESPAWNN)
             {
-                TextureCoordinateSet(2f, 0f); //time割る数の増加で細かく
+                TextureCoordinateSet(0f, 0f); //time割る数の増加で細かく
             }
 
             else if (state == State.DEAD)
             {
-                TextureCoordinateSet(1f, 0f);
+                TextureCoordinateSet(0f, 0f);
             }
 
             else if (state == State.ATTACK)
             {
-                TextureCoordinateSet(3f, 0f);
+                TextureCoordinateSet(1f, 0f);
             }
 
             VerticesSet(Billboard.PITCH_ONLY);
@@ -494,10 +468,10 @@ namespace Scroll.Battle.Player
         /// <param name="y"></param>
         private void TextureCoordinateSet(float x, float y) //アニメーション関係
         {
-            vertices[0].TextureCoordinate.X = 0.25f * (x + (float)Direct);
-            vertices[1].TextureCoordinate.X = 0.25f * (x + 1f - (float)Direct);
-            vertices[2].TextureCoordinate.X = 0.25f * (x + 1f - (float)Direct);
-            vertices[3].TextureCoordinate.X = 0.25f * (x + (float)Direct);
+            vertices[0].TextureCoordinate.X = 0.5f * (x + (float)Direct);
+            vertices[1].TextureCoordinate.X = 0.5f * (x + 1f - (float)Direct);
+            vertices[2].TextureCoordinate.X = 0.5f * (x + 1f - (float)Direct);
+            vertices[3].TextureCoordinate.X = 0.5f * (x + (float)Direct);
 
             vertices[0].TextureCoordinate.Y = 1f * (y);
             vertices[1].TextureCoordinate.Y = 1f * (y + 1f);
@@ -526,7 +500,7 @@ namespace Scroll.Battle.Player
         public void DrawParam(Output.Renderer renderer)
         {
             renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, (int)hp, 50), 1.0f);
-            renderer.DrawTexture(new Vector2(0,50), new Rectangle(0, 0, (int)haiGage,50),1.0f);
+            //renderer.DrawTexture(new Vector2(0,50), new Rectangle(0, 0, (int)haiGage,50),1.0f);
 
             if(state == State.CLEAR && time > 1000)
                 renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, 1280, 960), (time - 1000f) / 500f);
@@ -573,6 +547,11 @@ namespace Scroll.Battle.Player
         public void AddAsh(float ash)
         {
             haiGage += ash;
+            Value += 0.1f;
+            if (haiGage >= maxHaigage)
+            {
+                haiGage = 1000;
+            }
         }
 
 

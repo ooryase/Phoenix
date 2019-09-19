@@ -149,8 +149,6 @@ namespace Scroll.Output
         }
 
 
-
-
         public void DrawTextureLarge(Vector2 position)
         {
             spriteBatch.Draw(texture, position, new Rectangle(0, 0, 128, 128), Color.Black);
