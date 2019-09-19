@@ -247,7 +247,6 @@ namespace Scroll.Battle.Field
 
         public override void DrawUpdate()
         {
-            System.Console.WriteLine(parent.CameraLookPos.X);
 
             baseVertexPosition[0].X = (1.5f + 3.0f * (int)((parent.CameraLookPos.X + 0.75f * scale) / (3 * scale))) * scale;
             baseVertexPosition[1].X = (0.0f + 3.0f * (int)((parent.CameraLookPos.X + 0.75f * scale) / (3 * scale))) * scale;

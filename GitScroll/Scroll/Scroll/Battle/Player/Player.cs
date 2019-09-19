@@ -99,7 +99,6 @@ namespace Scroll.Battle.Player
         {
             time += deltaTime;
 
-            Console.WriteLine(haiGage);
         }
 
         protected void StateUpdate(int deltaTime)

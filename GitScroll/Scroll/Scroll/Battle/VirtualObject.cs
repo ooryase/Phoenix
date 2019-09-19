@@ -165,10 +165,10 @@ namespace Scroll.Battle
                 switch (billboard)
                 {
                     case Billboard.BILLBOARD:
-                        vertices[i].Position = position + parent.YawPitchRoll(baseVertexPosition[i]);
+                        vertices[i].Position = position + parent.rotateManager.YawPitchRoll(baseVertexPosition[i]);
                         break;
                     case Billboard.PITCH_ONLY:
-                        vertices[i].Position = position + parent.Pitch(baseVertexPosition[i]);
+                        vertices[i].Position = position + parent.rotateManager.Pitch(baseVertexPosition[i]);
                         break;
                     case Billboard.NONE:
                         vertices[i].Position = position + baseVertexPosition[i];

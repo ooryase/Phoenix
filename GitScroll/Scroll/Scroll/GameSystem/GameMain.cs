@@ -129,7 +129,8 @@ namespace Scroll.GameSystem
 
         internal void AddSceneReservation(Scene scene)
         {
-            addScenes.Add(scene);
+            if(addScenes.Count == 0)
+                addScenes.Add(scene);
         }
 
         private void AddScene()

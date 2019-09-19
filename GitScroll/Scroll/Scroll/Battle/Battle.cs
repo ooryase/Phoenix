@@ -41,7 +41,8 @@ namespace Scroll.Battle
         private int cameraMoveCont;
         private float cameraLengthDefault;
 
-        private Vector3 yawPitchRoll;
+        public RotateManager rotateManager;
+        //private Vector3 yawPitchRoll;
 
         private Matrix view;
 
@@ -84,7 +85,8 @@ namespace Scroll.Battle
             slowTimeTimer = 0;
             verySlowTimeTimer = 0;
 
-            yawPitchRoll = Vector3.Zero;
+            rotateManager = new RotateManager();
+            rotateManager.cameraRotate = Vector3.Zero;
 
             state = State.NORMAL;
 
@@ -136,7 +138,7 @@ namespace Scroll.Battle
         {
             var view = Matrix.CreateLookAt
                 (
-                CameraLookPos + YawPitchRoll(Vector3.UnitZ) * cameraLength,
+                CameraLookPos + rotateManager.YawPitchRoll(Vector3.UnitZ) * cameraLength,
                 CameraLookPos,
                 Vector3.UnitY
                 );
@@ -223,76 +225,17 @@ namespace Scroll.Battle
         /// </summary>
         private void InputYawPitchRoll()
         {
-            yawPitchRoll.Y -= InputContllorer.StickRightX() / 100f;
-            yawPitchRoll.X += InputContllorer.StickRightY() / 100f;
+            rotateManager.cameraRotate.Y -= InputContllorer.StickRightX() / 100f;
+            rotateManager.cameraRotate.X += InputContllorer.StickRightY() / 100f;
 
-            yawPitchRoll.X = (yawPitchRoll.X > BattleWindow.CameraYawRight) ? BattleWindow.CameraYawRight : yawPitchRoll.X;
-            yawPitchRoll.X = (yawPitchRoll.X < BattleWindow.CameraYawLeft) ? BattleWindow.CameraYawLeft : yawPitchRoll.X;
+            rotateManager.cameraRotate.X = (rotateManager.cameraRotate.X > BattleWindow.CameraYawRight) ? BattleWindow.CameraYawRight : rotateManager.cameraRotate.X;
+            rotateManager.cameraRotate.X = (rotateManager.cameraRotate.X < BattleWindow.CameraYawLeft) ? BattleWindow.CameraYawLeft : rotateManager.cameraRotate.X;
 
-            yawPitchRoll.Y = (yawPitchRoll.Y > BattleWindow.CameraPitchDown) ? BattleWindow.CameraPitchDown : yawPitchRoll.Y;
-            yawPitchRoll.Y = (yawPitchRoll.Y < BattleWindow.CameraPitchUp) ? BattleWindow.CameraPitchUp : yawPitchRoll.Y;
+            rotateManager.cameraRotate.Y = (rotateManager.cameraRotate.Y > BattleWindow.CameraPitchDown) ? BattleWindow.CameraPitchDown : rotateManager.cameraRotate.Y;
+            rotateManager.cameraRotate.Y = (rotateManager.cameraRotate.Y < BattleWindow.CameraPitchUp) ? BattleWindow.CameraPitchUp : rotateManager.cameraRotate.Y;
 
         }
 
-        /// <summary>
-        /// Yaw,Pitch,Rollの回転処理
-        /// </summary>
-        /// <param name="vector3"></param>
-        /// <returns></returns>
-        internal Vector3 YawPitchRoll(Vector3 vector3)
-        {
-            return Roll(Pitch(Yaw(vector3)));
-        }
-        /// <summary>
-        /// Yawの回転処理
-        /// </summary>
-        /// <param name="vector3"></param>
-        /// <returns></returns>
-        internal Vector3 Yaw(Vector3 vector3)
-        {
-            var s = (float)Math.Sin(yawPitchRoll.X);
-            var c = (float)Math.Cos(yawPitchRoll.X);
-
-            var x = vector3.X;
-            var y = vector3.Y * c - vector3.Z * s;
-            var z = vector3.Y * s + vector3.Z * c;
-
-            return new Vector3(x, y, z);
-        }
-
-        /// <summary>
-        /// Pitchの回転処理
-        /// </summary>
-        /// <param name="vector3"></param>
-        /// <returns></returns>
-        internal Vector3 Pitch(Vector3 vector3)
-        {
-            var s = (float)Math.Sin(yawPitchRoll.Y);
-            var c = (float)Math.Cos(yawPitchRoll.Y);
-
-            var x = vector3.X * c + vector3.Z * s;
-            var y = vector3.Y;
-            var z = -vector3.X * s + vector3.Z * c;
-
-            return new Vector3(x, y, z);
-        }
-
-        /// <summary>
-        /// Rollの回転処理
-        /// </summary>
-        /// <param name="vector3"></param>
-        /// <returns></returns>
-        internal Vector3 Roll(Vector3 vector3)
-        {
-            var s = (float)Math.Sin(yawPitchRoll.Z);
-            var c = (float)Math.Cos(yawPitchRoll.Z);
-
-            var x = vector3.X * c - vector3.Y * s;
-            var y = vector3.X * s + vector3.Y * c;
-            var z = vector3.Z;
-
-            return new Vector3(x, y, z);
-        }
 
         /// <summary>
         /// 各ObjectのMoveUpdateはここで行う
@@ -496,7 +439,7 @@ namespace Scroll.Battle
             drawObjects.AddRange(arts);
             drawObjects.AddRange(objects);
 
-            if (yawPitchRoll.Y > 0)
+            if (rotateManager.cameraRotate.Y > 0)
             {
                 var obj = drawObjects.OrderBy(o => o.Position.X);
                 foreach(var o in obj)
