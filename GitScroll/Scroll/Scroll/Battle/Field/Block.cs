@@ -43,7 +43,7 @@ namespace Scroll.Battle.Field
 
         protected override void NameSet()
         {
-            textureName = "dummyrock";
+            textureName = "Maptip";
             effectName = "Block";
         }
         private void Coordinate()

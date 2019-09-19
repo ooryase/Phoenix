@@ -417,6 +417,8 @@ namespace Scroll.Battle.Player
         /// <param name="s"></param>
         protected void StateSet(State s)
         {
+            if (state == s)
+                return;
             state = s;
             time = 0;
         }

@@ -65,7 +65,6 @@ namespace Scroll.GameSystem
             renderer.LoadContent("inu", "Textures/");
             renderer.LoadContent("Wyvern", "Textures/");
             renderer.LoadContent("f", "Textures/");
-            renderer.LoadContent("Block", "Textures/");
             renderer.LoadContent("dummyrock", "Textures/");
             renderer.LoadContent("Maptip", "Textures/");
 
@@ -117,7 +116,7 @@ namespace Scroll.GameSystem
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DarkBlue);
+            GraphicsDevice.Clear(Color.SkyBlue);
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
             renderer.Begin();
