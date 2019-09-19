@@ -64,7 +64,7 @@ namespace Scroll.Battle.Player
         protected override void NameSet()
         {
             effectName = "Player";
-            textureName = "fenikkusu";
+            textureName = "phoenix";
         }
 
         public Player(Battle battle, Renderer renderer) : base(battle, renderer)

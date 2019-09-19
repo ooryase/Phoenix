@@ -10,8 +10,9 @@ namespace Scroll.Battle.Enemy
 {
     class Wata : VirtualEnemy
     {
-        public float MinScale = 1.75f;
-        public float MaxScale = 0.25f;
+        public float minScale = 0.3f;
+        public float maxScale = 0.4f;
+        public int scaleChenger;
         public Vector3 basePosition;
         public Wata(Battle battle, Renderer renderer, Vector3 position, EnemyName enemyName) : base(battle, renderer, position, enemyName)
         {
@@ -20,6 +21,7 @@ namespace Scroll.Battle.Enemy
             this.position = basePosition;
             this.enemyName = enemyName;
             StateSet(State.NORMAL);
+            
             
             physics = new MovePhysics(0.015f, null, null);
             effect.Parameters["Value"].SetValue(1f);
@@ -33,31 +35,42 @@ namespace Scroll.Battle.Enemy
         }
         public override void MoveUpdate(int deltaTime)
         {
+            scaleChenger = scaleTime / 16;
             if (state == State.NORMAL)
-            position.Y = basePosition.Y + (float)Math.Sin(time / 1000.0);
-            
+                position.Y = basePosition.Y + (float)Math.Sin(time / 1000.0);
+
+            if(scaleChenger < 11)
+                ScaleUp(deltaTime);
+
+            if (scaleChenger < 21　&&
+                scaleChenger > 10)
+                ScaleDown(deltaTime);
+
+            if (scaleChenger >= 21)
+                scaleTime = 0;
+
+            Console.WriteLine(scaleChenger);
         }
         protected override void NormalStateUpdate(int deltaTime)
         {
-            //スケールを変えてアニメーションさせたい。これはまだ出来てない状態。
-            if (Scale > MaxScale)
-                ScaleDown(deltaTime);
-            if (Scale < MinScale)
-                ScaleUp(deltaTime);
-
-            Console.WriteLine(Scale);
+            
         }
-        public void ScaleUp(int deltaTime)
+        public void ScaleUp(int deltaTime)//scaleを増やすメソッド
         {
-            Scale += 0.03f;
+            scale += 0.0015f;//ここ追加
+            SetBaseVertices();
+            vertices = CreateVertices();
         }
-        public void ScaleDown(int deltaTime)
+        public void ScaleDown(int deltaTime)//scaleを減らすメソッド
         {
-            Scale -= 0.03f;
+            scale -= 0.0015f;
+            SetBaseVertices();
+            vertices = CreateVertices();
         }
         protected override void Awake()
         {
-            Scale = 0.25f;
+            scale = maxScale;
+            //もとのscaleは0.25ｆ
         }
         public override void DrawUpdate()
         {

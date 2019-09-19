@@ -30,7 +30,7 @@ namespace Scroll.Battle.Enemy
 
         protected override void NameSet()
         {
-            textureName = "doragon";
+            textureName = "Wyvern";
             effectName = "NoobEnemy";
         }
         public override void MoveUpdate(int deltaTime)

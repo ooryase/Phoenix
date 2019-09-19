@@ -12,6 +12,7 @@ namespace Scroll.Battle.Enemy
 {
      internal abstract class VirtualEnemy : VirtualCharacter
     {
+        public int scaleTime;
         public enum EnemyName
         {
             wata = 12,
@@ -44,6 +45,7 @@ namespace Scroll.Battle.Enemy
         protected void TimeUpdate(int deltaTime)
         {
             time += deltaTime;
+            scaleTime += deltaTime;
         }
         public override abstract void MoveUpdate(int deltaTime);
    
