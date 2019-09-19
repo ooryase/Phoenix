@@ -47,12 +47,15 @@
     <Compile Include="Battle\Battle.cs" />
     <Compile Include="Battle\BattleWindow.cs" />
     <Compile Include="Battle\Enemy\BigDog.cs" />
+    <Compile Include="Battle\Enemy\Dragon.cs" />
     <Compile Include="Battle\Enemy\VirtualEnemy.cs" />
     <Compile Include="Battle\Enemy\Wata.cs" />
+    <Compile Include="Battle\Enemy\Wolf.cs" />
     <Compile Include="Battle\Field\Block.cs" />
     <Compile Include="Battle\Field\BlockCollision.cs" />
     <Compile Include="Battle\Field\GoalBlock.cs" />
     <Compile Include="Battle\MovePhysics.cs" />
+    <Compile Include="Battle\RotateManager.cs" />
     <Compile Include="Battle\VirtualCharacter.cs" />
     <Compile Include="Battle\Enemy\Dog.cs" />
     <Compile Include="Battle\Field\Field.cs" />

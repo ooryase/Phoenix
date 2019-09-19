@@ -27,7 +27,8 @@ namespace Scroll.Battle.Player
             DASH = 200,
             ATTACK = 300,
             DEAD = 1000,
-            FALL
+            FALL,
+            CLEAR
         }
         protected State state;
         /// <summary>
@@ -125,6 +126,9 @@ namespace Scroll.Battle.Player
                     break;
                 case State.RESPAWNN:
                     RespawnUpdate(deltaTime);
+                    break;
+                case State.CLEAR:
+                    ClearStateUpdate(deltaTime);
                     break;
             }
         }
@@ -232,6 +236,12 @@ namespace Scroll.Battle.Player
             }
         }
 
+        private void ClearStateUpdate(int deltaTime)
+        {
+            if (time > 1500)
+                parent.GameClear();
+        }
+
         /// <summary>
         /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///                                     バトルクラスから呼ばれるよ！（2番目）
@@ -255,7 +265,9 @@ namespace Scroll.Battle.Player
 
             RespawnUpdate();
 
-            // physics.Gravity(deltaTime);
+            ClearMoveUpdate(deltaTime);
+
+            physics.Gravity(deltaTime);
 
             position += physics.velocity * physics.speed * deltaTime;
             FieldMove();
@@ -334,6 +346,14 @@ namespace Scroll.Battle.Player
             physics.velocity = new Vector3(0f, 0.665f, 0);
         }
 
+        private void ClearMoveUpdate(int deltaTime)
+        {
+            if (State.CLEAR != state)
+                return;
+
+            physics.velocity = new Vector3(physics.speed * deltaTime, 0, 0);
+        }
+
         private void RightMove(float l)
         {
             move = true;
@@ -397,7 +417,8 @@ namespace Scroll.Battle.Player
 
             if(virtualObject.Tag == TagName.CLEAR_BLOCK)
             {
-                parent.GameClear();
+                StateSet(State.CLEAR);
+                parent.GameClearSet();
             }
         }
 
@@ -507,6 +528,10 @@ namespace Scroll.Battle.Player
         {
             renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, (int)hp, 50), 1.0f);
             renderer.DrawTexture(new Vector2(0,50), new Rectangle(0, 0, (int)haiGage,50),1.0f);
+
+            if(state == State.CLEAR && time > 1000)
+                renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, 1280, 960), (time - 1000f) / 500f);
+
         }
 
         /// <summary>

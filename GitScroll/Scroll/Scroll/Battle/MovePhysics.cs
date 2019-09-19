@@ -69,7 +69,7 @@ namespace Scroll.Battle
             if (!inertia)
                 velocity = Vector3.Zero;
 
-            velocity *= myu * deltaTime; 
+            velocity *= myu; 
         }
 
     }

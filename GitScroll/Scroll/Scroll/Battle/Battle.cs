@@ -17,7 +17,7 @@ namespace Scroll.Battle
     {
         private Player.Player player;
 
-        private List<VirtualCharacter> enemies;
+        private List<Enemy.VirtualEnemy> enemies;
         private List<Arts.Fire> arts;
         //internal List<EffectSystem.VirtualEffectSystem> effectSystems;
 
@@ -51,7 +51,8 @@ namespace Scroll.Battle
         {
             NORMAL,
             PAUSE,
-            EVENT
+            EVENT,
+            CLEAR
         }
         private State state;
 
@@ -97,20 +98,7 @@ namespace Scroll.Battle
             View = CreateCameraView();
 
             player = new Player.Player(this,renderer);
-            enemies = new List<VirtualCharacter>();
-            enemies.Add(new Enemy.Dog(this,renderer,new Vector3(6.7f,6f,0)));
-            enemies.Add(new Enemy.Dog(this, renderer, new Vector3(1.7f, 4f, 0)));
-            enemies.Add(new Enemy.Dog(this, renderer, new Vector3(3.7f, 8f, 0)));
-            enemies.Add(new Enemy.Dog(this, renderer, new Vector3(4.7f, 8f, 0)));
-            enemies.Add(new Enemy.Dog(this, renderer, new Vector3(6.7f, 8f, 0)));
-            enemies.Add(new Enemy.Dog(this, renderer, new Vector3(8.7f, 8f, 0)));
-            enemies.Add(new Enemy.Dog(this, renderer, new Vector3(10.7f, 8f, 0)));
-            enemies.Add(new Enemy.Dog(this, renderer, new Vector3(13.7f, 8f, 0)));
-            enemies.Add(new Enemy.Dog(this, renderer, new Vector3(15.7f, 8f, 0)));
-            enemies.Add(new Enemy.Dog(this, renderer, new Vector3(17.7f, 8f, 0)));
-            enemies.Add(new Enemy.Dog(this, renderer, new Vector3(20.7f, 8f, 0)));
-            enemies.Add(new Enemy.Dog(this, renderer, new Vector3(21.7f, 8f, 0)));
-            //enemies.Add(new Enemy.BigDog(this, renderer, new Vector3(35f, 0f, 0)));
+            enemies = new List<Enemy.VirtualEnemy>();
             //effectSystems = new List<EffectSystem.VirtualEffectSystem>();
             arts = new List<Arts.Fire>();
             fields = new List<Field.Field>();
@@ -163,13 +151,13 @@ namespace Scroll.Battle
                         blocks.Add(new Field.Block(this,renderer,new Vector3(x * blockSize + blockSize /2f,y * blockSize + blockSize / 2f,0)
                             , (Field.Block.BlockName)blocksData[y,x]));
                     else if (blocksData[y, x] == 12)
-                        enemies.Add(new Enemy.Wata(this, renderer, new Vector3(x * blockSize +blockSize / 2f, y * blockSize + blockSize / 2f, 0)
+                        enemies.Add(new Enemy.Wata(this, renderer,player, new Vector3(x * blockSize +blockSize / 2f, y * blockSize + blockSize / 2f, 0)
                             , (Enemy.VirtualEnemy.EnemyName)blocksData[y, x]));
                     else if (blocksData[y, x] == 13)
-                        enemies.Add(new Enemy.Wolf(this, renderer, new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0)
+                        enemies.Add(new Enemy.Wolf(this, renderer,player, new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0)
                             , (Enemy.VirtualEnemy.EnemyName)blocksData[y, x]));
                     else if (blocksData[y, x] == 14)
-                        enemies.Add(new Enemy.Dragon(this, renderer, new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0)
+                        enemies.Add(new Enemy.Dragon(this, renderer,player, new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0)
                             , (Enemy.VirtualEnemy.EnemyName)blocksData[y, x]));
                     else if(blocksData[y, x] == 15)
                         objects.Add(new GoalBlock(this, renderer, new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0)));
@@ -244,7 +232,7 @@ namespace Scroll.Battle
         {
             player.MoveUpdate(deltaTime);
             enemies.ForEach(e => e.MoveUpdate(deltaTime));
-            //arts.ForEach(a => a.)
+            arts.ForEach(a => a.MoveUpdate(deltaTime, player.Position));
         }
 
         /// <summary>
@@ -268,13 +256,21 @@ namespace Scroll.Battle
             foreach (var b in blocks)
             {
                 var c = blockCollision.CheckCollision(b, player);
-                if (c == Vector3.Zero) 
-                    continue;
-                else
+                if (c != Vector3.Zero) 
                     player.OnCollisionBlock(c,
                         b.BName == Block.BlockName.RIGHT_UP ||
                         b.BName == Block.BlockName.LEFT_UP ||
                         b.BName == Block.BlockName.UP);
+
+                foreach (var e in enemies)
+                {
+                    var cc = blockCollision.CheckCollision(b, e);
+                    if (cc != Vector3.Zero)
+                        e.OnCollisionBlock(cc,
+                            b.BName == Block.BlockName.RIGHT_UP ||
+                            b.BName == Block.BlockName.LEFT_UP ||
+                            b.BName == Block.BlockName.UP);
+                }
             }
         }
 
@@ -319,7 +315,8 @@ namespace Scroll.Battle
         {
             CameraLengthMove();
 
-            cameraLookPos = player.Position;
+            if(state != State.CLEAR)
+                cameraLookPos = player.Position;
 
             View = CreateCameraView();
         }
@@ -465,6 +462,12 @@ namespace Scroll.Battle
             isClose = true;
             parent.AddSceneReservation(new Title.Title(parent, renderer));
         }
+
+        internal void GameClearSet()
+        {
+            state = State.CLEAR;
+        }
+
     }
 
 }

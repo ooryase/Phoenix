@@ -33,7 +33,7 @@ namespace Scroll.Battle.Arts
 
         public float Damage { get => damage; protected set => damage = value; }
 
-        public Fire(Battle battle, Renderer renderer,Vector3 pos,Direction direction,List<VirtualCharacter> enemiesList) : base(battle, renderer)
+        public Fire(Battle battle, Renderer renderer,Vector3 pos,Direction direction,List<Enemy.VirtualEnemy> enemiesList) : base(battle, renderer)
         {
             Tag = TagName.PLAYER_ARTS;
             var d = (Direct == Direction.LEFT) ? -0.05f : 0.05f;

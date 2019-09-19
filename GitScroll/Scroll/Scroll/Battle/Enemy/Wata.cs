@@ -11,7 +11,7 @@ namespace Scroll.Battle.Enemy
     class Wata : VirtualEnemy
     {
         public Vector3 basePosition;
-        public Wata(Battle battle, Renderer renderer, Vector3 position, EnemyName enemyName) : base(battle, renderer, position, enemyName)
+        public Wata(Battle battle, Renderer renderer, Player.Player player, Vector3 position, EnemyName enemyName) : base(battle, renderer, player, position, enemyName)
         {
             hp = 1f; //HP兼攻撃ゲージ
             basePosition = position;
@@ -36,13 +36,25 @@ namespace Scroll.Battle.Enemy
         }
         public override void MoveUpdate(int deltaTime)
         {
-            if(state == State.NORMAL)
-            position.Y = basePosition.Y + (float)Math.Sin(time / 1000.0);
+            physics.Inertia(deltaTime);
+
+            if (state == State.NORMAL)
+                physics.velocity.Y = (float)Math.Sin(time / 1000.0) * 0.03f;
+
+            physics.Gravity(deltaTime);
+
+            position += physics.velocity * physics.speed * deltaTime;
+            FieldMove();
         }
 
         protected override void NormalStateUpdate(int deltaTime)
         {
 
+        }
+
+        protected override void PerceptionStateUpdate(int deltaTime)
+        {
+            throw new NotImplementedException();
         }
 
         public override void DrawUpdate()

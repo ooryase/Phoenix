@@ -22,11 +22,15 @@ namespace Scroll.Battle.Enemy
         public enum State
         {
             NORMAL,
+            PERCEPTION,
             DEAD,
         }
         protected State state;
-        public VirtualEnemy(Battle battle, Renderer renderer, Vector3 position, EnemyName enemyName) : base(battle, renderer)
+
+        protected Player.Player player;
+        public VirtualEnemy(Battle battle, Renderer renderer,Player.Player player, Vector3 position, EnemyName enemyName) : base(battle, renderer)
         {
+            this.player = player;
             this.position = position;
             this.enemyName = enemyName;
             //Coordinate();
@@ -57,9 +61,15 @@ namespace Scroll.Battle.Enemy
                 Player.Player p = (Player.Player)virtualObject;
                 p.AddAsh(10f);
             }
-
-
         }
+
+        public void OnCollisionBlock(Vector3 vector3, bool isGround)
+        {
+            physics.isGraund = isGround;
+            position += vector3;
+        }
+
+
         protected void StateUpdate(int deltaTime)
         {
             switch (state)
@@ -67,12 +77,16 @@ namespace Scroll.Battle.Enemy
                 case State.NORMAL:
                     NormalStateUpdate(deltaTime);
                     break;
+                case State.PERCEPTION:
+                    PerceptionStateUpdate(deltaTime);
+                    break;
                 case State.DEAD:
                     DeadStateUpdate(deltaTime);
                     break;
             }
         }
         protected abstract void NormalStateUpdate(int deltaTime);
+        protected abstract void PerceptionStateUpdate(int deltaTime);
         protected void DeadStateUpdate(int deltaTime)
         {
             if (time > 960)
