@@ -65,6 +65,7 @@
     <Compile Include="GameSystem\InputContllorer.cs" />
     <Compile Include="GameSystem\Program.cs" />
     <Compile Include="GameSystem\RectangleF.cs" />
+    <Compile Include="GameSystem\Sound.cs" />
     <Compile Include="Output\Renderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameSystem\Scene.cs" />
