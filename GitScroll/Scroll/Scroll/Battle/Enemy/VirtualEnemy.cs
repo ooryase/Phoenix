@@ -12,6 +12,7 @@ namespace Scroll.Battle.Enemy
 {
      internal abstract class VirtualEnemy : VirtualCharacter
     {
+        public int scaleTime;
         public enum EnemyName
         {
             wata = 12,
@@ -24,6 +25,7 @@ namespace Scroll.Battle.Enemy
             NORMAL,
             PERCEPTION,
             DEAD,
+            ATTACK,
         }
         protected State state;
 
@@ -47,6 +49,7 @@ namespace Scroll.Battle.Enemy
         protected void TimeUpdate(int deltaTime)
         {
             time += deltaTime;
+            scaleTime += deltaTime;
         }
         public override abstract void MoveUpdate(int deltaTime);
    
@@ -83,6 +86,9 @@ namespace Scroll.Battle.Enemy
                 case State.DEAD:
                     DeadStateUpdate(deltaTime);
                     break;
+                case State.ATTACK:
+                    AttackStateUpdate(deltaTime);
+                    break;
             }
         }
         protected abstract void NormalStateUpdate(int deltaTime);
@@ -92,6 +98,7 @@ namespace Scroll.Battle.Enemy
             if (time > 960)
                 delete = true;
         }
+        protected virtual void AttackStateUpdate(int deltaTime) { }
         public override void Draw(Renderer renderer)
         {
             foreach (var pass in effect.CurrentTechnique.Passes)

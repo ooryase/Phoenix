@@ -30,7 +30,7 @@ namespace Scroll.Battle.Enemy
 
         protected override void NameSet()
         {
-            textureName = "doragon";
+            textureName = "Wyvern";
             effectName = "NoobEnemy";
         }
         public override void MoveUpdate(int deltaTime)
@@ -50,7 +50,6 @@ namespace Scroll.Battle.Enemy
 
             position += physics.velocity * physics.speed * deltaTime;
             FieldMove();
-
         }
         protected override void NormalStateUpdate(int deltaTime)
         {
@@ -59,9 +58,7 @@ namespace Scroll.Battle.Enemy
             {
                 StateSet(VirtualEnemy.State.PERCEPTION);
             }
-
         }
-
         protected override void PerceptionStateUpdate(int deltaTime)
         {
             
