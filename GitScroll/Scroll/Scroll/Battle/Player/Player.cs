@@ -23,11 +23,11 @@ namespace Scroll.Battle.Player
         public enum State
         {
             NORMAL,
-            RESPAWNN = 650, //復活後バーンってなる状態
-
+            RESPAWNN = 1010, //復活後バーンってなる状態上昇
             ATTACK = 300,
-            DEAD = 1000,
+            DEAD = 1000,//地面に落ちるまで
             FALL,
+            UP = 1005,
             CLEAR
         }
         protected State state;
@@ -55,13 +55,15 @@ namespace Scroll.Battle.Player
         private float maxHaigage = 1000; //灰の最大量
 
         float Value; //色々色々色々色々色々色々色々
-        float maxValue; //著作権侵害(Valueの最大値)
+        float maxValue; //著作権侵害(Valueの最大値)flo
+        float maxHp;
 
 
         protected override void Awake()
         {
             Scale = 0.5f; //画像描画のサイズ
         }
+
         protected override void NameSet()
         {
             effectName = "Player";
@@ -72,6 +74,7 @@ namespace Scroll.Battle.Player
         {
             tag = TagName.PLAYER;
             hp = 1000f; //HP兼攻撃ゲージ
+            maxHp = 1000f;
             position = Vector3.UnitX;
             StateSet(State.NORMAL);
             move = false;
@@ -122,6 +125,9 @@ namespace Scroll.Battle.Player
                 case State.DEAD:
                     DeadUpdate(deltaTime);
                     break;
+                case State.UP:
+                    UpUpdate(deltaTime);
+                    break;
                 case State.RESPAWNN:
                     RespawnUpdate(deltaTime);
                     break;
@@ -156,7 +162,7 @@ namespace Scroll.Battle.Player
             if (InputContllorer.IsPush(Buttons.A) && a != Vector3.Zero)
             {
                 StateSet(State.ATTACK);
-                parent.CameraLengthSet(1.5f, 700); //引数はどれくらい引くかと何秒かけて引くか
+                parent.CameraLengthSet(2f, 700); //引数はどれくらい引くかと何秒かけて引くか
                 parent.PlayerArts(position, Direct);
                 attackMove = a;
                 attackMove.Normalize();
@@ -200,9 +206,18 @@ namespace Scroll.Battle.Player
                 if (haiGage > 500)
                 {
                     haiGage = 0;
-                    parent.CameraLengthSet(5f, 650);
-                    StateSet(State.RESPAWNN);
+                    parent.CameraLengthSet(0.6f, 300);
+                    StateSet(State.UP);
                 }
+            }
+        }
+
+        private void UpUpdate(int deltaTime)
+        {
+            if (time > (int)State.UP)
+            {
+                parent.CameraLengthSet(3.1f, 300);
+                StateSet(State.RESPAWNN);
             }
         }
 
@@ -237,10 +252,11 @@ namespace Scroll.Battle.Player
 
             AttackUpdate();
 
-
             FallUpdate();
 
             DeadUpdate();
+
+            UpUpdate();
 
             RespawnUpdate();
 
@@ -308,7 +324,15 @@ namespace Scroll.Battle.Player
             if (State.DEAD != state)
                 return;
 
-            physics.velocity = new Vector3(0f, 0f, 0f);
+            physics.velocity = Vector3.Zero;
+        }
+
+        private void UpUpdate()
+        {
+            if (State.UP != state)
+                return;
+
+            physics.velocity = new Vector3(0f, 0.25f, 0f);
         }
 
         private void RespawnUpdate()
@@ -316,7 +340,7 @@ namespace Scroll.Battle.Player
             if (State.RESPAWNN != state)
                 return;
 
-            physics.velocity = new Vector3(0f, 0.55f, 0);
+            physics.velocity = Vector3.Zero;
         }
 
         private void ClearMoveUpdate(int deltaTime)
