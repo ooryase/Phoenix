@@ -18,7 +18,7 @@ namespace Scroll.Battle
 
         internal Vector3 NewYawPitchRoll(Vector3 vector3 , Vector3 rotate)
         {
-            return NewRoll(NewPitch(NewYaw(vector3,rotate),rotate),rotate);
+            return NewRoll(NewPitch(NewYaw(vector3,(double)rotate.X), (double)rotate.Y), (double)rotate.Z);
         }
 
         /// <summary>
@@ -77,10 +77,10 @@ namespace Scroll.Battle
         /// </summary>
         /// <param name="vector3"></param>
         /// <returns></returns>
-        internal Vector3 NewYaw(Vector3 vector3,Vector3 rotate)
+        internal Vector3 NewYaw(Vector3 vector3,double rotate)
         {
-            var s = (float)Math.Sin(rotate.X);
-            var c = (float)Math.Cos(rotate.X);
+            var s = (float)Math.Sin(rotate);
+            var c = (float)Math.Cos(rotate);
 
             var x = vector3.X;
             var y = vector3.Y * c - vector3.Z * s;
@@ -94,10 +94,10 @@ namespace Scroll.Battle
         /// </summary>
         /// <param name="vector3"></param>
         /// <returns></returns>
-        internal Vector3 NewPitch(Vector3 vector3, Vector3 rotate)
+        internal Vector3 NewPitch(Vector3 vector3, double rotate)
         {
-            var s = (float)Math.Sin(rotate.Y);
-            var c = (float)Math.Cos(rotate.Y);
+            var s = (float)Math.Sin(rotate);
+            var c = (float)Math.Cos(rotate);
 
             var x = vector3.X * c + vector3.Z * s;
             var y = vector3.Y;
@@ -111,10 +111,10 @@ namespace Scroll.Battle
         /// </summary>
         /// <param name="vector3"></param>
         /// <returns></returns>
-        internal Vector3 NewRoll(Vector3 vector3,Vector3 rotate)
+        internal Vector3 NewRoll(Vector3 vector3,double rotate)
         {
-            var s = (float)Math.Sin(rotate.Z);
-            var c = (float)Math.Cos(rotate.Z);
+            var s = (float)Math.Sin(rotate);
+            var c = (float)Math.Cos(rotate);
 
             var x = vector3.X * c - vector3.Y * s;
             var y = vector3.X * s + vector3.Y * c;

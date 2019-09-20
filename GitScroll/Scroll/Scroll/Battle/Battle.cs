@@ -30,6 +30,7 @@ namespace Scroll.Battle
         private Field.BlockCollision blockCollision;
 
         private List<VirtualObject> objects;
+        private List<BattleEffect.VirtualEffect> battleEffects;
 
         private Matrix projection;
 
@@ -106,6 +107,7 @@ namespace Scroll.Battle
             fields.Add(new Field.Field(this, renderer, Field.Field.SetType.FRONT));
             blocks = new List<Field.Block>();
             objects = new List<VirtualObject>();
+            battleEffects = new List<BattleEffect.VirtualEffect>();
             MapSet();
         }
 
@@ -203,8 +205,9 @@ namespace Scroll.Battle
             arts.ForEach(a => a.StartUpdate(deltaTime));
             //effectSystems.ForEach(es => es.startUpdate(deltaTime));
             objects.ForEach(o => o.StartUpdate(deltaTime));
+            battleEffects.ForEach(be => be.StartUpdate(deltaTime));
 
-            InputYawPitchRoll();
+            //InputYawPitchRoll();
 
         }
 
@@ -233,6 +236,7 @@ namespace Scroll.Battle
             player.MoveUpdate(deltaTime);
             enemies.ForEach(e => e.MoveUpdate(deltaTime));
             arts.ForEach(a => a.MoveUpdate(deltaTime, player.Position));
+            //battleEffects.ForEach(be => be.MoveUpdate(deltaTime));
         }
 
         /// <summary>
@@ -289,6 +293,7 @@ namespace Scroll.Battle
             arts.RemoveAll(a => a.Delete);
 
             objects.RemoveAll(o => o.Delete);
+            battleEffects.RemoveAll(be => be.Delete);
         }
 
 
@@ -306,6 +311,7 @@ namespace Scroll.Battle
             arts.ForEach(a => a.DrawUpdate());
             blocks.ForEach(b => b.DrawUpdate());
             objects.ForEach(o => o.DrawUpdate());
+            battleEffects.ForEach(be => be.DrawUpdate());
         }
 
         /// <summary>
@@ -424,9 +430,14 @@ namespace Scroll.Battle
             arts.Add(new Arts.Fire(this, renderer, position, direction,enemies));
         }
 
+        internal void AddBattleEffect(Vector3 position,VirtualObject baseObj,  double rotate)
+        {
+            battleEffects.Add(new BattleEffect.FireEffect(this,renderer,position, baseObj, rotate));
+        }
+
         public override void Draw(Output.Renderer renderer)
         {
-            fields.ForEach(f => f.Draw(renderer));
+            //fields.ForEach(f => f.Draw(renderer));
 
             blocks.ForEach(b => b.Draw(renderer));
 
@@ -435,6 +446,7 @@ namespace Scroll.Battle
             drawObjects.AddRange(enemies);
             drawObjects.AddRange(arts);
             drawObjects.AddRange(objects);
+            drawObjects.AddRange(battleEffects);
 
             if (rotateManager.cameraRotate.Y > 0)
             {

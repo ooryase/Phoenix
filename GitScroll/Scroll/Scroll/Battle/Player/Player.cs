@@ -160,6 +160,7 @@ namespace Scroll.Battle.Player
                 parent.PlayerArts(position, Direct);
                 attackMove = a;
                 attackMove.Normalize();
+                parent.AddBattleEffect(position, this,Math.Atan2(attackMove.Y,attackMove.X));
 
             }
 
@@ -439,25 +440,38 @@ namespace Scroll.Battle.Player
                 //else
                 {
                     TextureCoordinateSet(0f, 0f);
+                    VerticesSet(Billboard.PITCH_ONLY);
                 }
             }
 
             else if (state == State.RESPAWNN)
             {
                 TextureCoordinateSet(0f, 0f); //time割る数の増加で細かく
+                VerticesSet(Billboard.PITCH_ONLY);
             }
 
             else if (state == State.DEAD)
             {
                 TextureCoordinateSet(0f, 0f);
+                VerticesSet(Billboard.PITCH_ONLY);
+
             }
 
             else if (state == State.ATTACK)
             {
                 TextureCoordinateSet(1f, 0f);
+                hp = 1000f;
+
+
+                for (int i = 0; i < vertices.Count(); i++)
+                {
+                    vertices[i].Position = position + 
+                        parent.rotateManager.NewRoll( 
+                            parent.rotateManager.Pitch(baseVertexPosition[i]), Math.Atan2((double)attackMove.Y,(double)attackMove.X) + (double)direct * Math.PI );
+                }
+
             }
 
-            VerticesSet(Billboard.PITCH_ONLY);
             effect.Parameters["View"].SetValue(parent.View);
             effect.Parameters["Value"].SetValue(Value);
         }

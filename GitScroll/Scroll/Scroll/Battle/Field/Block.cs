@@ -35,6 +35,8 @@ namespace Scroll.Battle.Field
             this.position = position;
             this.BName = blockName;
             Coordinate();
+
+            effect.Parameters["RBG"].SetValue(new Vector3(0.4f,0.2f,0.1f));
         }
         protected override void Awake()
         {

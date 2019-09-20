@@ -45,6 +45,8 @@
   <ItemGroup>
     <Compile Include="Battle\Arts\Fire.cs" />
     <Compile Include="Battle\Battle.cs" />
+    <Compile Include="Battle\BattleEffect\FireEffect.cs" />
+    <Compile Include="Battle\BattleEffect\VirtualEffect.cs" />
     <Compile Include="Battle\BattleWindow.cs" />
     <Compile Include="Battle\Enemy\BigDog.cs" />
     <Compile Include="Battle\Enemy\Dragon.cs" />
@@ -82,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Sheader\Arts.fx" />
+    <Content Include="Content\Sheader\AttackFire.fx" />
     <Content Include="Content\Sheader\BackGraund.fx" />
     <Content Include="Content\Sheader\Block.fx" />
     <Content Include="Content\Sheader\NoobEnemy.fx" />
