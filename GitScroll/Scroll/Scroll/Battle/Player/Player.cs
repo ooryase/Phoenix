@@ -112,7 +112,7 @@ namespace Scroll.Battle.Player
         protected void StateUpdate(int deltaTime)
         {
             InvincibleUpdate(deltaTime);
-            hp -= 1.5f;
+            hp -= 2.5f;
             a++;
             switch (state)
             {
@@ -190,7 +190,7 @@ namespace Scroll.Battle.Player
             if (time > (int)State.ATTACK)
                 StateSet(State.FALL);
 
-            hp -= 3.5f;
+            hp -= 4.5f;
         }
 
         private void FallUpdate(int deltaTime)
@@ -206,9 +206,9 @@ namespace Scroll.Battle.Player
         {
             if (time > (int)State.DEAD)
             {
-                if (haiGage > 500)
+                if (haiGage > 1200)
                 {
-                    haiGage = 0;
+                    //haiGage = 0;
                     parent.CameraLengthSet(0.6f, 300);
                     StateSet(State.UP);
                 }
@@ -220,7 +220,10 @@ namespace Scroll.Battle.Player
             if (time > (int)State.UP)
             {
                 hp = 1000;
-                parent.CameraLengthSet(3.1f, 300);
+                if (haiGage >= 1200)
+                {
+                    parent.CameraLengthSet(3.1f, 300);
+                }
                 StateSet(State.RESPAWNN);
             }
         }
@@ -229,8 +232,6 @@ namespace Scroll.Battle.Player
         {
             if (time > (int)State.RESPAWNN)
             {
-                hp++;
-                Console.WriteLine("hpは" + hp + "でごわす");
                 Value = 0.1f;
                 parent.CameraLengthSet(1f, 500);
                 StateSet(State.NORMAL);
@@ -458,13 +459,12 @@ namespace Scroll.Battle.Player
             if (state == State.NORMAL)
             {
                 //1,2,2,3,4,4の順
-                var i = time / 1000;
-                i -= (time % 420 >= 200) ? 1 : 0;
-                i -= (time % 420 >= 420) ? 1 : 0;
+                //var i = time / 100 % 20;
+                //i -= (time % 420 >= 140) ? 1 : 0;
+                //i -= (time % 420 >= 350) ? 1 : 0;
 
-                TextureCoordinateSet(i, 0f);
-                if (i >= 4)
-                    i = 0;
+                TextureCoordinateSet(time / 200 % 5, 0f);
+
             }
 
             else if (state == State.RESPAWNN)
@@ -479,7 +479,8 @@ namespace Scroll.Battle.Player
 
             else if (state == State.ATTACK)
             {
-                TextureCoordinateSet(1f, 1f);
+                var i = (time >= 200) ? 8 : time / 200;
+                TextureCoordinateSet(i, 1f);
             }
 
             VerticesSet(Billboard.PITCH_ONLY);
@@ -577,7 +578,7 @@ namespace Scroll.Battle.Player
             Value += 0.1f;
             if (haiGage >= maxHaigage)
             {
-                haiGage = 1000;
+                haiGage = 1500;
             }
         }
 
