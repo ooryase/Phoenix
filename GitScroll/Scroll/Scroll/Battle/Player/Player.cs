@@ -57,11 +57,12 @@ namespace Scroll.Battle.Player
         float Value; //色々色々色々色々色々色々色々
         float maxValue; //著作権侵害(Valueの最大値)flo
         float maxHp;
+        float a = 0;
 
 
         protected override void Awake()
         {
-            Scale = 0.5f; //画像描画のサイズ
+            Scale = 0.9f; //画像描画のサイズ
         }
 
         protected override void NameSet()
@@ -88,6 +89,7 @@ namespace Scroll.Battle.Player
             maxHaigage = 1000f;
             Value = 0.1f;
             maxValue = 1f;
+            a = 0;
         }
 
         /// <summary>
@@ -111,6 +113,7 @@ namespace Scroll.Battle.Player
         {
             InvincibleUpdate(deltaTime);
             hp -= 1.5f;
+            a++;
             switch (state)
             {
                 case State.NORMAL:
@@ -216,6 +219,7 @@ namespace Scroll.Battle.Player
         {
             if (time > (int)State.UP)
             {
+                hp = 1000;
                 parent.CameraLengthSet(3.1f, 300);
                 StateSet(State.RESPAWNN);
             }
@@ -223,9 +227,10 @@ namespace Scroll.Battle.Player
 
         private void RespawnUpdate(int deltaTime)
         {
-            hp = 1000;
             if (time > (int)State.RESPAWNN)
             {
+                hp++;
+                Console.WriteLine("hpは" + hp + "でごわす");
                 Value = 0.1f;
                 parent.CameraLengthSet(1f, 500);
                 StateSet(State.NORMAL);
@@ -337,6 +342,7 @@ namespace Scroll.Battle.Player
 
         private void RespawnUpdate()
         {
+            hp++;
             if (State.RESPAWNN != state)
                 return;
 
@@ -451,19 +457,14 @@ namespace Scroll.Battle.Player
         {
             if (state == State.NORMAL)
             {
-                //if (move)
-                //{
-                //    //1,2,2,3,4,4の順
-                //    var i = time / 70 % 6;
-                //    i -= (time % 420 >= 140) ? 1 : 0;
-                //    i -= (time % 420 >= 350) ? 1 : 0;
+                //1,2,2,3,4,4の順
+                var i = time / 1000;
+                i -= (time % 420 >= 200) ? 1 : 0;
+                i -= (time % 420 >= 420) ? 1 : 0;
 
-                //    TextureCoordinateSet(i, 1f);
-                //}
-                //else
-                {
-                    TextureCoordinateSet(0f, 0f);
-                }
+                TextureCoordinateSet(i, 0f);
+                if (i >= 4)
+                    i = 0;
             }
 
             else if (state == State.RESPAWNN)
@@ -473,12 +474,12 @@ namespace Scroll.Battle.Player
 
             else if (state == State.DEAD)
             {
-                TextureCoordinateSet(0f, 0f);
+                TextureCoordinateSet(0f, 2f);
             }
 
             else if (state == State.ATTACK)
             {
-                TextureCoordinateSet(1f, 0f);
+                TextureCoordinateSet(1f, 1f);
             }
 
             VerticesSet(Billboard.PITCH_ONLY);
@@ -494,15 +495,15 @@ namespace Scroll.Battle.Player
         /// <param name="y"></param>
         private void TextureCoordinateSet(float x, float y) //アニメーション関係
         {
-            vertices[0].TextureCoordinate.X = 0.5f * (x + (float)Direct);
-            vertices[1].TextureCoordinate.X = 0.5f * (x + 1f - (float)Direct);
-            vertices[2].TextureCoordinate.X = 0.5f * (x + 1f - (float)Direct);
-            vertices[3].TextureCoordinate.X = 0.5f * (x + (float)Direct);
+            vertices[0].TextureCoordinate.X = 0.1f * (x + (float)Direct);
+            vertices[1].TextureCoordinate.X = 0.1f * (x + 1f - (float)Direct);
+            vertices[2].TextureCoordinate.X = 0.1f * (x + 1f - (float)Direct);
+            vertices[3].TextureCoordinate.X = 0.1f * (x + (float)Direct);
 
-            vertices[0].TextureCoordinate.Y = 1f * (y);
-            vertices[1].TextureCoordinate.Y = 1f * (y + 1f);
-            vertices[2].TextureCoordinate.Y = 1f * (y);
-            vertices[3].TextureCoordinate.Y = 1f * (y + 1f);
+            vertices[0].TextureCoordinate.Y = 0.25f * (y);
+            vertices[1].TextureCoordinate.Y = 0.25f * (y + 1f);
+            vertices[2].TextureCoordinate.Y = 0.25f * (y);
+            vertices[3].TextureCoordinate.Y = 0.25f * (y + 1f);
         }
 
         public override void Draw(Output.Renderer renderer)
@@ -528,7 +529,7 @@ namespace Scroll.Battle.Player
             renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, (int)hp, 50), 1.0f);
             //renderer.DrawTexture(new Vector2(0,50), new Rectangle(0, 0, (int)haiGage,50),1.0f);
 
-            if(state == State.CLEAR && time > 1000)
+            if (state == State.CLEAR && time > 1000)
                 renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, 1280, 960), (time - 1000f) / 500f);
 
         }
