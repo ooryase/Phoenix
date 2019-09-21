@@ -157,11 +157,11 @@ namespace Scroll.Battle.Player
             {
                 StateSet(State.ATTACK);
                 parent.CameraLengthSet(1.5f, 700); //引数はどれくらい引くかと何秒かけて引くか
-                parent.PlayerArts(position, Direct);
                 attackMove = a;
                 attackMove.Normalize();
-                parent.AddBattleEffect(position, this,Math.Atan2(attackMove.Y,attackMove.X));
-
+                parent.AddBattleEffect(
+                    new BattleEffect.FireEffect(parent, parent.GetRenderer(),this, position,
+                    Math.Atan2(attackMove.Y, attackMove.X)));
             }
 
             //var d = new Vector3(InputContllorer.StickLeftX(), InputContllorer.StickLeftY(), 0f); ダッシュ用
@@ -460,8 +460,6 @@ namespace Scroll.Battle.Player
             else if (state == State.ATTACK)
             {
                 TextureCoordinateSet(1f, 0f);
-                hp = 1000f;
-
 
                 for (int i = 0; i < vertices.Count(); i++)
                 {

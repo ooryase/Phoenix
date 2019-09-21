@@ -9,26 +9,21 @@ using Scroll.Output;
 namespace Scroll.Battle.BattleEffect
 {
 
-    class FireEffect : VirtualEffect
+    class DeathFire : VirtualEffect
     {
         private float sheaderTop;
         private float sheaderBottom;
         private Vector3 sheaderRBG;
 
-        private double rotate;
-
-        public FireEffect(Battle battle, Renderer renderer, VirtualObject baseObj, Vector3 position ,double rotate) : base(battle, renderer,baseObj,position)
+        public DeathFire(Battle battle, Renderer renderer,VirtualObject baseObj, Vector3 position) : base(battle, renderer,baseObj, position)
         {
-            this.rotate = rotate;
-
             sheaderTop = 1f;
             sheaderBottom = 1f;
-            sheaderRBG = new Vector3(1.0f,0,0);
+            sheaderRBG = new Vector3(1.0f, 0, 0);
 
             effect.Parameters["Top"].SetValue(sheaderTop);
             effect.Parameters["Bottom"].SetValue(sheaderBottom);
             effect.Parameters["RBG"].SetValue(sheaderRBG);
-
         }
         protected override void Awake()
         {
@@ -37,8 +32,8 @@ namespace Scroll.Battle.BattleEffect
 
         protected override void NameSet()
         {
-            effectName = "AttackFire";
-            textureName = "FireEffect";
+            effectName = "DeathFire";
+            textureName = "FireEffect2";
         }
 
         public override void StartUpdate(int deltaTime)
@@ -59,12 +54,11 @@ namespace Scroll.Battle.BattleEffect
             else
                 sheaderTop = -0.5f;
 
-            if(time > 200)
+            if (time > 200)
                 sheaderBottom -= deltaTime * 0.005f;
             if (time >= 500)
                 delete = true;
         }
-
         public override void MoveUpdate(int deltaTime)
         {
             position = baseObj.Position;
@@ -80,14 +74,7 @@ namespace Scroll.Battle.BattleEffect
 
         public override void DrawUpdate()
         {
-
-            for (int i = 0; i < vertices.Count(); i++)
-            {
-                vertices[i].Position = position +
-                    parent.rotateManager.NewRoll(
-                        parent.rotateManager.Pitch(baseVertexPosition[i]), rotate);
-            }
-
+            VerticesSet(Billboard.PITCH_ONLY);
 
             effect.Parameters["View"].SetValue(parent.View);
             effect.Parameters["Top"].SetValue(sheaderTop);

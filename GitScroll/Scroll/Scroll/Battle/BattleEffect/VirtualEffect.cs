@@ -11,8 +11,11 @@ namespace Scroll.Battle.BattleEffect
 {
     abstract class VirtualEffect : VirtualObject
     {
-        public VirtualEffect(Battle battle, Renderer renderer, Vector3 position) : base(battle, renderer)
+        protected VirtualObject baseObj;
+
+        public VirtualEffect(Battle battle, Renderer renderer, VirtualObject baseObj, Vector3 position) : base(battle, renderer)
         {
+            this.baseObj = baseObj;
             this.position = position;
         }
 
@@ -21,6 +24,8 @@ namespace Scroll.Battle.BattleEffect
         abstract protected override void NameSet();
 
         abstract public override void StartUpdate(int deltaTime);
+
+        abstract public void MoveUpdate(int deltaTime);
 
         abstract public override void OnCollisionEnter(VirtualObject virtualObject);
 

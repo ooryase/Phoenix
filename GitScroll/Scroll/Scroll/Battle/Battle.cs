@@ -72,6 +72,9 @@ namespace Scroll.Battle
         private int time;
         private int deltaTime;
 
+        RasterizerState depthBiasEnabledField;
+        RasterizerState depthBiasEnabledBlock;
+
         public Matrix Projection { get => projection; set => projection = value; }
         public Matrix View { get => view; set => view = value; }
         public Vector3 CameraLookPos { get => cameraLookPos; private set => cameraLookPos = value; }
@@ -109,6 +112,17 @@ namespace Scroll.Battle
             objects = new List<VirtualObject>();
             battleEffects = new List<BattleEffect.VirtualEffect>();
             MapSet();
+
+            depthBiasEnabledField = new RasterizerState
+            {
+                DepthBias = 0.2f,
+                CullMode = CullMode.None
+            };
+            depthBiasEnabledBlock = new RasterizerState
+            {
+                DepthBias = 0.1f,
+                CullMode = CullMode.None
+            };
         }
 
         private Matrix CreateProjection()
@@ -236,7 +250,7 @@ namespace Scroll.Battle
             player.MoveUpdate(deltaTime);
             enemies.ForEach(e => e.MoveUpdate(deltaTime));
             arts.ForEach(a => a.MoveUpdate(deltaTime, player.Position));
-            //battleEffects.ForEach(be => be.MoveUpdate(deltaTime));
+            battleEffects.ForEach(be => be.MoveUpdate(deltaTime));
         }
 
         /// <summary>
@@ -430,17 +444,20 @@ namespace Scroll.Battle
             arts.Add(new Arts.Fire(this, renderer, position, direction,enemies));
         }
 
-        internal void AddBattleEffect(Vector3 position,VirtualObject baseObj,  double rotate)
+        internal void AddBattleEffect(BattleEffect.VirtualEffect virtualEffect)
         {
-            battleEffects.Add(new BattleEffect.FireEffect(this,renderer,position, baseObj, rotate));
+            battleEffects.Add(virtualEffect);
         }
 
         public override void Draw(Output.Renderer renderer)
         {
-            //fields.ForEach(f => f.Draw(renderer));
+            parent.GraphicsDevice.RasterizerState = depthBiasEnabledField;
+            fields.ForEach(f => f.Draw(renderer));
 
+            parent.GraphicsDevice.RasterizerState = depthBiasEnabledBlock;
             blocks.ForEach(b => b.Draw(renderer));
 
+            parent.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             List<VirtualObject> drawObjects = new List<VirtualObject>();
             drawObjects.Add(player);
             drawObjects.AddRange(enemies);
@@ -448,21 +465,10 @@ namespace Scroll.Battle
             drawObjects.AddRange(objects);
             drawObjects.AddRange(battleEffects);
 
-            if (rotateManager.cameraRotate.Y > 0)
+            var obj = drawObjects.OrderBy(o => Vector3.DistanceSquared(GetCameraPos(),o.Position));
+            foreach(var o in obj)
             {
-                var obj = drawObjects.OrderBy(o => o.Position.X);
-                foreach(var o in obj)
-                {
-                    o.Draw(renderer);
-                }
-            }
-            else
-            {
-                var obj = drawObjects.OrderByDescending(o => o.Position.X);
-                foreach (var o in obj)
-                {
-                    o.Draw(renderer);
-                }
+                o.Draw(renderer);
             }
 
             player.DrawParam(renderer);
@@ -478,6 +484,17 @@ namespace Scroll.Battle
         internal void GameClearSet()
         {
             state = State.CLEAR;
+        }
+
+        public Vector3 GetCameraPos()
+        {
+            return CameraLookPos + rotateManager.YawPitchRoll(Vector3.UnitZ) * cameraLength;
+
+        }
+
+        internal Renderer GetRenderer()
+        {
+            return renderer;
         }
 
     }

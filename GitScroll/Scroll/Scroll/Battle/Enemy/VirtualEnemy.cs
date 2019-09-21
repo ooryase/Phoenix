@@ -65,7 +65,10 @@ namespace Scroll.Battle.Enemy
                 StateSet(State.DEAD);
 
                 Player.Player p = (Player.Player)virtualObject;
-                p.AddAsh(haigage); 
+                p.AddAsh(haigage);
+
+                parent.AddBattleEffect(
+                    new BattleEffect.DeathFire(parent, parent.GetRenderer(),this, position));
             }
         }
 

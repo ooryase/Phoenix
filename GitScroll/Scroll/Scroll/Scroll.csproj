@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Battle\Arts\Fire.cs" />
     <Compile Include="Battle\Battle.cs" />
+    <Compile Include="Battle\BattleEffect\DeathFire.cs" />
     <Compile Include="Battle\BattleEffect\FireEffect.cs" />
     <Compile Include="Battle\BattleEffect\VirtualEffect.cs" />
     <Compile Include="Battle\BattleWindow.cs" />
@@ -87,6 +88,7 @@
     <Content Include="Content\Sheader\AttackFire.fx" />
     <Content Include="Content\Sheader\BackGraund.fx" />
     <Content Include="Content\Sheader\Block.fx" />
+    <Content Include="Content\Sheader\DeathFire.fx" />
     <Content Include="Content\Sheader\NoobEnemy.fx" />
     <Content Include="Content\Sheader\Player.fx" />
     <Content Include="Icon.ico" />
