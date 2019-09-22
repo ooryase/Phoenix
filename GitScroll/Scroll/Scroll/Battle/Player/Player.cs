@@ -24,10 +24,10 @@ namespace Scroll.Battle.Player
         {
             NORMAL,
             RESPAWNN = 1010, //復活後バーンってなる状態上昇
-            ATTACK = 300,
+            ATTACK = 250,
             DEAD = 1000,//地面に落ちるまで
             FALL,
-            UP = 1005,
+            UP = 1505,
             CLEAR
         }
         protected State state;
@@ -62,7 +62,7 @@ namespace Scroll.Battle.Player
 
         protected override void Awake()
         {
-            Scale = 0.9f; //画像描画のサイズ
+            Scale = 0.5f; //画像描画のサイズ
         }
 
         protected override void NameSet()
@@ -112,7 +112,7 @@ namespace Scroll.Battle.Player
         protected void StateUpdate(int deltaTime)
         {
             InvincibleUpdate(deltaTime);
-            hp -= 2.5f;
+            hp -= 1.85f;
             a++;
             switch (state)
             {
