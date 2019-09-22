@@ -67,7 +67,7 @@ namespace Scroll.GameSystem
             renderer.LoadContent("f", "Textures/");
             renderer.LoadContent("dummyrock", "Textures/");
             renderer.LoadContent("Maptip", "Textures/");
-            renderer.LoadContent("MapChip", "Textures/");
+            //renderer.LoadContent("MapChip", "Textures/");
             renderer.LoadContent("FireEffect", "Textures/");
             renderer.LoadContent("FireEffect2", "Textures/");
 

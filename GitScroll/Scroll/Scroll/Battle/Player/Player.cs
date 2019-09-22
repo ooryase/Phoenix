@@ -189,7 +189,7 @@ namespace Scroll.Battle.Player
                 StateSet(State.NORMAL);
             }
             if (time > (int)State.ATTACK)
-                StateSet(State.FALL);
+                StateSet(State.DEAD);
 
             hp -= 4.5f;
         }
@@ -207,7 +207,7 @@ namespace Scroll.Battle.Player
         {
             if (time > (int)State.DEAD)
             {
-                if (haiGage > 1200)
+                if (haiGage >= 1200)
                 {
                     //haiGage = 0;
                     parent.CameraLengthSet(0.6f, 300);
@@ -220,7 +220,6 @@ namespace Scroll.Battle.Player
         {
             if (time > (int)State.UP)
             {
-                hp = 1000;
                 if (haiGage >= 1200)
                 {
                     parent.CameraLengthSet(3.1f, 300);
@@ -233,6 +232,8 @@ namespace Scroll.Battle.Player
         {
             if (time > (int)State.RESPAWNN)
             {
+                hp = 1000;
+                haiGage = 0;
                 Value = 0.1f;
                 parent.CameraLengthSet(1f, 500);
                 StateSet(State.NORMAL);
@@ -344,7 +345,6 @@ namespace Scroll.Battle.Player
 
         private void RespawnUpdate()
         {
-            hp++;
             if (State.RESPAWNN != state)
                 return;
 
@@ -466,7 +466,6 @@ namespace Scroll.Battle.Player
 
                 TextureCoordinateSet(time / 200 % 5, 0f);
                 VerticesSet(Billboard.PITCH_ONLY);
-
             }
 
             else if (state == State.RESPAWNN)
@@ -477,7 +476,7 @@ namespace Scroll.Battle.Player
 
             else if (state == State.DEAD)
             {
-                TextureCoordinateSet(0f, 2f);
+                TextureCoordinateSet(time / 100 % 10 ,2f);
                 VerticesSet(Billboard.PITCH_ONLY);
 
             }

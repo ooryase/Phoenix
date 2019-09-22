@@ -45,7 +45,7 @@ namespace Scroll.Battle.Field
 
         protected override void NameSet()
         {
-            textureName = "MapChip";
+            textureName = "Maptip";
             effectName = "Block";
         }
         private void Coordinate()
