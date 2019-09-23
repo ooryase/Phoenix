@@ -54,8 +54,8 @@ namespace Scroll.Battle
                 position.X += BattleWindow.Left - rf.Left;
 
             if (rf.Right > BattleWindow.Right)
-                position.X += BattleWindow.Right - rf.Right;
-                */
+                position.X += BattleWindow.Right - rf.Right;*/
+                
         }
 
         public override void EndUpdate()

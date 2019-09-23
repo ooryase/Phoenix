@@ -101,7 +101,7 @@ namespace Scroll.Battle.Enemy
         protected abstract void PerceptionStateUpdate(int deltaTime);
         protected void DeadStateUpdate(int deltaTime)
         {
-            if (time > 960)
+            if (time > 480)//もとは960
                 delete = true;
         }
         protected virtual void AttackStateUpdate(int deltaTime) { }

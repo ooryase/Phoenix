@@ -50,6 +50,7 @@ namespace Scroll.Battle.Enemy
 
             position += physics.velocity * physics.speed * deltaTime;
             FieldMove();
+            physics.isGraund = false;
         }
         protected override void NormalStateUpdate(int deltaTime)
         {
