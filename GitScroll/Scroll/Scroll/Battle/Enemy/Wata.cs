@@ -41,6 +41,9 @@ namespace Scroll.Battle.Enemy
             if (state == State.NORMAL)
                 physics.velocity.Y = (float)Math.Sin(time / 1000.0) * 0.03f;
 
+            if (state == State.NORMAL)
+                position.Y = basePosition.Y + (float)Math.Sin(time / 1000.0);
+
             if (scaleChenger < 11)
                 ScaleUp(deltaTime);
 

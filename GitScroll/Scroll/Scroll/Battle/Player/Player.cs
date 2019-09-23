@@ -77,7 +77,7 @@ namespace Scroll.Battle.Player
         public Player(Battle battle, Renderer renderer) : base(battle, renderer)
         {
             float x = 3f;
-            float y = 5f;
+            float y = 2f;
 
             float blockSize = 0.5f;
             position = new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0);
@@ -122,6 +122,7 @@ namespace Scroll.Battle.Player
         {
             InvincibleUpdate(deltaTime);
             a++;
+            
             switch (state)
             {
                 case State.NORMAL:
@@ -172,10 +173,11 @@ namespace Scroll.Battle.Player
 
         protected void NormalStateUpdate(int deltaTime)
         {
+            hp -= 0.45f;
             if (parent.BattleState != Battle.State.NORMAL)
                 return;
 
-            hp -= 1.85f;
+            
 
             var a = new Vector3(InputContllorer.StickLeftX(), InputContllorer.StickLeftY(), 0f);
             if (InputContllorer.IsPush(Buttons.A) && a != Vector3.Zero)
@@ -219,7 +221,7 @@ namespace Scroll.Battle.Player
             if (time > (int)State.ATTACK)
                 StateSet(State.DEAD);
 
-            hp -= 6.35f;
+            hp -= 6.6f;
         }
 
         private void FallUpdate(int deltaTime)
