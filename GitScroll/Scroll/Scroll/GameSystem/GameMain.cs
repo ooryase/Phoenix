@@ -26,7 +26,7 @@ namespace Scroll.GameSystem
             scenes = new List<Scene>();
             addScenes = new List<Scene>();
 
-            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferWidth = 1280; 
             graphics.PreferredBackBufferHeight = 960;
 
 
@@ -62,7 +62,7 @@ namespace Scroll.GameSystem
             renderer.LoadContent("Back", "Textures/");
             renderer.LoadContent("phoenix", "Textures/");
             renderer.LoadContent("wata", "Textures/");
-            renderer.LoadContent("inu", "Textures/");
+            renderer.LoadContent("flog", "textures/");
             renderer.LoadContent("Wyvern", "Textures/");
             renderer.LoadContent("f", "Textures/");
             renderer.LoadContent("dummyrock", "Textures/");

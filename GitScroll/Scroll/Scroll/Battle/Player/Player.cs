@@ -24,10 +24,10 @@ namespace Scroll.Battle.Player
         {
             NORMAL,
             RESPAWNN = 1010, //復活後バーンってなる状態上昇
-            ATTACK = 300,
+            ATTACK = 250,
             DEAD = 1000,//地面に落ちるまで
             FALL,
-            UP = 1005,
+            UP = 1505,
             CLEAR,
             FAILED
         }
@@ -64,7 +64,7 @@ namespace Scroll.Battle.Player
 
         protected override void Awake()
         {
-            Scale = 0.9f; //画像描画のサイズ
+            Scale = 0.5f; //画像描画のサイズ
         }
 
         protected override void NameSet()
@@ -171,7 +171,7 @@ namespace Scroll.Battle.Player
             if (parent.BattleState != Battle.State.NORMAL)
                 return;
 
-            hp -= 2.5f;
+            hp -= 1.85f;
 
             var a = new Vector3(InputContllorer.StickLeftX(), InputContllorer.StickLeftY(), 0f);
             if (InputContllorer.IsPush(Buttons.A) && a != Vector3.Zero)
@@ -201,9 +201,9 @@ namespace Scroll.Battle.Player
                 StateSet(State.NORMAL);
             }
             if (time > (int)State.ATTACK)
-                StateSet(State.FALL);
+                StateSet(State.DEAD);
 
-            hp -= 7f;
+            hp -= 6.35f;
         }
 
         private void FallUpdate(int deltaTime)
@@ -219,7 +219,7 @@ namespace Scroll.Battle.Player
         {
             if (time > (int)State.DEAD)
             {
-                if (haiGage > 1200)
+                if (haiGage >= 1200)
                 {
                     //haiGage = 0;
                     parent.CameraLengthSet(0.6f, 300);
@@ -491,7 +491,6 @@ namespace Scroll.Battle.Player
 
                 TextureCoordinateSet(time / 200 % 5, 0f);
                 VerticesSet(Billboard.PITCH_ONLY);
-
             }
 
             else if (state == State.RESPAWNN)
@@ -502,7 +501,7 @@ namespace Scroll.Battle.Player
 
             else if (state == State.DEAD)
             {
-                TextureCoordinateSet(0f, 2f);
+                TextureCoordinateSet(time / 100 % 10 ,2f);
                 VerticesSet(Billboard.PITCH_ONLY);
 
             }
