@@ -24,7 +24,8 @@ namespace Scroll.Battle.Player
         {
             NORMAL,
             RESPAWNN = 1010, //復活後バーンってなる状態上昇
-            ATTACK = 250,
+            TAME,
+            ATTACK = 350,
             DEAD = 1000,//地面に落ちるまで
             FALL,
             UP = 1505,
@@ -129,6 +130,9 @@ namespace Scroll.Battle.Player
                 case State.ATTACK:
                     AttackStateUpdate(deltaTime);
                     break;
+                case State.TAME:
+                    TameStateUpdate(deltaTime);
+                    break;
                 case State.FALL:
                     FallUpdate(deltaTime);
                     break;
@@ -176,13 +180,10 @@ namespace Scroll.Battle.Player
             var a = new Vector3(InputContllorer.StickLeftX(), InputContllorer.StickLeftY(), 0f);
             if (InputContllorer.IsPush(Buttons.A) && a != Vector3.Zero)
             {
-                StateSet(State.ATTACK);
+                StateSet(State.TAME);
                 parent.CameraLengthSet(2f, 700); //引数はどれくらい引くかと何秒かけて引くか
                 attackMove = a;
                 attackMove.Normalize();
-                parent.AddBattleEffect(
-                    new BattleEffect.FireEffect(parent, parent.GetRenderer(),this, position,
-                    Math.Atan2(attackMove.Y, attackMove.X)));
             }
 
             //var d = new Vector3(InputContllorer.StickLeftX(), InputContllorer.StickLeftY(), 0f); ダッシュ用
@@ -191,6 +192,21 @@ namespace Scroll.Battle.Player
             {
                 StateSet(State.FALL);
             }
+        }
+
+        private void TameStateUpdate(int deltaTime)
+        {
+            if (time >= 240)
+            {
+                StateSet(State.ATTACK);
+                parent.CameraLengthSet(2f, 700); //引数はどれくらい引くかと何秒かけて引くか
+                parent.AddBattleEffect(
+                    new BattleEffect.FireEffect(parent, parent.GetRenderer(), this, position,
+                    Math.Atan2(attackMove.Y, attackMove.X)));
+            }
+
+            hp -= 1.85f;
+
         }
 
         private void AttackStateUpdate(int deltaTime)
@@ -302,7 +318,8 @@ namespace Scroll.Battle.Player
         }
         private void MoveInputUpdate(int deltaTime)
         {
-            if (parent.BattleState != Battle.State.NORMAL)
+            if (parent.BattleState != Battle.State.NORMAL ||
+                state != State.NORMAL)
             {
                 // move = false;
                 return;
@@ -341,7 +358,8 @@ namespace Scroll.Battle.Player
         {
             if (State.ATTACK != state)
                 return;
-            physics.velocity = attackMove;
+
+            physics.velocity = attackMove * 1.1f;
         }
 
         private void FallUpdate()
@@ -482,41 +500,53 @@ namespace Scroll.Battle.Player
 
         public override void DrawUpdate()
         {
-            if (state == State.NORMAL)
+            switch (state)
             {
-                //1,2,2,3,4,4の順
-                //var i = time / 100 % 20;
-                //i -= (time % 420 >= 140) ? 1 : 0;
-                //i -= (time % 420 >= 350) ? 1 : 0;
+                case State.NORMAL:
+                    TextureCoordinateSet(time / 200 % 5, 0f);
+                    VerticesSet(Billboard.PITCH_ONLY);
+                    break;
+                case State.TAME:
+                    TextureCoordinateSet(time / 80 + 2f, 1f);
 
-                TextureCoordinateSet(time / 200 % 5, 0f);
-                VerticesSet(Billboard.PITCH_ONLY);
-            }
+                    for (int i = 0; i < vertices.Count(); i++)
+                    {
+                        vertices[i].Position = position +
+                            parent.rotateManager.NewRoll(
+                                parent.rotateManager.Pitch(baseVertexPosition[i]), Math.Atan2((double)attackMove.Y, (double)attackMove.X) + (double)direct * Math.PI);
+                    }
+                    break;
+                case State.ATTACK:
+                    var temp = time / 80 % 4f + 4f;
+                    TextureCoordinateSet(temp, 1f);
 
-            else if (state == State.RESPAWNN)
-            {
-                TextureCoordinateSet(0f, 0f); //time割る数の増加で細かく
-                VerticesSet(Billboard.PITCH_ONLY);
-            }
-
-            else if (state == State.DEAD)
-            {
-                TextureCoordinateSet(time / 100 % 10 ,2f);
-                VerticesSet(Billboard.PITCH_ONLY);
-
-            }
-
-            else if (state == State.ATTACK)
-            {
-                var temp = (time >= 200) ? 8 : time / 200;
-                TextureCoordinateSet(temp, 1f);
-
-                for (int i = 0; i < vertices.Count(); i++)
-                {
-                    vertices[i].Position = position + 
-                        parent.rotateManager.NewRoll( 
-                            parent.rotateManager.Pitch(baseVertexPosition[i]), Math.Atan2((double)attackMove.Y,(double)attackMove.X) + (double)direct * Math.PI );
-                }
+                    for (int i = 0; i < vertices.Count(); i++)
+                    {
+                        vertices[i].Position = position +
+                            parent.rotateManager.NewRoll(
+                                parent.rotateManager.Pitch(baseVertexPosition[i]), Math.Atan2((double)attackMove.Y, (double)attackMove.X) + (double)direct * Math.PI);
+                    }
+                break;
+                case State.FALL:
+                    VerticesSet(Billboard.PITCH_ONLY);
+                    break;
+                case State.DEAD:
+                    TextureCoordinateSet(time / 100 % 10, 2f);
+                    VerticesSet(Billboard.PITCH_ONLY);
+                    break;
+                case State.UP:
+                    VerticesSet(Billboard.PITCH_ONLY);
+                    break;
+                case State.RESPAWNN:
+                    TextureCoordinateSet(0f, 0f); //time割る数の増加で細かく
+                    VerticesSet(Billboard.PITCH_ONLY);
+                    break;
+                case State.CLEAR:
+                    VerticesSet(Billboard.PITCH_ONLY);
+                    break;
+                case State.FAILED:
+                    VerticesSet(Billboard.PITCH_ONLY);
+                    break;
             }
 
             effect.Parameters["View"].SetValue(parent.View);
