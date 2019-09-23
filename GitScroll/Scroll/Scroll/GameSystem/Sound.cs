@@ -145,7 +145,7 @@ namespace Scroll.GameSystem
             se.Add(name, contentManager.Load<SoundEffect>(filepath + name));
         }
 
-        public void PlaeSE(string name)
+        public void PlaySE(string name)
         {
             Debug.Assert(se.ContainsKey(name), ErrorMessage(name));
             se[name].Play();
