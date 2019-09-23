@@ -43,7 +43,7 @@ namespace Scroll.Battle
         protected void FieldMove()
         {
 
-            var rf = GetCollisionRectangle();
+            /*var rf = GetCollisionRectangle();
 
             if (physics.isGraund = rf.Bottom < BattleWindow.Down)
             {
@@ -55,7 +55,7 @@ namespace Scroll.Battle
 
             if (rf.Right > BattleWindow.Right)
                 position.X += BattleWindow.Right - rf.Right;
-
+                */
         }
 
         public override void EndUpdate()

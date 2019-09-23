@@ -47,6 +47,7 @@
     <Compile Include="Battle\Battle.cs" />
     <Compile Include="Battle\BattleEffect\DeathFire.cs" />
     <Compile Include="Battle\BattleEffect\FireEffect.cs" />
+    <Compile Include="Battle\BattleEffect\ReBarthEffect.cs" />
     <Compile Include="Battle\BattleEffect\VirtualEffect.cs" />
     <Compile Include="Battle\BattleWindow.cs" />
     <Compile Include="Battle\Enemy\BigDog.cs" />
@@ -91,6 +92,7 @@
     <Content Include="Content\Sheader\DeathFire.fx" />
     <Content Include="Content\Sheader\NoobEnemy.fx" />
     <Content Include="Content\Sheader\Player.fx" />
+    <Content Include="Content\Sheader\ReBarthFire.fx" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>

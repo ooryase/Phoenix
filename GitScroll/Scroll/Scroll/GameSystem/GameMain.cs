@@ -69,6 +69,7 @@ namespace Scroll.GameSystem
             renderer.LoadContent("Maptip", "Textures/");
             renderer.LoadContent("FireEffect", "Textures/");
             renderer.LoadContent("FireEffect2", "Textures/");
+            renderer.LoadContent("ReBarth", "Textures/");
 
             renderer.LoadFontContent("k8x12L");
             renderer.LoadFontContent("k8x12LL","Fonts/");
@@ -81,6 +82,7 @@ namespace Scroll.GameSystem
             renderer.LoadEffectContent("Block", "Sheader/");
             renderer.LoadEffectContent("AttackFire", "Sheader/");
             renderer.LoadEffectContent("DeathFire", "Sheader/");
+            renderer.LoadEffectContent("ReBarthFire", "Sheader/");
 
         }
 

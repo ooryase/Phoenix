@@ -183,15 +183,15 @@ namespace Scroll.Battle.Field
                 case SetType.BACK:  i = 1f; break;
                 default:            i = 1;  break;
             }
-            vertices[0].TextureCoordinate.Y = 0.5f * (i);
-            vertices[1].TextureCoordinate.Y = 0.5f * (i + 1f);
-            vertices[2].TextureCoordinate.Y = 0.5f * (i);
-            vertices[3].TextureCoordinate.Y = 0.5f * (i + 1f);
+            //vertices[0].TextureCoordinate.Y = 0.5f * (i);
+            //vertices[1].TextureCoordinate.Y = 0.5f * (i + 1f);
+            //vertices[2].TextureCoordinate.Y = 0.5f * (i);
+            //vertices[3].TextureCoordinate.Y = 0.5f * (i + 1f);
 
-            vertices[4].TextureCoordinate.Y = 0.5f * (i);
-            vertices[5].TextureCoordinate.Y = 0.5f * (i + 1f);
-            vertices[6].TextureCoordinate.Y = 0.5f * (i);
-            vertices[7].TextureCoordinate.Y = 0.5f * (i + 1f);
+            //vertices[4].TextureCoordinate.Y = 0.5f * (i);
+            //vertices[5].TextureCoordinate.Y = 0.5f * (i + 1f);
+            //vertices[6].TextureCoordinate.Y = 0.5f * (i);
+            //vertices[7].TextureCoordinate.Y = 0.5f * (i + 1f);
         }
 
         protected override VertexPositionTexture[] CreateVertices()

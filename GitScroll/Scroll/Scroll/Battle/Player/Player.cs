@@ -28,9 +28,10 @@ namespace Scroll.Battle.Player
             DEAD = 1000,//地面に落ちるまで
             FALL,
             UP = 1005,
-            CLEAR
+            CLEAR,
+            FAILED
         }
-        protected State state;
+        private State state;
         /// <summary>
         /// 現在移動しているかどうか
         /// 移動アニメーションに切り替える際参照する
@@ -59,6 +60,7 @@ namespace Scroll.Battle.Player
         float maxHp;
         float a = 0;
 
+        public State StateProperty { get => state; private set => state = value; }
 
         protected override void Awake()
         {
@@ -73,10 +75,16 @@ namespace Scroll.Battle.Player
 
         public Player(Battle battle, Renderer renderer) : base(battle, renderer)
         {
+            float x = 3f;
+            float y = 5f;
+
+            float blockSize = 0.5f;
+            position = new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0);
+
+
             tag = TagName.PLAYER;
             hp = 1000f; //HP兼攻撃ゲージ
             maxHp = 1000f;
-            position = Vector3.UnitX;
             StateSet(State.NORMAL);
             move = false;
 
@@ -112,7 +120,6 @@ namespace Scroll.Battle.Player
         protected void StateUpdate(int deltaTime)
         {
             InvincibleUpdate(deltaTime);
-            hp -= 2.5f;
             a++;
             switch (state)
             {
@@ -137,6 +144,9 @@ namespace Scroll.Battle.Player
                 case State.CLEAR:
                     ClearStateUpdate(deltaTime);
                     break;
+                case State.FAILED:
+                    FailedStateUpdate(deltaTime);
+                    break;
             }
         }
 
@@ -160,6 +170,8 @@ namespace Scroll.Battle.Player
         {
             if (parent.BattleState != Battle.State.NORMAL)
                 return;
+
+            hp -= 2.5f;
 
             var a = new Vector3(InputContllorer.StickLeftX(), InputContllorer.StickLeftY(), 0f);
             if (InputContllorer.IsPush(Buttons.A) && a != Vector3.Zero)
@@ -191,7 +203,7 @@ namespace Scroll.Battle.Player
             if (time > (int)State.ATTACK)
                 StateSet(State.FALL);
 
-            hp -= 4.5f;
+            hp -= 7f;
         }
 
         private void FallUpdate(int deltaTime)
@@ -213,6 +225,8 @@ namespace Scroll.Battle.Player
                     parent.CameraLengthSet(0.6f, 300);
                     StateSet(State.UP);
                 }
+                else
+                    StateSet(State.FAILED);
             }
         }
 
@@ -220,19 +234,24 @@ namespace Scroll.Battle.Player
         {
             if (time > (int)State.UP)
             {
-                hp = 1000;
                 if (haiGage >= 1200)
                 {
-                    parent.CameraLengthSet(3.1f, 300);
+                    parent.CameraLengthSet(2.1f, 300);
                 }
                 StateSet(State.RESPAWNN);
+                parent.AddBattleEffect(
+                    new BattleEffect.ReBarthEffect(parent, parent.GetRenderer(), this, position,
+                    2.1f * 0.6f * parent.CameraLengthDefault));
             }
         }
 
         private void RespawnUpdate(int deltaTime)
         {
+            hp += deltaTime;
             if (time > (int)State.RESPAWNN)
             {
+                hp = 1000f;
+                haiGage = 0f;
                 Value = 0.1f;
                 parent.CameraLengthSet(1f, 500);
                 StateSet(State.NORMAL);
@@ -244,6 +263,13 @@ namespace Scroll.Battle.Player
             if (time > 1500)
                 parent.GameClear();
         }
+
+        private void FailedStateUpdate(int deltaTime)
+        {
+            if (time > 1500)
+                parent.GameClear();
+        }
+
 
         /// <summary>
         /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -344,7 +370,6 @@ namespace Scroll.Battle.Player
 
         private void RespawnUpdate()
         {
-            hp++;
             if (State.RESPAWNN != state)
                 return;
 
@@ -543,6 +568,9 @@ namespace Scroll.Battle.Player
 
             if (state == State.CLEAR && time > 1000)
                 renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, 1280, 960), (time - 1000f) / 500f);
+
+            if (state == State.FAILED && time > 200)
+                renderer.DrawFont("k8x12LL", "GAME OVER", new Vector2(300, 300), Color.Black);
 
         }
 

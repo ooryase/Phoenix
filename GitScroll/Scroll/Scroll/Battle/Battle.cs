@@ -79,6 +79,7 @@ namespace Scroll.Battle
         public Matrix View { get => view; set => view = value; }
         public Vector3 CameraLookPos { get => cameraLookPos; private set => cameraLookPos = value; }
         internal State BattleState { get => state; set => state = value; }
+        public float CameraLengthDefault { get => cameraLengthDefault; private set => cameraLengthDefault = value; }
 
         public Battle(GameMain gameMain,Renderer renderer)
             : base(gameMain,renderer)
@@ -95,8 +96,8 @@ namespace Scroll.Battle
 
             state = State.NORMAL;
 
-            cameraLengthDefault = 5f;
-            cameraLength = cameraLengthDefault;
+            CameraLengthDefault = 5f;
+            cameraLength = CameraLengthDefault;
             Projection = CreateProjection();
             CameraLookPos = Vector3.Zero;
             View = CreateCameraView();
@@ -106,7 +107,7 @@ namespace Scroll.Battle
             //effectSystems = new List<EffectSystem.VirtualEffectSystem>();
             arts = new List<Arts.Fire>();
             fields = new List<Field.Field>();
-            fields.Add(new Field.Field(this, renderer, Field.Field.SetType.BACK));
+            //fields.Add(new Field.Field(this, renderer, Field.Field.SetType.BACK));
             fields.Add(new Field.Field(this, renderer, Field.Field.SetType.FRONT));
             blocks = new List<Field.Block>();
             objects = new List<VirtualObject>();
@@ -261,13 +262,18 @@ namespace Scroll.Battle
 
             foreach(var e in enemies)
             {
-                if(Vector3.DistanceSquared(player.Position,e.Position) < (float)Math.Pow( player.Scale + e.Scale,2.0))
+                var l = (player.StateProperty == Player.Player.State.RESPAWNN) ?
+                    player.Scale * cameraLength * 0.54f : player.Scale;
+                l += e.Scale;
+                if(Vector3.DistanceSquared(player.Position,e.Position) < l * l)
                     e.OnCollisionEnter(player);
             }
 
             foreach (var o in objects)
             {
-                if (Vector3.DistanceSquared(player.Position, o.Position) < (float)Math.Pow(player.Scale + o.Scale, 2.0))
+                var l = player.Scale + o.Scale;
+
+                if (Vector3.DistanceSquared(player.Position, o.Position) < l * l)
                     player.OnCollisionEnter(o);
             }
 
@@ -358,7 +364,7 @@ namespace Scroll.Battle
         public void CameraLengthSet(float ratio ,int time)
         {
             cameraLastLength = cameraLength;
-            cameraDistinationLength = cameraLengthDefault * ratio;
+            cameraDistinationLength = CameraLengthDefault * ratio;
             cameraMoveTime = time;
             cameraMoveCont = 0;
         }
