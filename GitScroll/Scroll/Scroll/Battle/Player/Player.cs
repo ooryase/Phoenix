@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework.Content;
 using System.Text;
 using System.Threading.Tasks;
 using Scroll.Battle;
@@ -55,14 +56,14 @@ namespace Scroll.Battle.Player
         private float maxHaigage = 1000; //灰の最大量
 
         float Value; //色々色々色々色々色々色々色々
-        float maxValue; //著作権侵害(Valueの最大値)flo
+        float maxValue; //著作権侵害(Valueの最大値)
         float maxHp;
         float a = 0;
 
 
         protected override void Awake()
         {
-            Scale = 0.5f; //画像描画のサイズ
+            Scale = 0.8f; //画像描画のサイズ
         }
 
         protected override void NameSet()
@@ -463,8 +464,9 @@ namespace Scroll.Battle.Player
                 //var i = time / 100 % 20;
                 //i -= (time % 420 >= 140) ? 1 : 0;
                 //i -= (time % 420 >= 350) ? 1 : 0;
+                var a = time / 200 % 5;
 
-                TextureCoordinateSet(time / 200 % 5, 0f);
+                TextureCoordinateSet(a, 0f);
                 VerticesSet(Billboard.PITCH_ONLY);
             }
 
@@ -483,7 +485,8 @@ namespace Scroll.Battle.Player
 
             else if (state == State.ATTACK)
             {
-                var temp = (time >= 200) ? 8 : time / 200;
+                // var temp = (time >= 200) ? 8 : time / 200;
+                var temp = time / 160 % 2;
                 TextureCoordinateSet(temp, 1f);
 
                 for (int i = 0; i < vertices.Count(); i++)
@@ -591,9 +594,5 @@ namespace Scroll.Battle.Player
                 haiGage = 1500;
             }
         }
-
-
-
-
     }
 }

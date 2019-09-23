@@ -13,6 +13,7 @@ namespace Scroll.GameSystem
         GraphicsDeviceManager graphics;
 
         Output.Renderer renderer;
+        Sound sound;
 
         private List<Scene> scenes;
         private List<Scene> addScenes;
@@ -43,6 +44,7 @@ namespace Scroll.GameSystem
         {
             renderer = new Output.Renderer(Content, GraphicsDevice);
             //scenes.Add(new Battle.BattleMain.Battle(this));
+            sound = new Sound(Content);
             scenes.Add(new Title.Title(this,renderer));
 
 
@@ -57,8 +59,6 @@ namespace Scroll.GameSystem
         /// </summary>
         protected override void LoadContent()
         {
-
-
             renderer.LoadContent("Back", "Textures/");
             renderer.LoadContent("phoenix", "Textures/");
             renderer.LoadContent("wata", "Textures/");
@@ -83,6 +83,11 @@ namespace Scroll.GameSystem
             renderer.LoadEffectContent("AttackFire", "Sheader/");
             renderer.LoadEffectContent("DeathFire", "Sheader/");
 
+            sound.LoadSE("attack", "Sound/");
+            sound.LoadBGM("bgm","Sound/");
+            sound.LoadBGM("charge","Sound/");
+            sound.LoadBGM("rebirth","Sound/");
+
         }
 
         /// <summary>
@@ -106,6 +111,7 @@ namespace Scroll.GameSystem
             GameSystem.InputContllorer.InputUpdate();
 
             scenes.ForEach(s => s.Update(gameTime));
+            sound.PlayBGM("bgm");
 
             scenes.RemoveAll(s => s.IsClose());
             AddScene();
