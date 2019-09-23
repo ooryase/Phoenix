@@ -28,7 +28,7 @@ namespace Scroll.Battle.Player
             ATTACK = 350,
             DEAD = 1000,//地面に落ちるまで
             FALL,
-            UP = 1505,
+            UP = 2035,
             CLEAR,
             FAILED
         }
@@ -537,6 +537,7 @@ namespace Scroll.Battle.Player
                     VerticesSet(Billboard.PITCH_ONLY);
                     break;
                 case State.UP:
+                    TextureCoordinateSet(time / 200 % 15 , 3f);
                     VerticesSet(Billboard.PITCH_ONLY);
                     break;
                 case State.RESPAWNN:
