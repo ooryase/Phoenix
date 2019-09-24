@@ -55,7 +55,7 @@ namespace Scroll.Battle.Enemy
         }
         protected override void NormalStateUpdate(int deltaTime)
         {
-            if(Math.Abs(player.Position.X - position.X) < 4f &&
+            if (Math.Abs(player.Position.X - position.X) < 4f &&
                 Math.Abs(player.Position.Y - position.Y) < 4f)
             {
                 StateSet(VirtualEnemy.State.PERCEPTION);
@@ -63,14 +63,33 @@ namespace Scroll.Battle.Enemy
         }
         protected override void PerceptionStateUpdate(int deltaTime)
         {
-            
+
         }
 
         public override void DrawUpdate()
         {
+            TextureCoordinateSet(time / 200 % 5, 0f);
             VerticesSet(Billboard.PITCH_ONLY);
-
             effect.Parameters["View"].SetValue(parent.View);
+        }
+
+        /// <summary>
+        /// テクスチャコーディネイトの設定
+        /// 連結画像によるアニメーション処理を行う
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        private void TextureCoordinateSet(float x, float y) //アニメーション関係
+        {
+            vertices[0].TextureCoordinate.X = 0.2f * (x + (float)Direct);
+            vertices[1].TextureCoordinate.X = 0.2f * (x + 1f - (float)Direct);
+            vertices[2].TextureCoordinate.X = 0.2f * (x + 1f - (float)Direct);
+            vertices[3].TextureCoordinate.X = 0.2f * (x + (float)Direct);
+
+            vertices[0].TextureCoordinate.Y = 1f * (y);
+            vertices[1].TextureCoordinate.Y = 1f * (y + 1f);
+            vertices[2].TextureCoordinate.Y = 1f * (y);
+            vertices[3].TextureCoordinate.Y = 1f * (y + 1f);
         }
     }
 }
