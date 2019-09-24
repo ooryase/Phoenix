@@ -23,6 +23,9 @@ namespace Scroll.Title
         }
         private Manu selectManu;
 
+        private bool effectSet;
+        private Effect effect;
+
         //private List<Tuple<Manu, string, string>> selectList;
         private class SelectListItem
         {
@@ -42,7 +45,7 @@ namespace Scroll.Title
         public Title(GameMain gameMain,Renderer renderer,Sound sound)
             : base(gameMain,renderer,sound)
         {
-
+            effectSet = false;
             selectManu = Manu.GAMESTART;
 
             selectLists = new List<SelectListItem>();
@@ -53,6 +56,13 @@ namespace Scroll.Title
             //selectLists.Add(new SelectListItem(Manu.EXIT, "Exit", "ゲームを終了します"));
 
         }
+
+        public void EffectSet(Renderer renderer)
+        {
+            effect = renderer.Effects["Title"].Clone();
+
+        }
+
 
         public override void Update(GameTime gameTime)
         {
@@ -74,6 +84,14 @@ namespace Scroll.Title
         }
         public override void Draw(Renderer renderer)
         {
+            if(!effectSet)
+            {
+                EffectSet(parent.Renderer);
+                effectSet = true;
+            }
+
+            //renderer.Begin(effect);
+            renderer.Begin();
             // renderer.DrawTexture("title", new Vector2(500, 200));
 
             renderer.DrawFont("k8x12LL", "YAKITORI TABETAI", new Vector2(300, 300),Color.Blue);
@@ -89,7 +107,9 @@ namespace Scroll.Title
                 }
             }
 
+            //renderer.DrawTexture("ReBarth",Vector2.Zero);
 
+            renderer.End();
 
         }
     }

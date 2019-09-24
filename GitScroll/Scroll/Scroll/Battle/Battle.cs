@@ -463,6 +463,8 @@ namespace Scroll.Battle
 
         public override void Draw(Output.Renderer renderer)
         {
+            renderer.Begin();
+
             parent.GraphicsDevice.RasterizerState = depthBiasEnabledField;
             fields.ForEach(f => f.Draw(renderer));
 
@@ -500,6 +502,8 @@ namespace Scroll.Battle
             }
 
             player.DrawParam(renderer);
+
+            renderer.End();
         }
 
 

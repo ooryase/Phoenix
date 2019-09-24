@@ -14,7 +14,7 @@ namespace Scroll.Output
     {
         private ContentManager contentManager;
         private GraphicsDevice graphicsDevice;
-        private SpriteBatch spriteBatch;
+        public SpriteBatch spriteBatch;
 
         private Dictionary<string, Texture2D> textures;
         private Dictionary<string, SpriteFont> fonts = new Dictionary<string, SpriteFont>();
@@ -84,6 +84,18 @@ namespace Scroll.Output
         {
             spriteBatch.Begin();
         }
+
+        public void Begin(Effect effect)
+        {
+            spriteBatch.Begin(
+                SpriteSortMode.BackToFront,
+                BlendState.AlphaBlend,
+                SamplerState.PointWrap,
+                DepthStencilState.Default,
+                RasterizerState.CullNone,
+                effect);
+        }
+
 
         /// <summary>
         /// 描画終了

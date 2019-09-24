@@ -91,6 +91,7 @@
     <Content Include="Content\Sheader\NoobEnemy.fx" />
     <Content Include="Content\Sheader\Player.fx" />
     <Content Include="Content\Sheader\ReBarthFire.fx" />
+    <Content Include="Content\Sheader\Title.fx" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>

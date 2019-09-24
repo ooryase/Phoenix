@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Scroll.Output;
 using System.Collections.Generic;
 
 namespace Scroll.GameSystem
@@ -12,12 +13,13 @@ namespace Scroll.GameSystem
     {
         GraphicsDeviceManager graphics;
 
-        Output.Renderer renderer;
+        private Output.Renderer renderer;
         Sound sound;
 
         private List<Scene> scenes;
         private List<Scene> addScenes;
 
+        internal Renderer Renderer { get => renderer; private set => renderer = value; }
 
         public GameMain()
         {
@@ -83,12 +85,34 @@ namespace Scroll.GameSystem
             renderer.LoadEffectContent("AttackFire", "Sheader/");
             renderer.LoadEffectContent("DeathFire", "Sheader/");
             renderer.LoadEffectContent("ReBarthFire", "Sheader/");
+            renderer.LoadEffectContent("Title", "Sheader/");
 
             sound.LoadSE("attack", "Sound/");
             sound.LoadBGM("bgm","Sound/");
             sound.LoadSE("charge","Sound/");
             sound.LoadSE("rebirth","Sound/");
 
+            /*RenderTarget2D m_renderTarget;
+            m_renderTarget = new RenderTarget2D(GraphicsDevice,
+            graphics.PreferredBackBufferWidth,
+            graphics.PreferredBackBufferHeight,
+            false,
+            SurfaceFormat.Color,
+            DepthFormat.Depth16);
+
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.CornflowerBlue, 1.0f, 0);
+
+            GraphicsDevice.SetRenderTarget(m_renderTarget);
+            GraphicsDevice.Clear(Color.Transparent);
+
+            DrawContent();
+
+            GraphicsDevice.SetRenderTarget(null);
+
+            renderer.spriteBatch.Begin();
+            // 保存されているゲーム画面を描画する
+            renderer.spriteBatch.Draw(m_renderTarget, Vector2.Zero, Color.White);
+            renderer.spriteBatch.End();*/
         }
 
         /// <summary>
@@ -131,9 +155,7 @@ namespace Scroll.GameSystem
             GraphicsDevice.Clear(Color.SkyBlue);
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
-            renderer.Begin();
             scenes.ForEach(s => s.Draw(renderer));
-            renderer.End();
 
             base.Draw(gameTime);
         }
