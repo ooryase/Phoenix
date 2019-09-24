@@ -41,7 +41,7 @@ namespace Scroll.Battle.Enemy
 
             scaleChenger = scaleTime / 16;
             if (state == State.NORMAL)
-                physics.velocity.Y = (float)Math.Sin(time / 1000.0) * 0.03f;
+                physics.velocity.Y = (float)Math.Sin(time / 1000.0) * 0.022f;
 
             if (state == State.NORMAL)
                 position.Y = basePosition.Y + (float)Math.Sin(time / 1000.0);
