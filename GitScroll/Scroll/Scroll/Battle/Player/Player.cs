@@ -25,10 +25,10 @@ namespace Scroll.Battle.Player
             NORMAL,
             RESPAWNN = 1010, //復活後バーンってなる状態上昇
             TAME,
-            ATTACK = 350,
+            ATTACK = 250,
             DEAD = 1000,//地面に落ちるまで
             FALL,
-            UP = 2035,
+            UP = 2035,//2035が元の数
             CLEAR,
             FAILED
         }
@@ -221,7 +221,7 @@ namespace Scroll.Battle.Player
             if (time > (int)State.ATTACK)
                 StateSet(State.DEAD);
 
-            hp -= 6.6f;
+            hp -= 5.3f;
         }
 
         private void FallUpdate(int deltaTime)
@@ -386,7 +386,7 @@ namespace Scroll.Battle.Player
             if (State.UP != state)
                 return;
 
-            physics.velocity = new Vector3(0f, 0.25f, 0f);
+            physics.velocity = new Vector3(0f, 0.1875f, 0f);
         }
 
         private void RespawnUpdate()
