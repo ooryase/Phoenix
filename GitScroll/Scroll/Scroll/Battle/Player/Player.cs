@@ -54,7 +54,7 @@ namespace Scroll.Battle.Player
         private Vector3 attackMove; //攻撃の方向取得
 
         private float haiGage = 0; //灰のゲージ
-        private float maxHaigage = 2500; //灰の最大量
+        private float maxHaigage = 2300; //灰の最大量
 
         float Value; //色々色々色々色々色々色々色々
         float maxValue; //著作権侵害(Valueの最大値)flo
