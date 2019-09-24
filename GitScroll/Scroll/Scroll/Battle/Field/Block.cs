@@ -30,13 +30,15 @@ namespace Scroll.Battle.Field
 
         public BlockName BName { get => blockName;private set => blockName = value; }
 
-        public Block(Battle battle, Renderer renderer,Vector3 position, BlockName blockName) : base(battle, renderer)
+        public Block(Battle battle, Renderer renderer,Sound sound,Vector3 position, BlockName blockName)
+            : base(battle, renderer,sound)
         {
             this.position = position;
             this.BName = blockName;
             Coordinate();
 
-            effect.Parameters["RBG"].SetValue(new Vector3(0.4f,0.2f,0.1f));
+            var c = new Vector3(0.6f - position.Y / 85f,0.1f + position.Y / 55f, 0.1f + position.Y / 130f) ;
+            effect.Parameters["RBG"].SetValue(c);
         }
         protected override void Awake()
         {

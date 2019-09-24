@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Scroll.GameSystem;
 using Scroll.Output;
 
 namespace Scroll.Battle.BattleEffect
@@ -16,7 +17,8 @@ namespace Scroll.Battle.BattleEffect
         private Vector3 sheaderRBG;
 
 
-        public ReBarthEffect(Battle battle, Renderer renderer, VirtualObject baseObj, Vector3 position,float length) : base(battle, renderer, baseObj, position)
+        public ReBarthEffect(Battle battle, Renderer renderer,Sound sound, VirtualObject baseObj, Vector3 position,float length)
+            : base(battle, renderer,sound, baseObj, position)
         {
             this.length = length;
 

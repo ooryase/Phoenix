@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Scroll.GameSystem;
 using Scroll.Output;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,8 @@ namespace Scroll.Battle.Enemy
     class Dragon : VirtualEnemy
     {
         public Vector3 basePosition;
-        public Dragon(Battle battle, Renderer renderer, Player.Player player, Vector3 position, EnemyName enemyName) : base(battle, renderer, player,position, enemyName)
+        public Dragon(Battle battle, Renderer renderer,Sound sound, Player.Player player, Vector3 position, EnemyName enemyName)
+            : base(battle, renderer,sound, player,position, enemyName)
         {
             hp = 1f; //HP兼攻撃ゲージ
             basePosition = position;

@@ -39,8 +39,8 @@ namespace Scroll.Title
         private List<SelectListItem> selectLists;
 
 
-        public Title(GameMain gameMain,Renderer renderer)
-            : base(gameMain,renderer)
+        public Title(GameMain gameMain,Renderer renderer,Sound sound)
+            : base(gameMain,renderer,sound)
         {
 
             selectManu = Manu.GAMESTART;
@@ -67,7 +67,7 @@ namespace Scroll.Title
             }
             if(GameSystem.InputContllorer.IsPush(Buttons.A) || GameSystem.InputContllorer.IsPush(Keys.Z))
             {
-                parent.AddSceneReservation(new Scroll.Battle.Battle(parent,renderer));
+                parent.AddSceneReservation(new Battle.Battle(parent,renderer,sound));
                 isClose = true;
             }
 

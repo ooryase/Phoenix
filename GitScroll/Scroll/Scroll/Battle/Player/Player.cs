@@ -74,7 +74,7 @@ namespace Scroll.Battle.Player
             textureName = "phoenix";
         }
 
-        public Player(Battle battle, Renderer renderer) : base(battle, renderer)
+        public Player(Battle battle, Renderer renderer,Sound sound) : base(battle, renderer,sound)
         {
             float x = 3f;
             float y = 2f;
@@ -183,7 +183,6 @@ namespace Scroll.Battle.Player
             if (InputContllorer.IsPush(Buttons.A) && a != Vector3.Zero)
             {
                 StateSet(State.TAME);
-                parent.CameraLengthSet(2f, 700); //引数はどれくらい引くかと何秒かけて引くか
                 attackMove = a;
                 attackMove.Normalize();
             }
@@ -203,8 +202,9 @@ namespace Scroll.Battle.Player
                 StateSet(State.ATTACK);
                 parent.CameraLengthSet(2f, 700); //引数はどれくらい引くかと何秒かけて引くか
                 parent.AddBattleEffect(
-                    new BattleEffect.FireEffect(parent, parent.GetRenderer(), this, position,
+                    new BattleEffect.FireEffect(parent, parent.GetRenderer(),sound, this, position,
                     Math.Atan2(attackMove.Y, attackMove.X)));
+                sound.PlaySE("attack");
             }
 
             hp -= 1.85f;
@@ -258,8 +258,9 @@ namespace Scroll.Battle.Player
                 }
                 StateSet(State.RESPAWNN);
                 parent.AddBattleEffect(
-                    new BattleEffect.ReBarthEffect(parent, parent.GetRenderer(), this, position,
+                    new BattleEffect.ReBarthEffect(parent, parent.GetRenderer(),sound, this, position,
                     2.1f * 0.6f * parent.CameraLengthDefault));
+                sound.PlaySE("rebirth");
             }
         }
 

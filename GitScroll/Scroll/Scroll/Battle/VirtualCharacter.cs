@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Scroll.GameSystem;
 using Scroll.Output;
 
 namespace Scroll.Battle
@@ -17,7 +18,7 @@ namespace Scroll.Battle
 
         protected MovePhysics physics;
 
-        public VirtualCharacter(Battle battle, Renderer renderer) : base(battle, renderer)
+        public VirtualCharacter(Battle battle, Renderer renderer,Sound sound) : base(battle, renderer,sound)
         {
         }
 

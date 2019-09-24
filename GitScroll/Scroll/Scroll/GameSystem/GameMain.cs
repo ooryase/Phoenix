@@ -45,7 +45,7 @@ namespace Scroll.GameSystem
             renderer = new Output.Renderer(Content, GraphicsDevice);
             //scenes.Add(new Battle.BattleMain.Battle(this));
             sound = new Sound(Content);
-            scenes.Add(new Title.Title(this,renderer));
+            scenes.Add(new Title.Title(this,renderer,sound));
 
 
 
@@ -86,8 +86,8 @@ namespace Scroll.GameSystem
 
             sound.LoadSE("attack", "Sound/");
             sound.LoadBGM("bgm","Sound/");
-            sound.LoadBGM("charge","Sound/");
-            sound.LoadBGM("rebirth","Sound/");
+            sound.LoadSE("charge","Sound/");
+            sound.LoadSE("rebirth","Sound/");
 
         }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Scroll.GameSystem;
 using Scroll.Output;
 
 namespace Scroll.Battle.Enemy
@@ -14,7 +15,8 @@ namespace Scroll.Battle.Enemy
         public float maxScale = 0.4f;
         public int scaleChenger;
         public Vector3 basePosition;
-        public Wata(Battle battle, Renderer renderer, Player.Player player, Vector3 position, EnemyName enemyName) : base(battle, renderer, player, position, enemyName)
+        public Wata(Battle battle, Renderer renderer,Sound sound, Player.Player player, Vector3 position, EnemyName enemyName)
+            : base(battle, renderer,sound, player, position, enemyName)
         {
             hp = 1f; //HP兼攻撃ゲージ
             basePosition = position;

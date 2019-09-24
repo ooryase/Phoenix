@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Scroll.GameSystem;
 using Scroll.Output;
 
 namespace Scroll.Battle.BattleEffect
@@ -17,7 +18,8 @@ namespace Scroll.Battle.BattleEffect
 
         private double rotate;
 
-        public FireEffect(Battle battle, Renderer renderer, VirtualObject baseObj, Vector3 position ,double rotate) : base(battle, renderer,baseObj,position)
+        public FireEffect(Battle battle, Renderer renderer,Sound sound, VirtualObject baseObj, Vector3 position ,double rotate) 
+            : base(battle, renderer,sound,baseObj,position)
         {
             this.rotate = rotate;
 

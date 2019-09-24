@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Scroll.GameSystem;
 using Scroll.Output;
 
 namespace Scroll.Battle.BattleEffect
@@ -13,7 +14,8 @@ namespace Scroll.Battle.BattleEffect
     {
         protected VirtualObject baseObj;
 
-        public VirtualEffect(Battle battle, Renderer renderer, VirtualObject baseObj, Vector3 position) : base(battle, renderer)
+        public VirtualEffect(Battle battle, Renderer renderer,Sound sound, VirtualObject baseObj, Vector3 position) 
+            : base(battle, renderer,sound)
         {
             this.baseObj = baseObj;
             this.position = position;

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Scroll.GameSystem;
 using Scroll.Output;
 
 namespace Scroll.Battle.Field
@@ -28,7 +29,7 @@ namespace Scroll.Battle.Field
         private SetType setType;
 
 
-        public Field(Battle battle, Renderer renderer, SetType setType) : base(battle, renderer)
+        public Field(Battle battle, Renderer renderer,Sound sound, SetType setType) : base(battle, renderer,sound)
         {
             this.setType = setType;
             position = Vector3.Zero;

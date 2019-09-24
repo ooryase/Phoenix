@@ -15,11 +15,14 @@ namespace Scroll.GameSystem
         protected Renderer renderer;
         protected bool isClose;
 
-        public Scene(GameMain gameMain, Renderer renderer)
+        protected Sound sound;
+
+        public Scene(GameMain gameMain, Renderer renderer,Sound sound)
         {
             parent = gameMain;
             this.renderer = renderer;
             isClose = false;
+            this.sound = sound;
 
         }
 

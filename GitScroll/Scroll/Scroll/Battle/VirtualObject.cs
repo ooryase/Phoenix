@@ -48,6 +48,8 @@ namespace Scroll.Battle
 
         protected int time;
 
+        protected Sound sound;
+
         protected enum Billboard
         {
             BILLBOARD,
@@ -73,11 +75,12 @@ namespace Scroll.Battle
         public Direction Direct { get => direct; protected set => direct = value; }
         public float Scale { get => scale;protected set => scale = value; }
 
-        public VirtualObject(Battle battle, Renderer renderer)
+        public VirtualObject(Battle battle, Renderer renderer, Sound sound)
         {
             parent = battle;
             time = 0;
             delete = false;
+            this.sound = sound;
 
             Awake();
             //ここから下が描画設定

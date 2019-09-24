@@ -25,6 +25,7 @@ namespace Scroll.Battle
 
         private int[,] blocksData;
         private List<Field.Block> blocks;
+        private List<Field.Block> noneColliBlocks;//当たり判定を取らないブロック
         private float blockSize;
 
         private Field.BlockCollision blockCollision;
@@ -81,8 +82,8 @@ namespace Scroll.Battle
         internal State BattleState { get => state; set => state = value; }
         public float CameraLengthDefault { get => cameraLengthDefault; private set => cameraLengthDefault = value; }
 
-        public Battle(GameMain gameMain,Renderer renderer)
-            : base(gameMain,renderer)
+        public Battle(GameMain gameMain,Renderer renderer,Sound sound)
+            : base(gameMain,renderer,sound)
         {
             timeSpeed = TimeSpeed.NORMAL;
             time = 0;
@@ -102,14 +103,15 @@ namespace Scroll.Battle
             CameraLookPos = Vector3.Zero;
             View = CreateCameraView();
 
-            player = new Player.Player(this,renderer);
+            player = new Player.Player(this,renderer,sound);
             enemies = new List<Enemy.VirtualEnemy>();
             //effectSystems = new List<EffectSystem.VirtualEffectSystem>();
             arts = new List<Arts.Fire>();
             fields = new List<Field.Field>();
-            //fields.Add(new Field.Field(this, renderer, Field.Field.SetType.BACK));
-            fields.Add(new Field.Field(this, renderer, Field.Field.SetType.FRONT));
+            //fields.Add(new Field.Field(this, renderer,sound, Field.Field.SetType.BACK));
+            fields.Add(new Field.Field(this, renderer,sound, Field.Field.SetType.FRONT));
             blocks = new List<Field.Block>();
+            noneColliBlocks = new List<Block>();
             objects = new List<VirtualObject>();
             battleEffects = new List<BattleEffect.VirtualEffect>();
             MapSet();
@@ -163,21 +165,24 @@ namespace Scroll.Battle
                 {
                     if (blocksData[y, x] == -1)
                         continue;
-                    if(blocksData[y,x] >= 0 &&
+                    if(blocksData[y, x] == 5)
+                        noneColliBlocks.Add(new Field.Block(this, renderer, sound, new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0)
+                            , (Field.Block.BlockName)blocksData[y, x]));
+                    else if (blocksData[y,x] >= 0 &&
                        blocksData[y,x] <= 11)
-                        blocks.Add(new Field.Block(this,renderer,new Vector3(x * blockSize + blockSize /2f,y * blockSize + blockSize / 2f,0)
+                        blocks.Add(new Field.Block(this,renderer,sound,new Vector3(x * blockSize + blockSize /2f,y * blockSize + blockSize / 2f,0)
                             , (Field.Block.BlockName)blocksData[y,x]));
                     else if (blocksData[y, x] == 12)
-                        enemies.Add(new Enemy.Wata(this, renderer,player, new Vector3(x * blockSize +blockSize / 2f, y * blockSize + blockSize / 2f, 0)
+                        enemies.Add(new Enemy.Wata(this, renderer,sound,player, new Vector3(x * blockSize +blockSize / 2f, y * blockSize + blockSize / 2f, 0)
                             , (Enemy.VirtualEnemy.EnemyName)blocksData[y, x]));
                     else if (blocksData[y, x] == 13)
-                        enemies.Add(new Enemy.Wolf(this, renderer,player, new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0)
+                        enemies.Add(new Enemy.Wolf(this, renderer,sound,player, new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0)
                             , (Enemy.VirtualEnemy.EnemyName)blocksData[y, x]));
                     else if (blocksData[y, x] == 14)
-                        enemies.Add(new Enemy.Dragon(this, renderer,player, new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0)
+                        enemies.Add(new Enemy.Dragon(this, renderer,sound,player, new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0)
                             , (Enemy.VirtualEnemy.EnemyName)blocksData[y, x]));
                     else if(blocksData[y, x] == 15)
-                        objects.Add(new GoalBlock(this, renderer, new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0)));
+                        objects.Add(new GoalBlock(this, renderer,sound, new Vector3(x * blockSize + blockSize / 2f, y * blockSize + blockSize / 2f, 0)));
                 }
 
             }
@@ -330,6 +335,7 @@ namespace Scroll.Battle
             enemies.ForEach(e => e.DrawUpdate());
             arts.ForEach(a => a.DrawUpdate());
             blocks.ForEach(b => b.DrawUpdate());
+            noneColliBlocks.ForEach(b => b.DrawUpdate());
             objects.ForEach(o => o.DrawUpdate());
             battleEffects.ForEach(be => be.DrawUpdate());
         }
@@ -447,7 +453,7 @@ namespace Scroll.Battle
 
         internal void PlayerArts(Vector3 position,VirtualObject.Direction direction)
         {
-            arts.Add(new Arts.Fire(this, renderer, position, direction,enemies));
+            arts.Add(new Arts.Fire(this, renderer,sound, position, direction,enemies));
         }
 
         internal void AddBattleEffect(BattleEffect.VirtualEffect virtualEffect)
@@ -461,12 +467,28 @@ namespace Scroll.Battle
             fields.ForEach(f => f.Draw(renderer));
 
             parent.GraphicsDevice.RasterizerState = depthBiasEnabledBlock;
-            blocks.ForEach(b => b.Draw(renderer));
+            foreach (var b in blocks)
+            {
+                if (IsArea(b.Position))
+                    b.Draw(renderer);
+            }
+            foreach (var b in noneColliBlocks)
+            {
+                if (IsArea(b.Position))
+                    b.Draw(renderer);
+            }
+            //            blocks.ForEach(b => b.Draw(renderer));
+            //            noneColliBlocks.ForEach(b => b.Draw(renderer));
 
             parent.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             List<VirtualObject> drawObjects = new List<VirtualObject>();
             drawObjects.Add(player);
-            drawObjects.AddRange(enemies);
+            foreach(var e in enemies)
+            {
+                if (IsArea(e.Position))
+                    drawObjects.Add(e);
+            }
+            //drawObjects.AddRange(enemies);
             drawObjects.AddRange(arts);
             drawObjects.AddRange(objects);
             drawObjects.AddRange(battleEffects);
@@ -484,7 +506,7 @@ namespace Scroll.Battle
         internal void GameClear()
         {
             isClose = true;
-            parent.AddSceneReservation(new Title.Title(parent, renderer));
+            parent.AddSceneReservation(new Title.Title(parent, renderer,sound));
         }
 
         internal void GameClearSet()
@@ -501,6 +523,15 @@ namespace Scroll.Battle
         internal Renderer GetRenderer()
         {
             return renderer;
+        }
+
+        private bool IsArea(Vector3 position)
+        {
+            if (Math.Abs(cameraLookPos.X - position.X) > 4f * cameraLength / cameraLengthDefault ||
+                Math.Abs(cameraLookPos.Y - position.Y) > 3f * cameraLength / cameraLengthDefault)
+                return false;
+
+            return true;
         }
 
     }

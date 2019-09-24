@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Scroll.GameSystem;
 using Scroll.Output;
 
 namespace Scroll.Battle.BattleEffect
@@ -15,7 +16,8 @@ namespace Scroll.Battle.BattleEffect
         private float sheaderBottom;
         private Vector3 sheaderRBG;
 
-        public DeathFire(Battle battle, Renderer renderer,VirtualObject baseObj, Vector3 position) : base(battle, renderer,baseObj, position)
+        public DeathFire(Battle battle, Renderer renderer,Sound sound,VirtualObject baseObj, Vector3 position)
+            : base(battle, renderer,sound,baseObj, position)
         {
             sheaderTop = 1f;
             sheaderBottom = 1f;

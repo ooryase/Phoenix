@@ -32,7 +32,8 @@ namespace Scroll.Battle.Enemy
         protected State state;
 
         protected Player.Player player;
-        public VirtualEnemy(Battle battle, Renderer renderer,Player.Player player, Vector3 position, EnemyName enemyName) : base(battle, renderer)
+        public VirtualEnemy(Battle battle, Renderer renderer,Sound sound,Player.Player player, Vector3 position, EnemyName enemyName)
+            : base(battle, renderer,sound)
         {
             this.player = player;
             this.position = position;
@@ -68,7 +69,7 @@ namespace Scroll.Battle.Enemy
                 p.AddAsh(haigage);
 
                 parent.AddBattleEffect(
-                    new BattleEffect.DeathFire(parent, parent.GetRenderer(),this, position));
+                    new BattleEffect.DeathFire(parent, parent.GetRenderer(),sound,this, position));
             }
         }
 

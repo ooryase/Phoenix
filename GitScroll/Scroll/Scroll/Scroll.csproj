@@ -50,7 +50,6 @@
     <Compile Include="Battle\BattleEffect\ReBarthEffect.cs" />
     <Compile Include="Battle\BattleEffect\VirtualEffect.cs" />
     <Compile Include="Battle\BattleWindow.cs" />
-    <Compile Include="Battle\Enemy\BigDog.cs" />
     <Compile Include="Battle\Enemy\Dragon.cs" />
     <Compile Include="Battle\Enemy\VirtualEnemy.cs" />
     <Compile Include="Battle\Enemy\Wata.cs" />
@@ -61,7 +60,6 @@
     <Compile Include="Battle\MovePhysics.cs" />
     <Compile Include="Battle\RotateManager.cs" />
     <Compile Include="Battle\VirtualCharacter.cs" />
-    <Compile Include="Battle\Enemy\Dog.cs" />
     <Compile Include="Battle\Field\Field.cs" />
     <Compile Include="Battle\Player\Player.cs" />
     <Compile Include="Battle\VirtualObject.cs" />

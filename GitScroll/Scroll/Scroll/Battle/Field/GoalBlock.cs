@@ -12,7 +12,7 @@ namespace Scroll.Battle.Field
 {
     class GoalBlock : VirtualObject
     {
-        public GoalBlock(Battle battle, Renderer renderer, Vector3 position) : base(battle, renderer)
+        public GoalBlock(Battle battle, Renderer renderer, Sound sound, Vector3 position) : base(battle, renderer,sound)
         {
             this.position = position;
             tag = TagName.CLEAR_BLOCK;
