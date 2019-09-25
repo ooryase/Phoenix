@@ -54,12 +54,13 @@ namespace Scroll.Battle.Player
         /// </summary>
         private Vector3 attackMove; //攻撃の方向取得
 
-        private float haiGage = 0; //灰のゲージ
-        private float maxHaigage = 1000; //灰の最大量
+        private float maxHaigage; //灰の最大量
+        private float haiGage; //灰のゲージ
         private bool maxHai;
 
+        
         float Value; //色々色々色々色々色々色々色々
-        float maxValue; //著作権侵害(Valueの最大値)flo
+        float maxValue; //著作権侵害(Valueの最大値)float
         float maxHp;
 
         private int enemyTaosita;
@@ -103,7 +104,7 @@ namespace Scroll.Battle.Player
             invincible = false;
             invincibleTime = 0;
             haiGage = 0f;
-            maxHaigage = 1000f;
+            maxHaigage = 900f;
             maxHai = false;
             Value = 0.1f;
             maxValue = 1f;
@@ -138,7 +139,6 @@ namespace Scroll.Battle.Player
             Console.WriteLine(physics.isGraund);
 
             InvincibleUpdate(deltaTime);
-            
             switch (state)
             {
                 case State.START:
@@ -208,7 +208,7 @@ namespace Scroll.Battle.Player
 
         protected void NormalStateUpdate(int deltaTime)
         {
-            hp -= 0.45f;
+            hp -= 1.0f;
             if (parent.BattleState != Battle.State.NORMAL)
                 return;
 
@@ -245,7 +245,7 @@ namespace Scroll.Battle.Player
                 sound.PlaySE("attack");
             }
 
-            hp -= 1.85f;
+            hp -= 0f;
 
         }
 
@@ -259,7 +259,7 @@ namespace Scroll.Battle.Player
             if (time > (int)State.ATTACK)
                 StateSet(State.DEAD);
 
-            hp -= 5.3f;
+            hp -= 5.0f;
         }
 
         private void FallUpdate(int deltaTime)
@@ -277,7 +277,6 @@ namespace Scroll.Battle.Player
             {
                 if (haiGage >= maxHaigage)
                 {
-                    //haiGage = 0;
                     parent.CameraLengthSet(0.6f, 300);
                     StateSet(State.UP);
                 }
@@ -383,11 +382,11 @@ namespace Scroll.Battle.Player
 
             var l = InputContllorer.StickLeftX();
             if (move = l != 0f)
-                SideMove(l * physics.speed * deltaTime);
+                SideMove(l * physics.speed * deltaTime * 0.65f);
 
             var a = InputContllorer.StickLeftY();
             if (move = a != 0f)
-                UpDownMove(a * physics.speed * deltaTime);
+                UpDownMove(a * physics.speed * deltaTime * 0.65f);
 
             //if (physics.isGraund && InputContllorer.IsPush(Buttons.A))
             //    UpMove(physics.speed * deltaTime * 10f);
@@ -423,7 +422,7 @@ namespace Scroll.Battle.Player
             if (State.UP != state)
                 return;
 
-            physics.velocity = new Vector3(0f, 0.1875f, 0f);
+            physics.velocity = new Vector3(0f, 0.25f, 0f);//ｙはもともと0.25ｆ
         }
 
         private void RespawnUpdate()
