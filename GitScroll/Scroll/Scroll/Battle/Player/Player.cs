@@ -54,10 +54,10 @@ namespace Scroll.Battle.Player
         private Vector3 attackMove; //攻撃の方向取得
 
         private float haiGage = 0; //灰のゲージ
-        private float maxHaigage = 2300; //灰の最大量
-
+        private float maxHaigage = 900; //灰の最大量
+        
         float Value; //色々色々色々色々色々色々色々
-        float maxValue; //著作権侵害(Valueの最大値)flo
+        float maxValue; //著作権侵害(Valueの最大値)float
         float maxHp;
         float a = 0;
 
@@ -95,7 +95,7 @@ namespace Scroll.Battle.Player
             invincible = false;
             invincibleTime = 0;
             haiGage = 0f;
-            maxHaigage = 2300f;
+            maxHaigage = 900f;
             Value = 0.1f;
             maxValue = 1f;
             a = 0;
@@ -173,7 +173,7 @@ namespace Scroll.Battle.Player
 
         protected void NormalStateUpdate(int deltaTime)
         {
-            hp -= 2.2f;
+            hp -= 1.0f;
             if (parent.BattleState != Battle.State.NORMAL)
                 return;
 
@@ -221,7 +221,7 @@ namespace Scroll.Battle.Player
             if (time > (int)State.ATTACK)
                 StateSet(State.DEAD);
 
-            hp -= 3.75f;
+            hp -= 5.0f;
         }
 
         private void FallUpdate(int deltaTime)
@@ -237,7 +237,7 @@ namespace Scroll.Battle.Player
         {
             if (time > (int)State.DEAD)
             {
-                if (haiGage >= 2300)
+                if (haiGage >= 900)
                 {
                     parent.CameraLengthSet(0.6f, 300);
                     StateSet(State.UP);
@@ -251,7 +251,7 @@ namespace Scroll.Battle.Player
         {
             if (time > (int)State.UP)
             {
-                if (haiGage >= 2300)
+                if (haiGage >= 900)
                 {
                     parent.CameraLengthSet(2.1f, 300);
                 }
@@ -345,11 +345,11 @@ namespace Scroll.Battle.Player
 
             var l = InputContllorer.StickLeftX();
             if (move = l != 0f)
-                SideMove(l * physics.speed * deltaTime);
+                SideMove(l * physics.speed * deltaTime * 0.65f);
 
             var a = InputContllorer.StickLeftY();
             if (move = a != 0f)
-                UpDownMove(a * physics.speed * deltaTime);
+                UpDownMove(a * physics.speed * deltaTime * 0.65f);
 
             //if (physics.isGraund && InputContllorer.IsPush(Buttons.A))
             //    UpMove(physics.speed * deltaTime * 10f);
@@ -385,7 +385,7 @@ namespace Scroll.Battle.Player
             if (State.UP != state)
                 return;
 
-            physics.velocity = new Vector3(0f, 0.1875f, 0f);
+            physics.velocity = new Vector3(0f, 0.25f, 0f);//ｙはもともと0.25ｆ
         }
 
         private void RespawnUpdate()
@@ -649,7 +649,7 @@ namespace Scroll.Battle.Player
             Value += 0.1f;
             if (haiGage >= maxHaigage)
             {
-                haiGage = 2300;
+               haiGage = 900;
             }
         }
 
