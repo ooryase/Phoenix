@@ -725,7 +725,7 @@ namespace Scroll.Battle.Player
                 if (!maxHai)
                 {
                     maxHai = true;
-                    sound.PlaySE("charge");
+                    sound.PlaySE("charge2");
                 }
             }
 

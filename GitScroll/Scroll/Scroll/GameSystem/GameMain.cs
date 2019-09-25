@@ -95,8 +95,9 @@ namespace Scroll.GameSystem
 
             sound.LoadSE("attack", "Sound/");
             sound.LoadBGM("bgm","Sound/");
-            sound.LoadSE("charge","Sound/");
+            sound.LoadSE("charge2","Sound/");
             sound.LoadSE("rebirth","Sound/");
+            sound.LoadBGM("titlebgm", "Sound/");
 
             /*RenderTarget2D m_renderTarget;
             m_renderTarget = new RenderTarget2D(GraphicsDevice,
@@ -142,7 +143,6 @@ namespace Scroll.GameSystem
             GameSystem.InputContllorer.InputUpdate();
 
             scenes.ForEach(s => s.Update(gameTime));
-            sound.PlayBGM("bgm");
 
             scenes.RemoveAll(s => s.IsClose());
             AddScene();

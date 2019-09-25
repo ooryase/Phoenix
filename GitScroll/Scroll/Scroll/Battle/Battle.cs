@@ -127,6 +127,9 @@ namespace Scroll.Battle
                 DepthBias = 0.1f,
                 CullMode = CullMode.None
             };
+
+            sound.PlayBGM("bgm");
+
         }
 
         private Matrix CreateProjection()
