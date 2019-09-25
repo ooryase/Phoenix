@@ -97,7 +97,9 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
+    <None Include="Content\Fonts\Bauhaus93.spritefont" />
     <None Include="Content\Fonts\k8x12LL.spritefont" />
+    <None Include="Content\Fonts\minifont.spritefont" />
     <None Include="Content\k8x12L.spritefont" />
   </ItemGroup>
   <ItemGroup />

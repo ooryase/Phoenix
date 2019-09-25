@@ -37,7 +37,7 @@ namespace Scroll.Battle.Field
             this.BName = blockName;
             Coordinate();
 
-            var c = new Vector3(0.6f - position.Y / 85f,0.1f + position.Y / 55f, 0.1f + position.Y / 130f) ;
+            var c = new Vector3(0.4f - position.Y / 120f,0.1f + position.Y / 55f, 0.7f - position.Y / 100f) ;
             effect.Parameters["RBG"].SetValue(c);
         }
         protected override void Awake()

@@ -146,6 +146,11 @@ namespace Scroll.Output
             spriteBatch.Draw(Textures[assetName], position, null, color, radian, origin, scale, SpriteEffects.None, 0);
         }
 
+        public void DrawTexture(string assetName, Vector2 position,
+    Rectangle rect, Vector2 scale)
+        {
+            spriteBatch.Draw(Textures[assetName], position,rect, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+        }
 
 
         public void DrawTexture(Vector2 position)

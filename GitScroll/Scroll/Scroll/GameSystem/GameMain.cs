@@ -72,9 +72,13 @@ namespace Scroll.GameSystem
             renderer.LoadContent("FireEffect", "Textures/");
             renderer.LoadContent("FireEffect2", "Textures/");
             renderer.LoadContent("ReBarth", "Textures/");
+            renderer.LoadContent("Gauge", "Textures/");
+            renderer.LoadContent("setumei", "Textures/");
 
             renderer.LoadFontContent("k8x12L");
             renderer.LoadFontContent("k8x12LL","Fonts/");
+            renderer.LoadFontContent("Bauhaus93", "Fonts/");
+            renderer.LoadFontContent("minifont", "Fonts/");
 
 
             renderer.LoadEffectContent("Player", "Sheader/");

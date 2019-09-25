@@ -22,6 +22,7 @@ namespace Scroll.Battle.Player
 
         public enum State
         {
+            START,
             NORMAL,
             RESPAWNN = 1010, //復活後バーンってなる状態上昇
             TAME,
@@ -59,7 +60,11 @@ namespace Scroll.Battle.Player
         float Value; //色々色々色々色々色々色々色々
         float maxValue; //著作権侵害(Valueの最大値)flo
         float maxHp;
-        float a = 0;
+
+        private int enemyTaosita;
+        private int totalTime;
+
+        private int startCount;
 
         public State StateProperty { get => state; private set => state = value; }
 
@@ -86,7 +91,7 @@ namespace Scroll.Battle.Player
             tag = TagName.PLAYER;
             hp = 1000f; //HP兼攻撃ゲージ
             maxHp = 1000f;
-            StateSet(State.NORMAL);
+            StateSet(State.START);
             move = false;
 
             physics = new MovePhysics(0.015f, null, null);
@@ -98,7 +103,10 @@ namespace Scroll.Battle.Player
             maxHaigage = 1000f;
             Value = 0.1f;
             maxValue = 1f;
-            a = 0;
+
+            enemyTaosita = 0;
+            totalTime = 0;
+            startCount = 0;
         }
 
         /// <summary>
@@ -116,15 +124,22 @@ namespace Scroll.Battle.Player
         protected void TimeUpdate(int deltaTime)
         {
             time += deltaTime;
+            if(state != State.START && state != State.CLEAR)
+                totalTime += deltaTime;
         }
 
         protected void StateUpdate(int deltaTime)
         {
+            Console.WriteLine(state);
+            Console.WriteLine(physics.isGraund);
+
             InvincibleUpdate(deltaTime);
-            a++;
             
             switch (state)
             {
+                case State.START:
+                    StartStateUpdate(deltaTime);
+                    break;
                 case State.NORMAL:
                     NormalStateUpdate(deltaTime);
                     break;
@@ -169,6 +184,22 @@ namespace Scroll.Battle.Player
         {
             invincible = true;
             invincibleTime = time;
+        }
+
+        protected void StartStateUpdate(int deltaTime)
+        {
+
+
+            if (time > 1000 && InputContllorer.IsPush(Buttons.A))
+                startCount++;
+
+            if (startCount >= 2)
+            {
+                if (time < 3000)
+                    startCount = 1;
+                else 
+                    StateSet(State.NORMAL);
+            }
         }
 
         protected void NormalStateUpdate(int deltaTime)
@@ -279,7 +310,7 @@ namespace Scroll.Battle.Player
 
         private void ClearStateUpdate(int deltaTime)
         {
-            if (time > 1500)
+            if (time > 20000 || InputContllorer.IsPush(Buttons.A))
                 parent.GameClear();
         }
 
@@ -318,6 +349,7 @@ namespace Scroll.Battle.Player
 
             position += physics.velocity * physics.speed * deltaTime;
             FieldMove();
+            physics.isGraund = false;
         }
         private void MoveInputUpdate(int deltaTime)
         {
@@ -475,7 +507,7 @@ namespace Scroll.Battle.Player
 
         public void OnCollisionBlock(Vector3 vector3, bool isGround)
         {
-            physics.isGraund = isGround;
+            physics.isGraund = (isGround) ? true : physics.isGraund;
             position += vector3;
         }
         /// <summary>
@@ -596,12 +628,40 @@ namespace Scroll.Battle.Player
         /// <param name="renderer"></param>
         public void DrawParam(Output.Renderer renderer)
         {
-            renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, (int)hp, 50), 1.0f);
+
+            renderer.DrawTexture("Gauge", Vector2.Zero, new Rectangle(0, 0, (int)(hp / maxHp * 200), 100), new Vector2(2.0f, 0.9f));
+
+            if (state == State.START)
+            {
+                renderer.DrawTexture("setumei", Vector2.Zero, new Rectangle(0, 480 * startCount, 640, 480), new Vector2(2.0f, 2.0f));
+                if(time < 3000)
+                    renderer.DrawFont("minifont", "Now Loading", new Vector2(40, 800f + 20f * (float)Math.Sin(time / 400.0)), Color.Black);
+
+            }
+            //renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, (int)hp, 50), 1.0f);
             //renderer.DrawTexture(new Vector2(0,50), new Rectangle(0, 0, (int)haiGage,50),1.0f);
 
-            if (state == State.CLEAR && time > 1000)
-                renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, 1280, 960), (time - 1000f) / 500f);
 
+
+            if (state == State.CLEAR)
+            {
+                if (time > 1000)
+                    renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, 1280, 960), (time - 1000f) / 500f);
+                else if(time > 1500)
+                    renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, 1280, 960), 1f);
+
+                if (time > 2500)
+                    renderer.DrawFont("k8x12LL", "GAME CLEAR", new Vector2(350, 200), Color.Black);
+
+                if (time > 3500)
+                    renderer.DrawFont("Bauhaus93", "CLEAR TIME", new Vector2(200, 400), Color.Black);
+                if (time > 4000)
+                    renderer.DrawFont("Bauhaus93", totalTime.ToString(), new Vector2(700, 400), Color.Black);
+                if (time > 4500)
+                    renderer.DrawFont("Bauhaus93", "KILL COUNT", new Vector2(200, 550), Color.Black);
+                if (time > 5000)
+                    renderer.DrawFont("Bauhaus93", enemyTaosita.ToString(), new Vector2(700, 550), Color.Black);
+            }
             if (state == State.FAILED && time > 200)
                 renderer.DrawFont("k8x12LL", "GAME OVER", new Vector2(300, 300), Color.Black);
 
@@ -652,6 +712,8 @@ namespace Scroll.Battle.Player
             {
                 haiGage = 1500;
             }
+
+            enemyTaosita++;
         }
 
 
