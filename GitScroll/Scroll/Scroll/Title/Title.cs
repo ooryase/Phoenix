@@ -93,8 +93,9 @@ namespace Scroll.Title
             //renderer.Begin(effect);
             renderer.Begin();
             // renderer.DrawTexture("title", new Vector2(500, 200));
+            renderer.DrawTexture("Title",Vector2.Zero,1.6f,Color.White);
 
-            renderer.DrawFont("k8x12LL", "YAKITORI TABETAI", new Vector2(300, 300),Color.Blue);
+            //renderer.DrawFont("k8x12LL", "YAKITORI TABETAI", new Vector2(300, 300),Color.Blue);
             
 
             for (int i = 0; i < selectLists.Count; i++)

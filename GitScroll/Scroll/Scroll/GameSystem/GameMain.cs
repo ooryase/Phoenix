@@ -72,6 +72,7 @@ namespace Scroll.GameSystem
             renderer.LoadContent("FireEffect", "Textures/");
             renderer.LoadContent("FireEffect2", "Textures/");
             renderer.LoadContent("ReBarth", "Textures/");
+            renderer.LoadContent("Title", "Textures/");
 
             renderer.LoadFontContent("k8x12L");
             renderer.LoadFontContent("k8x12LL","Fonts/");
