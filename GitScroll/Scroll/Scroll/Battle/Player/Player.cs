@@ -661,7 +661,7 @@ namespace Scroll.Battle.Player
                     renderer.DrawFont("font48", "CLEAR TIME", new Vector2(200, 400), Color.Black);
                 if (time > 4000)
                 {
-                    var d = totalTime / 100.0;
+                    var d = totalTime / 1000.0;
                     var s = d.ToString() + " second";
                     renderer.DrawFont("font48", s, new Vector2(700, 400), Color.Black);
                 }
