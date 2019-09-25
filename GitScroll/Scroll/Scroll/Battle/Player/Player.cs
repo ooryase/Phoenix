@@ -215,10 +215,16 @@ namespace Scroll.Battle.Player
             
 
             var a = new Vector3(InputContllorer.StickLeftX(), InputContllorer.StickLeftY(), 0f);
-            if (InputContllorer.IsPush(Buttons.A) && a != Vector3.Zero)
+            if (InputContllorer.IsPush(Buttons.A))
             {
+                if (a != Vector3.Zero)
+                    attackMove = a;
+                else if (physics.velocity != Vector3.Zero)
+                    attackMove = physics.velocity;
+                else
+                    attackMove = new Vector3(0.5f - (float)direct, 0, 0);
+
                 StateSet(State.TAME);
-                attackMove = a;
                 attackMove.Normalize();
             }
 
