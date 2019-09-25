@@ -67,10 +67,10 @@ namespace Scroll.GameSystem
             renderer.LoadContent("flog", "textures/");
             renderer.LoadContent("Wyvern", "Textures/");
             renderer.LoadContent("f", "Textures/");
-            renderer.LoadContent("dummyrock", "Textures/");
             renderer.LoadContent("Maptip", "Textures/");
             renderer.LoadContent("FireEffect", "Textures/");
             renderer.LoadContent("FireEffect2", "Textures/");
+            renderer.LoadContent("FireEffect3", "Textures/");
             renderer.LoadContent("ReBarth", "Textures/");
             renderer.LoadContent("Gauge", "Textures/");
             renderer.LoadContent("setumei", "Textures/");
@@ -79,6 +79,7 @@ namespace Scroll.GameSystem
             renderer.LoadFontContent("k8x12LL","Fonts/");
             renderer.LoadFontContent("Bauhaus93", "Fonts/");
             renderer.LoadFontContent("minifont", "Fonts/");
+            renderer.LoadFontContent("font48", "Fonts/");
 
 
             renderer.LoadEffectContent("Player", "Sheader/");

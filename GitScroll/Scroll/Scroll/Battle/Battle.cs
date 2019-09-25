@@ -108,13 +108,14 @@ namespace Scroll.Battle
             //effectSystems = new List<EffectSystem.VirtualEffectSystem>();
             arts = new List<Arts.Fire>();
             fields = new List<Field.Field>();
-            //fields.Add(new Field.Field(this, renderer,sound, Field.Field.SetType.BACK));
+            fields.Add(new Field.Field(this, renderer,sound, Field.Field.SetType.BACK));
             fields.Add(new Field.Field(this, renderer,sound, Field.Field.SetType.FRONT));
             blocks = new List<Field.Block>();
             noneColliBlocks = new List<Block>();
             objects = new List<VirtualObject>();
             battleEffects = new List<BattleEffect.VirtualEffect>();
             MapSet();
+            player.EnemyCount = enemies.Count;
 
             depthBiasEnabledField = new RasterizerState
             {

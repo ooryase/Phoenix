@@ -56,6 +56,7 @@ namespace Scroll.Battle.Player
 
         private float haiGage = 0; //灰のゲージ
         private float maxHaigage = 1000; //灰の最大量
+        private bool maxHai;
 
         float Value; //色々色々色々色々色々色々色々
         float maxValue; //著作権侵害(Valueの最大値)flo
@@ -65,8 +66,10 @@ namespace Scroll.Battle.Player
         private int totalTime;
 
         private int startCount;
+        private int enemyCount;
 
         public State StateProperty { get => state; private set => state = value; }
+        public int EnemyCount { private get => enemyCount; set => enemyCount = value; }
 
         protected override void Awake()
         {
@@ -101,6 +104,7 @@ namespace Scroll.Battle.Player
             invincibleTime = 0;
             haiGage = 0f;
             maxHaigage = 1000f;
+            maxHai = false;
             Value = 0.1f;
             maxValue = 1f;
 
@@ -188,14 +192,14 @@ namespace Scroll.Battle.Player
 
         protected void StartStateUpdate(int deltaTime)
         {
-
+            Console.WriteLine(deltaTime);
 
             if (time > 1000 && InputContllorer.IsPush(Buttons.A))
                 startCount++;
 
             if (startCount >= 2)
             {
-                if (time < 3000)
+                if (time < 3000 || deltaTime > 20)
                     startCount = 1;
                 else 
                     StateSet(State.NORMAL);
@@ -224,6 +228,9 @@ namespace Scroll.Battle.Player
             {
                 StateSet(State.FALL);
             }
+
+            if (haiGage == maxHaigage && time % 800 < 15)
+                parent.AddBattleEffect(new BattleEffect.ChargeEffect(parent,parent.GetRenderer(),sound,this,position));
         }
 
         private void TameStateUpdate(int deltaTime)
@@ -268,7 +275,7 @@ namespace Scroll.Battle.Player
         {
             if (time > (int)State.DEAD)
             {
-                if (haiGage >= 1200)
+                if (haiGage >= maxHaigage)
                 {
                     //haiGage = 0;
                     parent.CameraLengthSet(0.6f, 300);
@@ -283,10 +290,7 @@ namespace Scroll.Battle.Player
         {
             if (time > (int)State.UP)
             {
-                if (haiGage >= 1200)
-                {
-                    parent.CameraLengthSet(2.1f, 300);
-                }
+                parent.CameraLengthSet(2.1f, 300);
                 StateSet(State.RESPAWNN);
                 parent.AddBattleEffect(
                     new BattleEffect.ReBarthEffect(parent, parent.GetRenderer(),sound, this, position,
@@ -302,6 +306,7 @@ namespace Scroll.Battle.Player
             {
                 hp = 1000f;
                 haiGage = 0f;
+                maxHai = false;
                 Value = 0.1f;
                 parent.CameraLengthSet(1f, 500);
                 StateSet(State.NORMAL);
@@ -316,7 +321,7 @@ namespace Scroll.Battle.Player
 
         private void FailedStateUpdate(int deltaTime)
         {
-            if (time > 1500)
+            if (time > 10000 || InputContllorer.IsPush(Buttons.A))
                 parent.GameClear();
         }
 
@@ -647,20 +652,27 @@ namespace Scroll.Battle.Player
             {
                 if (time > 1000)
                     renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, 1280, 960), (time - 1000f) / 500f);
-                else if(time > 1500)
+                else if (time > 1500)
                     renderer.DrawTexture(Vector2.Zero, new Rectangle(0, 0, 1280, 960), 1f);
 
                 if (time > 2500)
                     renderer.DrawFont("k8x12LL", "GAME CLEAR", new Vector2(350, 200), Color.Black);
 
                 if (time > 3500)
-                    renderer.DrawFont("Bauhaus93", "CLEAR TIME", new Vector2(200, 400), Color.Black);
+                    renderer.DrawFont("font48", "CLEAR TIME", new Vector2(200, 400), Color.Black);
                 if (time > 4000)
-                    renderer.DrawFont("Bauhaus93", totalTime.ToString(), new Vector2(700, 400), Color.Black);
+                {
+                    var d = totalTime / 100.0;
+                    var s = d.ToString() + " second";
+                    renderer.DrawFont("font48", s, new Vector2(700, 400), Color.Black);
+                }
                 if (time > 4500)
-                    renderer.DrawFont("Bauhaus93", "KILL COUNT", new Vector2(200, 550), Color.Black);
+                    renderer.DrawFont("font48", "KILL COUNT", new Vector2(200, 550), Color.Black);
                 if (time > 5000)
-                    renderer.DrawFont("Bauhaus93", enemyTaosita.ToString(), new Vector2(700, 550), Color.Black);
+                {
+                    var s = enemyTaosita.ToString() + " / " + enemyCount.ToString();
+                    renderer.DrawFont("font48", s, new Vector2(700, 550), Color.Black);
+                }
             }
             if (state == State.FAILED && time > 200)
                 renderer.DrawFont("k8x12LL", "GAME OVER", new Vector2(300, 300), Color.Black);
@@ -710,7 +722,12 @@ namespace Scroll.Battle.Player
             Value += 0.1f;
             if (haiGage >= maxHaigage)
             {
-                haiGage = 1500;
+                haiGage = maxHaigage;
+                if (!maxHai)
+                {
+                    maxHai = true;
+                    sound.PlaySE("charge");
+                }
             }
 
             enemyTaosita++;

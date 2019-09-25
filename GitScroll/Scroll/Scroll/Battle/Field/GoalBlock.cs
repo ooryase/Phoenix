@@ -16,6 +16,14 @@ namespace Scroll.Battle.Field
         {
             this.position = position;
             tag = TagName.CLEAR_BLOCK;
+
+            vertices[0].TextureCoordinate = new Vector2(1f, 0.75f);
+            vertices[1].TextureCoordinate = new Vector2(0.75f, 1f);
+            vertices[2].TextureCoordinate = new Vector2(0.75f, 0.75f);
+            vertices[3].TextureCoordinate = new Vector2(1f, 1f);
+
+            effect.Parameters["RBG"].SetValue(Vector3.One);
+
         }
         protected override void Awake()
         {
@@ -24,7 +32,7 @@ namespace Scroll.Battle.Field
 
         protected override void NameSet()
         {
-            textureName = "dummyrock";
+            textureName = "Maptip";
             effectName = "Block";
         }
         public override void StartUpdate(int deltaTime)

@@ -28,6 +28,7 @@ namespace Scroll.Battle.Field
 
         private SetType setType;
 
+        private Vector3 RGB;
 
         public Field(Battle battle, Renderer renderer,Sound sound, SetType setType) : base(battle, renderer,sound)
         {
@@ -41,6 +42,13 @@ namespace Scroll.Battle.Field
             SetTextureCoordinate();
             VerticesSet(Billboard.NONE);
             effect.Parameters["Value"].SetValue(0f);
+
+
+            if(setType == SetType.FRONT)
+                RGB = new Vector3(1f, 1f, 1f);
+            else if (setType == SetType.BACK)
+                RGB = new Vector3(0.9f, 0.9f, 0.9f);
+            effect.Parameters["RGB"].SetValue(RGB);
 
         }
 
@@ -141,15 +149,15 @@ namespace Scroll.Battle.Field
         {
             baseVertexPosition = new[]
             {
-                new Vector3(1.5f,1.5f, 0f) * scale,
-                new Vector3(0f,-0.1f, 0f) * scale,
-                new Vector3(0f, 1.5f, 0f) * scale,
-                new Vector3(1.5f, -0.1f, 0f) * scale,
+                new Vector3(1.5f,3.0f, -0.05f) * scale,
+                new Vector3(0f,-0.2f, -0.05f) * scale,
+                new Vector3(0f, 3.0f, -0.05f) * scale,
+                new Vector3(1.5f, -0.2f, -0.05f) * scale,
 
-                new Vector3(3.0f,1.5f, 0f) * scale,
-                new Vector3(1.5f,-0.1f, 0f) * scale,
-                new Vector3(1.5f, 1.5f, 0f) * scale,
-                new Vector3(3.0f, -0.1f, 0f) * scale
+                new Vector3(3.0f,3.0f, -0.05f) * scale,
+                new Vector3(1.5f,-0.2f, -0.05f) * scale,
+                new Vector3(1.5f, 3.0f, -0.05f) * scale,
+                new Vector3(3.0f, -0.2f, -0.05f) * scale
             };
         }
 
@@ -157,18 +165,17 @@ namespace Scroll.Battle.Field
         {
             baseVertexPosition = new[]
             {
-                new Vector3(1.5f,0.8f, -0.15f) * scale,
-                new Vector3(0f,-0.1f, -0.15f) * scale,
-                new Vector3(0f, 0.8f, -0.15f) * scale,
-                new Vector3(1.5f, -0.1f, -0.15f) * scale,
+                new Vector3(1.5f,2.8f, -0.15f) * scale,
+                new Vector3(0f,-0.22f, -0.15f) * scale,
+                new Vector3(0f, 2.8f, -0.15f) * scale,
+                new Vector3(1.5f, -0.22f, -0.15f) * scale,
 
-                new Vector3(3.0f,0.8f, -0.15f) * scale,
-                new Vector3(1.5f,-0.1f, -0.15f) * scale,
-                new Vector3(1.5f, 0.8f, -0.15f) * scale,
-                new Vector3(3.0f, -0.1f, -0.15f) * scale
+                new Vector3(3.0f,2.8f, -0.15f) * scale,
+                new Vector3(1.5f,-0.22f, -0.15f) * scale,
+                new Vector3(1.5f, 2.8f, -0.15f) * scale,
+                new Vector3(3.0f, -0.22f, -0.15f) * scale
 
             };
-
         }
 
 

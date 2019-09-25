@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Battle\Arts\Fire.cs" />
     <Compile Include="Battle\Battle.cs" />
+    <Compile Include="Battle\BattleEffect\ChargeEffect.cs" />
     <Compile Include="Battle\BattleEffect\DeathFire.cs" />
     <Compile Include="Battle\BattleEffect\FireEffect.cs" />
     <Compile Include="Battle\BattleEffect\ReBarthEffect.cs" />
@@ -98,6 +99,7 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
     <None Include="Content\Fonts\Bauhaus93.spritefont" />
+    <None Include="Content\Fonts\font48.spritefont" />
     <None Include="Content\Fonts\k8x12LL.spritefont" />
     <None Include="Content\Fonts\minifont.spritefont" />
     <None Include="Content\k8x12L.spritefont" />
